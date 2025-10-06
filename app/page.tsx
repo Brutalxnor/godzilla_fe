@@ -1,5 +1,9 @@
 // app/dashboard/page.tsx
+
 "use client";
+
+
+
 import { FaBell } from "react-icons/fa";
 import { AiOutlineRise } from "react-icons/ai";
 import { FiUsers } from "react-icons/fi";
@@ -9,6 +13,7 @@ import ProgramCard from "./components/shared/programCard";
 import Sidebar from "./components/shared/sidebar";
 import useGetUser from "./Hooks/useGetUser";
 import LoginForm from "./auth/Components/LoginForm";
+
 
 function StatCard({
   icon,
