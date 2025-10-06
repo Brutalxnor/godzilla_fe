@@ -1,8 +1,10 @@
 // app/community/page.tsx
-"use client"
+"use client";
+
 import { useState } from "react";
 import Sidebar from "../components/shared/sidebar";
 import PostCard from "./components/postCard";
+import CreatePostModal, { CreatePostPayload } from "./components/createPost";
 
 
 function Tag({ label, count }: { label: string; count?: number }) {
@@ -14,9 +16,22 @@ function Tag({ label, count }: { label: string; count?: number }) {
 }
 
 export default function CommunityPage() {
-  const shellVars = { "--sb-w": "88px", "--extra-left": "24px" } as React.CSSProperties;
+  const shellVars = {
+    "--sb-w": "88px",
+    "--extra-left": "24px",
+  } as React.CSSProperties;
 
   const [feedTab, setFeedTab] = useState<"trending" | "new">("trending");
+
+  // NEW: modal open state
+  const [openCreate, setOpenCreate] = useState(false);
+
+  // NEW: submit handler for modal
+  async function handleCreateSubmit(data: CreatePostPayload) {
+    // TODO: call your API here
+    console.log("CreatePost payload:", data);
+    // optionally optimistically add to feed here
+  }
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
@@ -30,7 +45,10 @@ export default function CommunityPage() {
           {/* Title + Post button */}
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold">Community</h1>
-            <button className="rounded-xl bg-rose-500 text-white  text-1xl px-10 py-3 hover:bg-rose-600">
+            <button
+              className="rounded-xl bg-rose-500 text-white text-1xl px-10 py-3 hover:bg-rose-600"
+              onClick={() => setOpenCreate(true)}       
+            >
               + Post
             </button>
           </div>
@@ -49,53 +67,52 @@ export default function CommunityPage() {
 
           {/* Tabs */}
           <section className="mt-4  justify-center">
-             {/* Segmented control */}
-                <div className="w-full max-w-md justify-center">
-                <div
-                    className="relative grid grid-cols-2 rounded-full bg-gray-100 p-1"
-                    role="tablist"
-                    aria-label="Feed filter"
+            {/* Segmented control */}
+            <div className="w-full max-w-md justify-center">
+              <div
+                className="relative grid grid-cols-2 rounded-full bg-gray-100 p-1"
+                role="tablist"
+                aria-label="Feed filter"
+              >
+                {/* sliding white pill */}
+                <span
+                  className={[
+                    "absolute inset-y-1 left-1 w-1/2 rounded-full bg-white shadow-sm",
+                    "transition-transform duration-200 ease-out",
+                    feedTab === "trending" ? "translate-x-0" : "translate-x-full",
+                  ].join(" ")}
+                  aria-hidden
+                />
+
+                {/* Trending */}
+                <button
+                  role="tab"
+                  aria-selected={feedTab === "trending"}
+                  onClick={() => setFeedTab("trending")}
+                  className={[
+                    "relative z-10 py-2 text-center text-sm font-semibold",
+                    "transition-colors",
+                    feedTab === "trending" ? "text-gray-900" : "text-gray-600",
+                  ].join(" ")}
                 >
-                    {/* sliding white pill */}
-                    <span
-                    className={[
-                        "absolute inset-y-1 left-1 w-1/2 rounded-full bg-white shadow-sm",
-                        "transition-transform duration-200 ease-out",
-                        feedTab === "trending" ? "translate-x-0" : "translate-x-full",
-                    ].join(" ")}
-                    aria-hidden
-                    />
+                  Trending
+                </button>
 
-                    {/* Trending */}
-                    <button
-                    role="tab"
-                    aria-selected={feedTab === "trending"}
-                    onClick={() => setFeedTab("trending")}
-                    className={[
-                        "relative z-10 py-2 text-center text-sm font-semibold",
-                        "transition-colors",
-                        feedTab === "trending" ? "text-gray-900" : "text-gray-600",
-                    ].join(" ")}
-                    >
-                    Trending
-                    </button>
-
-                    {/* New */}
-                    <button
-                    role="tab"
-                    aria-selected={feedTab === "new"}
-                    onClick={() => setFeedTab("new")}
-                    className={[
-                        "relative z-10 py-2 text-center text-sm font-semibold",
-                        "transition-colors",
-                        feedTab === "new" ? "text-gray-900" : "text-gray-600",
-                    ].join(" ")}
-                    >
-                    New
-                    </button>
-                </div>
-                </div>
-
+                {/* New */}
+                <button
+                  role="tab"
+                  aria-selected={feedTab === "new"}
+                  onClick={() => setFeedTab("new")}
+                  className={[
+                    "relative z-10 py-2 text-center text-sm font-semibold",
+                    "transition-colors",
+                    feedTab === "new" ? "text-gray-900" : "text-gray-600",
+                  ].join(" ")}
+                >
+                  New
+                </button>
+              </div>
+            </div>
           </section>
 
           {/* Feed */}
@@ -115,7 +132,11 @@ export default function CommunityPage() {
             />
 
             <PostCard
-              author={{ name: "Sara Ahmed", role: "Coach", avatar: "/avatar-2.jpg" }}
+              author={{
+                name: "Sara Ahmed",
+                role: "Coach",
+                avatar: "/avatar-2.jpg",
+              }}
               timeAgo="6 hours ago"
               content={
                 "New nutrition guide dropped! 🥦 Learn the fundamentals of protein, carbs, and fats with my simple weekly plan."
@@ -136,6 +157,18 @@ export default function CommunityPage() {
           <div className="pb-24 lg:pb-0" />
         </div>
       </main>
+
+      {/* ===== Create Post Modal (mounted at page root) ===== */}
+      <CreatePostModal
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
+        onSubmit={handleCreateSubmit}
+        user={{
+          name: "Youssef Tarek",
+          subtitle: "Share with your community",
+          // avatarUrl: "/avatar-1.jpg", // optional; show initials if missing
+        }}
+      />
     </div>
   );
 }
