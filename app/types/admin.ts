@@ -12,3 +12,13 @@ export interface SignUpFormData {
   experience_level: "beginner" | "intermediate" | "advanced" | "expert";
   specialization_description?: string;
 }
+
+export interface User {
+  data: {
+    access_token: string;
+    email: string;
+    expires_at: number;
+    refresh_token: string;
+    user_id: string;
+  };
+}
