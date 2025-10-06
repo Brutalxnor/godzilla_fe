@@ -4,7 +4,7 @@ import axios from "axios";
 export const SignUoService = async (data: SignUpFormData) => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/v1/auth/register",
+      "https://godzilla-be.vercel.app/api/v1/auth/register",
       data
     );
     return response.data;

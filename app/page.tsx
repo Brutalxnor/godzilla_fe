@@ -2,8 +2,6 @@
 
 "use client";
 
-
-
 import { FaBell } from "react-icons/fa";
 import { AiOutlineRise } from "react-icons/ai";
 import { FiUsers } from "react-icons/fi";
@@ -13,7 +11,6 @@ import ProgramCard from "./components/shared/programCard";
 import Sidebar from "./components/shared/sidebar";
 import useGetUser from "./Hooks/useGetUser";
 import LoginForm from "./auth/Components/LoginForm";
-
 
 function StatCard({
   icon,
@@ -58,7 +55,7 @@ export default function Home() {
               {/* Header banner */}
               <section className="relative rounded-2xl bg-gradient-to-r from-rose-500  to-red-400 text-white px-5 py-5 mb-6 shadow-sm">
                 <div className="text-xl md:text-2xl font-semibold">
-                  Good morning, Youssef!
+                  Good morning, {userDB.data.email}!
                 </div>
                 <div className="text-sm text-rose-100 mt-1">
                   Ready to crush today&apos;s workout?

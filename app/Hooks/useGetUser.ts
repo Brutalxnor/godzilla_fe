@@ -1,9 +1,10 @@
 "use client";
 // import { User } from "@/types/admin";
 import { useEffect, useState } from "react";
+import { User } from "../types/admin";
 
 const useGetUser = () => {
-  const [userDB, setUserDB] = useState(null);
+  const [userDB, setUserDB] = useState<User | null>(null);
 
   useEffect(() => {
     const localUser = localStorage.getItem("user");
