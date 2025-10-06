@@ -5,8 +5,9 @@ import { AiOutlineRise } from "react-icons/ai";
 import { FiUsers } from "react-icons/fi";
 import { TbTrophy } from "react-icons/tb";
 import { ReactNode } from "react";
-import ProgramCard from "../components/shared/programCard";
-import Sidebar from "../components/shared/sidebar";
+import ProgramCard from "./components/shared/programCard";
+import Sidebar from "./components/shared/sidebar";
+
 
 function StatCard({
   icon,
