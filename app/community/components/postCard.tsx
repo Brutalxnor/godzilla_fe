@@ -22,9 +22,9 @@ export default function PostCard({
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           {author.avatar ? (
-            <Image
-              src={author.avatar}
-              alt={author.name}
+            <img
+              src={author.avatar || "https://example.com/images/sunset.jpg"}
+              alt={author.name || "https://example.com/images/sunset.jpg"}
               width={40}
               height={40}
               className="rounded-full"
@@ -72,9 +72,9 @@ export default function PostCard({
 
       {image && (
         <div className="mt-3 overflow-hidden rounded-xl border border-gray-200">
-          <Image
-            src={image}
-            alt="post image"
+          <img
+            src={image || "https://example.com/images/sunset.jpg"}
+            alt={"post image"}
             width={1200}
             height={800}
             className="w-full h-64 sm:h-72 object-cover"
