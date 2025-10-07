@@ -167,7 +167,7 @@ export default function CreatePostModal({
           </div>
 
           {/* Body */}
-          <div className="px-4 sm:px-6 py-4 sm:py-6 space-y-5">
+          <div className="px-4 sm:px-6 py-4 sm:py-6 space-y-5 max-h-[calc(100vh-200px)] overflow-y-auto">
             {/* User row */}
             <div className="flex items-center gap-3">
               {user.avatarUrl ? (
@@ -191,6 +191,10 @@ export default function CreatePostModal({
               </div>
             </div>
 
+            <div className="flex gap-5 ">
+            <div className="w-1/2">
+
+       
             {/* Caption */}
             <section className="rounded-2xl border border-gray-200 overflow-hidden">
               <textarea
@@ -321,7 +325,7 @@ export default function CreatePostModal({
               <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-200">
                 <span className="text-sm font-medium">Who can see this?</span>
               </div>
-              <div className="p-4 space-y-3">
+              <div className="p-4 flex justify-items-end space-y-3">
                 <label className="flex items-start gap-3">
                   <input
                     type="radio"
@@ -356,8 +360,12 @@ export default function CreatePostModal({
               </div>
             </section>
 
+            </div>
+
+            <div className="rounded-2xl border h-fit border-gray-200 ">
+
             {/* Preview */}
-            <section className="rounded-2xl border border-gray-200">
+            <div className="rounded-2xl  w-100 border border-gray-200">
               <div className="px-4 py-3 border-b border-gray-200 text-sm font-medium">
                 Preview
               </div>
@@ -387,7 +395,9 @@ export default function CreatePostModal({
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
+            </div>
+            </div>
           </div>
         </div>
       </div>
