@@ -1,11 +1,13 @@
 // app/community/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/shared/sidebar";
 import PostCard from "./components/postCard";
-import CreatePostModal, { CreatePostPayload } from "./components/createPost";
-
+import CreatePostModal, { CreatePostType } from "./components/createPost";
+import { GetAllPosts } from "../sign-up/Services/posts.service";
+import useGetUser from "../Hooks/useGetUser";
+import { Post } from "../types/type";
 
 function Tag({ label, count }: { label: string; count?: number }) {
   return (
@@ -25,13 +27,26 @@ export default function CommunityPage() {
 
   // NEW: modal open state
   const [openCreate, setOpenCreate] = useState(false);
+  const [Posts, setPosts] = useState<Post[]>([]);
 
   // NEW: submit handler for modal
-  async function handleCreateSubmit(data: CreatePostPayload) {
+  async function handleCreateSubmit(data: CreatePostType) {
     // TODO: call your API here
     console.log("CreatePost payload:", data);
     // optionally optimistically add to feed here
   }
+
+  const { userDB } = useGetUser();
+
+  useEffect(() => {
+    const fetchGetPosts = async () => {
+      const response = await GetAllPosts();
+      setPosts(response);
+    };
+    fetchGetPosts();
+  }, [userDB?.data?.user_id]);
+
+  // console.log(Posts);
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
@@ -47,7 +62,7 @@ export default function CommunityPage() {
             <h1 className="text-4xl font-bold">Community</h1>
             <button
               className="rounded-xl bg-rose-500 text-white text-1xl px-10 py-3 hover:bg-rose-600"
-              onClick={() => setOpenCreate(true)}       
+              onClick={() => setOpenCreate(true)}
             >
               + Post
             </button>
@@ -79,7 +94,9 @@ export default function CommunityPage() {
                   className={[
                     "absolute inset-y-1 left-1 w-1/2 rounded-full bg-white shadow-sm",
                     "transition-transform duration-200 ease-out",
-                    feedTab === "trending" ? "translate-x-0" : "translate-x-full",
+                    feedTab === "trending"
+                      ? "translate-x-0"
+                      : "translate-x-full",
                   ].join(" ")}
                   aria-hidden
                 />
@@ -117,21 +134,28 @@ export default function CommunityPage() {
 
           {/* Feed */}
           <section className="mt-5 space-y-4">
-            <PostCard
-              author={{
-                name: "Ahmed Mahmoud",
-                role: "Coach",
-                avatar: "/man.jpeg",
-              }}
-              timeAgo="2 hours ago"
-              content={
-                "Just finished an incredible training session!\nRemember, consistency beats perfection every time.\nSmall daily improvements lead to massive results! 💪"
-              }
-              image="/godzillaImage.jpeg"
-              stats={{ likes: 145, comments: 23, shares: 8 }}
-            />
+            {Posts?.map((post) => (
+              <div key={post.id}>
+                <PostCard
+                  author={{
+                    name:
+                      post?.users?.first_name +
+                        " " +
+                        post?.users?.second_name || "",
+                    role: post?.users?.user_type || "Coach",
+                    avatar:
+                      post.users?.avatar_url ||
+                      "https://example.com/images/sunset.jpg",
+                  }}
+                  timeAgo={post.created_at}
+                  content={post.bio}
+                  image={post.image || "https://example.com/images/sunset.jpg"}
+                  stats={{ likes: 145, comments: 23, shares: 8 }}
+                />
+              </div>
+            ))}
 
-            <PostCard
+            {/* <PostCard
               author={{
                 name: "Sara Ahmed",
                 role: "Coach",
@@ -150,7 +174,7 @@ export default function CommunityPage() {
               timeAgo="Yesterday"
               content={"Hit a new PR on deadlifts today—feels amazing! 🔥"}
               stats={{ likes: 61, comments: 9, shares: 2 }}
-            />
+            /> */}
           </section>
 
           {/* bottom padding so content isn't hidden behind bottom nav on mobile */}
