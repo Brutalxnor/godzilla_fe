@@ -28,6 +28,7 @@ export default function CommunityPage() {
   // NEW: modal open state
   const [openCreate, setOpenCreate] = useState(false);
   const [Posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // NEW: submit handler for modal
   async function handleCreateSubmit(data: CreatePostType) {
@@ -38,11 +39,19 @@ export default function CommunityPage() {
 
   const { userDB } = useGetUser();
 
-  useEffect(() => {
-    const fetchGetPosts = async () => {
+  const fetchGetPosts = async () => {
+    setLoading(true);
+    try {
       const response = await GetAllPosts();
       setPosts(response);
-    };
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchGetPosts();
   }, [userDB?.data?.user_id]);
 
@@ -137,47 +146,41 @@ export default function CommunityPage() {
 
           {/* Feed */}
           <section className="mt-5 space-y-4">
-            {Posts?.map((post) => (
-              <div key={post.id}>
-                <PostCard
-                  author={{
-                    name:
-                      post?.users?.first_name +
-                        " " +
-                        post?.users?.second_name || "",
-                    role: post?.users?.user_type || "Coach",
-                    avatar:
-                      post.users?.avatar_url ||
-                      "https://example.com/images/sunset.jpg",
-                  }}
-                  timeAgo={post.created_at}
-                  content={post.bio}
-                  image={post.image || "https://example.com/images/sunset.jpg"}
-                  stats={{ likes: 145, comments: 23, shares: 8 }}
-                />
+            {loading ? (
+              <div className="flex justify-center items-center py-10">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+                {/* أو استخدم أي loader component عندك */}
               </div>
-            ))}
-
-            {/* <PostCard
-              author={{
-                name: "Sara Ahmed",
-                role: "Coach",
-                avatar: "/avatar-2.jpg",
-              }}
-              timeAgo="6 hours ago"
-              content={
-                "New nutrition guide dropped! 🥦 Learn the fundamentals of protein, carbs, and fats with my simple weekly plan."
-              }
-              image="/basketball.jpeg"
-              stats={{ likes: 92, comments: 14, shares: 5 }}
-            />
-
-            <PostCard
-              author={{ name: "Omar Ali", avatar: "/avatar-3.jpg" }}
-              timeAgo="Yesterday"
-              content={"Hit a new PR on deadlifts today—feels amazing! 🔥"}
-              stats={{ likes: 61, comments: 9, shares: 2 }}
-            /> */}
+            ) : (
+              <>
+                {Array.isArray(Posts) && Posts.length > 0 ? (
+                  Posts.map((post) => (
+                    <div key={post.id}>
+                      <PostCard
+                        author={{
+                          name:
+                            post?.users?.first_name +
+                              " " +
+                              post?.users?.second_name || "",
+                          role: post?.users?.user_type || "Coach",
+                          avatar:
+                            post.users?.avatar_url ||
+                            "https://example.com/images/sunset.jpg",
+                        }}
+                        timeAgo={post.created_at}
+                        content={post.bio}
+                        image={
+                          post.image || "https://example.com/images/sunset.jpg"
+                        }
+                        stats={{ likes: 145, comments: 23, shares: 8 }}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500">No posts yet</p>
+                )}
+              </>
+            )}
           </section>
 
           {/* bottom padding so content isn't hidden behind bottom nav on mobile */}

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { FiArrowLeft, FiUploadCloud, FiMapPin, FiHash } from "react-icons/fi";
 import { GetAllInterests } from "@/app/sign-up/Services/Interest.service";
 import { InterestType } from "@/app/types/type";
-import { CreatePost } from "@/app/sign-up/Services/posts.service";
+import { CreatePost, GetAllPosts } from "@/app/sign-up/Services/posts.service";
 import { useForm } from "react-hook-form";
 import useGetUser from "@/app/Hooks/useGetUser";
 import { v4 } from "uuid";
@@ -118,28 +118,32 @@ export default function CreatePostModal({
       reader.readAsDataURL(file);
     });
   };
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [posts, setPosts] = useState([]);
 
+  const refreshPosts = async () => {
+    setIsRefreshing(true);
+    try {
+      const newPosts = await GetAllPosts(); // الفانكشن بتاعتك لجلب الـ posts
+      setPosts(newPosts);
+    } catch (error) {
+      console.error("Error refreshing posts:", error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  // في الـ CreatePost Component
   const OnSubmit = async (data: CreatePostType) => {
     try {
       const postData: CreatePostType = {
         bio: data.bio.trim(),
-        image: data.image, // لا تغير أي شيء
+        image: data.image,
         location: data.location?.trim() || "",
         tags: data.tags || [],
         watch: data.watch,
         user_id: userDB?.data?.user_id || data.user_id,
       };
-
-      // تحقق من البيانات قبل الإرسال
-      console.log("Post data:", {
-        bio: postData.bio,
-        imageLength: postData.image?.length,
-        imagePrefix: postData.image?.substring(0, 30),
-        location: postData.location,
-        tags: postData.tags,
-        watch: postData.watch,
-        user_id: postData.user_id,
-      });
 
       const response = await CreatePost(postData);
 
@@ -150,6 +154,10 @@ export default function CreatePostModal({
       }
 
       console.log("Post created successfully:", response);
+
+      // refresh الداتا
+      // await refreshPosts(); // callback من الكومبوننت الأب
+      window.location.reload();
 
       onClose();
       reset();
