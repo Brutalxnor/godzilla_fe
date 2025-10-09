@@ -34,3 +34,28 @@ export interface Post {
   users: User;
   watch: "public" | "friends";
 }
+
+export type Program = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  price: number;
+  discount_percentage: number;
+  cover_image_url: string;
+  category: string;
+  difficulty_level: string;
+  duration_weeks: number;
+  sessions_per_week: number;
+  total_videos: number;
+  total_pdfs: number;
+  is_published: boolean;
+  published_at: string | null;
+  coach_id: string;
+  users: {
+    id: string;
+    avatar_url: string | null;
+    first_name: string;
+    second_name: string;
+  };
+};

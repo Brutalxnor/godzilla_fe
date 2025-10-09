@@ -6,11 +6,14 @@ import { FaBell } from "react-icons/fa";
 import { AiOutlineRise } from "react-icons/ai";
 import { FiUsers } from "react-icons/fi";
 import { TbTrophy } from "react-icons/tb";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import ProgramCard from "./components/shared/programCard";
 import Sidebar from "./components/shared/sidebar";
 import useGetUser from "./Hooks/useGetUser";
 import LoginForm from "./auth/Components/LoginForm";
+import axios from "axios";
+import { Program } from "./types/type";
+import { toast } from "react-toastify";
 
 function StatCard({
   icon,
@@ -40,6 +43,32 @@ export default function Home() {
   } as React.CSSProperties;
 
   const { userDB } = useGetUser();
+  const [programs, setPrograms] = useState<{ data: Program[] }>();
+
+  useEffect(() => {
+    const fetchGetProgramsByUserID = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:4000/api/v1/programs/programCoach/${userDB?.data?.user_id}`
+        );
+
+        setPrograms(data);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error("❌ Error fetching programs:", err.message);
+        } else {
+          console.error("❌ Unknown error:", err);
+        }
+        toast.error("Failed to fetch programs. Please try again.");
+      }
+    };
+
+    if (userDB?.data?.user_id) {
+      fetchGetProgramsByUserID();
+    }
+  }, [userDB?.data?.user_id]);
+
+  console.log(programs, "sdasdad");
 
   return (
     <>
@@ -79,14 +108,18 @@ export default function Home() {
                   value="12"
                   label="Workouts"
                 />
-                <StatCard icon={<FiUsers />} value="3" label="Programs" />
+                <StatCard
+                  icon={<FiUsers />}
+                  value={programs?.data?.length || 2}
+                  label="Programs"
+                />
                 <StatCard icon={<TbTrophy />} value="5" label="Achievements" />
               </section>
 
               {/* Programs (uses shared ProgramCard) */}
               <h2 className="text-lg font-semibold mb-3">Your Programs</h2>
               <section className="grid grid-cols-1 gap-4 mb-6">
-                <ProgramCard
+                {/* <ProgramCard
                   title="Strength Foundation"
                   coach="Mike Johnson"
                   percent={75}
@@ -101,7 +134,21 @@ export default function Home() {
                   badge="Expires Soon"
                   badgeTone="red"
                   expires="Expires in 7 days"
-                />
+                /> */}
+
+                {Array.isArray(programs?.data) &&
+                  programs?.data?.slice(0, 3)?.map((el) => (
+                    <div key={el.id}>
+                      <ProgramCard
+                        title={el.title}
+                        coach={el.users?.first_name}
+                        percent={Math.random() * 100}
+                        badge="Expires Soon"
+                        badgeTone="red"
+                        expires="Expires in 7 days"
+                      />
+                    </div>
+                  ))}
               </section>
 
               {/* Recent Activity */}

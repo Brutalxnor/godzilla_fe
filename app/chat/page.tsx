@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../components/shared/sidebar";
 import useGetUser from "../Hooks/useGetUser";
 import { toast } from "react-toastify";
+import { supabase } from "@/lib/client";
 
 type ChatMessage = {
   id: number | string;
@@ -32,6 +33,16 @@ const Chat = () => {
   const [error, setError] = useState("");
   const [conversation, setConversation] = useState(null);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
+
+  const [conversationId, setConversationId] = useState<string | null>(null);
+
+  // 🧠 عند أول تحميل للمكون
+  useEffect(() => {
+    const storedId = localStorage.getItem("conversation_id");
+    if (storedId) {
+      setConversationId(storedId);
+    }
+  }, []);
 
   // ✅ جلب المستخدمين من API
   const fetchUsers = async () => {
@@ -72,6 +83,70 @@ const Chat = () => {
       setLoadingUsers(false);
     }
   };
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("realtime:messages")
+      // .on(
+      //   "postgres_changes",
+      //   {
+      //     event: "*", // INSERT, UPDATE, DELETE لو حبيت تخصص
+      //     schema: "public",
+      //     table: "messages",
+      //   },
+      //   (payload) => {
+      //     console.log("New message event:", payload);
+
+      //     if (payload.eventType === "INSERT") {
+      //       const newMessage = payload.new;
+
+      //       setChats((prevChats) => {
+      //         const conversationId = newMessage.conversation_id;
+      //         return {
+      //           ...prevChats,
+      //           [conversationId]: [
+      //             ...(prevChats[conversationId] || []),
+      //             newMessage,
+      //           ],
+      //         };
+      //       });
+      //     }
+      //   }
+      // )
+
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `conversation_id=eq.${conversationId}`,
+        },
+        (payload) => {
+          console.log("New message event:", payload);
+
+          if (payload.eventType === "INSERT") {
+            const newMessage = payload.new;
+
+            setChats((prevChats) => {
+              const conversationId = newMessage.conversation_id;
+              return {
+                ...prevChats,
+                [conversationId]: [
+                  ...(prevChats[conversationId] || []),
+                  newMessage,
+                ],
+              };
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   useEffect(() => {
     fetchUsers();
@@ -151,11 +226,8 @@ const Chat = () => {
       toast.error("Failed to send message. Please try again.");
     }
   };
-
   const { userDB } = useGetUser();
-  // ✅ استرجاع الرسائل الخاصة بالمستخدم الحالي
   const currentMessages = selectedUser ? chats[selectedUser.id] || [] : [];
-
   const shellVars = {
     "--sb-w": "88px",
     "--extra-left": "24px",
