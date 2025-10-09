@@ -39,7 +39,9 @@ const Chat = () => {
       setLoadingUsers(true);
       setError("");
 
-      const res = await fetch("http://localhost:4000/api/v1/auth/getusers");
+      const res = await fetch(
+        "https://godzilla-be.vercel.app/api/v1/auth/getusers"
+      );
       if (!res.ok) throw new Error("Failed to fetch users");
 
       const result = await res.json();
@@ -93,7 +95,7 @@ const Chat = () => {
 
       // 📡 إرسال الرسالة للـ API
       const res = await fetch(
-        "http://localhost:4000/api/v1/chat/messages/send",
+        "https://godzilla-be.vercel.app/api/v1/chat/messages/send",
         {
           method: "POST",
           headers: {
@@ -305,7 +307,7 @@ const Chat = () => {
 
                           // ✅ 1. بدء المحادثة (أو استرجاعها لو موجودة)
                           const response = await fetch(
-                            `http://localhost:4000/api/v1/chat/conversations/start/${user.id}`,
+                            `https://godzilla-be.vercel.app/api/v1/chat/conversations/start/${user.id}`,
                             {
                               method: "POST",
                               headers: {
@@ -338,7 +340,7 @@ const Chat = () => {
 
                           // ✅ 2. جلب الرسائل الخاصة بالمحادثة دي
                           const messagesRes = await fetch(
-                            `http://localhost:4000/api/v1/chat/conversations/${conversationId}/messages`,
+                            `https://godzilla-be.vercel.app/api/v1/chat/conversations/${conversationId}/messages`,
                             {
                               headers: {
                                 Authorization: `Bearer ${userDB?.data.access_token}`,
