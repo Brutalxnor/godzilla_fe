@@ -63,20 +63,19 @@ export default function CommunityPage() {
 
       <main
         style={shellVars}
-        className="w-full lg:w-[calc(100vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))] pl-[var(--extra-left)]"
+        className="w-full lg:w-[calc(95vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))] pl-[var(--extra-left)]"
       >
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-0 py-6 md:py-8">
           {/* Title + Post button */}
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold">Community</h1>
-      
+
             <button
               className="rounded-xl bg-rose-500 text-white text-1xl px-10 py-3 hover:bg-rose-600"
               onClick={() => setOpenCreate(true)}
             >
               + Post
             </button>
-            
           </div>
           <div className="mt-5 h-[2px] w-full bg-gray-200 rounded-full" />
 
