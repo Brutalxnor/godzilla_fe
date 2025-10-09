@@ -45,13 +45,16 @@ export default function CommunityPage() {
           {/* Title + Post button */}
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold">Community</h1>
+      
             <button
               className="rounded-xl bg-rose-500 text-white text-1xl px-10 py-3 hover:bg-rose-600"
               onClick={() => setOpenCreate(true)}       
             >
               + Post
             </button>
+            
           </div>
+          <div className="mt-5 h-[2px] w-full bg-gray-200 rounded-full" />
 
           {/* Trending topics */}
           <section className="mt-5 justify-between ">
