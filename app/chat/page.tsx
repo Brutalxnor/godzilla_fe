@@ -4,6 +4,7 @@ import Sidebar from "../components/shared/sidebar";
 import useGetUser from "../Hooks/useGetUser";
 import { toast } from "react-toastify";
 import { supabase } from "@/lib/client";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
 type ChatMessage = {
   id: number | string;
@@ -36,7 +37,7 @@ const Chat = () => {
   const [conversationId, setConversationId] = useState<string | null>(null);
 
   const { userDB } = useGetUser();
-  const channelRef = useRef<any>(null);
+  const channelRef = useRef<RealtimeChannel | null>(null);
 
   const fetchUsers = async () => {
     try {
