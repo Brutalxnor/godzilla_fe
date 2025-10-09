@@ -20,5 +20,17 @@ export interface User {
     expires_at: number;
     refresh_token: string;
     user_id: string;
+    user: {
+      date_of_birth: string;
+      experience_level: string;
+      first_name: string;
+      last_login: string;
+      location: string;
+      phone: string;
+      second_name: string;
+      user_type: string;
+      message: string;
+    };
   };
 }
+
