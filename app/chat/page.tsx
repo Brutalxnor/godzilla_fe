@@ -34,6 +34,16 @@ const Chat = () => {
   const [conversation, setConversation] = useState(null);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
 
+  const [conversationId, setConversationId] = useState<string | null>(null);
+
+  // 🧠 عند أول تحميل للمكون
+  useEffect(() => {
+    const storedId = localStorage.getItem("conversation_id");
+    if (storedId) {
+      setConversationId(storedId);
+    }
+  }, []);
+
   // ✅ جلب المستخدمين من API
   const fetchUsers = async () => {
     try {
@@ -77,12 +87,40 @@ const Chat = () => {
   useEffect(() => {
     const channel = supabase
       .channel("realtime:messages")
+      // .on(
+      //   "postgres_changes",
+      //   {
+      //     event: "*", // INSERT, UPDATE, DELETE لو حبيت تخصص
+      //     schema: "public",
+      //     table: "messages",
+      //   },
+      //   (payload) => {
+      //     console.log("New message event:", payload);
+
+      //     if (payload.eventType === "INSERT") {
+      //       const newMessage = payload.new;
+
+      //       setChats((prevChats) => {
+      //         const conversationId = newMessage.conversation_id;
+      //         return {
+      //           ...prevChats,
+      //           [conversationId]: [
+      //             ...(prevChats[conversationId] || []),
+      //             newMessage,
+      //           ],
+      //         };
+      //       });
+      //     }
+      //   }
+      // )
+
       .on(
         "postgres_changes",
         {
-          event: "*", // INSERT, UPDATE, DELETE لو حبيت تخصص
+          event: "INSERT",
           schema: "public",
           table: "messages",
+          filter: `conversation_id=eq.${conversationId}`,
         },
         (payload) => {
           console.log("New message event:", payload);
