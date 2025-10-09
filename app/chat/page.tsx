@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "../components/shared/sidebar";
 import useGetUser from "../Hooks/useGetUser";
 import { toast } from "react-toastify";
@@ -15,6 +15,7 @@ type ChatMessage = {
   likes: number;
   replies: number;
   created_at: string;
+  conversation_id?: string;
 };
 
 const Chat = () => {
@@ -31,20 +32,12 @@ const Chat = () => {
   >([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [error, setError] = useState("");
-  const [conversation, setConversation] = useState(null);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
-
   const [conversationId, setConversationId] = useState<string | null>(null);
 
-  // 🧠 عند أول تحميل للمكون
-  useEffect(() => {
-    const storedId = localStorage.getItem("conversation_id");
-    if (storedId) {
-      setConversationId(storedId);
-    }
-  }, []);
+  const { userDB } = useGetUser();
+  const channelRef = useRef<any>(null);
 
-  // ✅ جلب المستخدمين من API
   const fetchUsers = async () => {
     try {
       setLoadingUsers(true);
@@ -73,86 +66,77 @@ const Chat = () => {
 
       setActiveUsers(formattedUsers);
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error("❌ Error sending message:", err.message);
-      } else {
-        console.error("❌ Unknown error:", err);
-      }
-      toast.error("Failed to send message. Please try again.");
+      console.error("Error fetching users:", err);
+      setError("Failed to load users");
+      toast.error("Failed to load users");
     } finally {
       setLoadingUsers(false);
     }
   };
 
   useEffect(() => {
-    const channel = supabase
-      .channel("realtime:messages")
-      // .on(
-      //   "postgres_changes",
-      //   {
-      //     event: "*", // INSERT, UPDATE, DELETE لو حبيت تخصص
-      //     schema: "public",
-      //     table: "messages",
-      //   },
-      //   (payload) => {
-      //     console.log("New message event:", payload);
-
-      //     if (payload.eventType === "INSERT") {
-      //       const newMessage = payload.new;
-
-      //       setChats((prevChats) => {
-      //         const conversationId = newMessage.conversation_id;
-      //         return {
-      //           ...prevChats,
-      //           [conversationId]: [
-      //             ...(prevChats[conversationId] || []),
-      //             newMessage,
-      //           ],
-      //         };
-      //       });
-      //     }
-      //   }
-      // )
-
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `conversation_id=eq.${conversationId}`,
-        },
-        (payload) => {
-          console.log("New message event:", payload);
-
-          if (payload.eventType === "INSERT") {
-            const newMessage = payload.new;
-
-            setChats((prevChats) => {
-              const conversationId = newMessage.conversation_id;
-              return {
-                ...prevChats,
-                [conversationId]: [
-                  ...(prevChats[conversationId] || []),
-                  newMessage,
-                ],
-              };
-            });
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  useEffect(() => {
     fetchUsers();
   }, []);
 
-  // ✅ إرسال رسالة جديدة
+  // ✅ استخدام Broadcast بدل postgres_changes
+  useEffect(() => {
+    if (!conversationId) return;
+
+    console.log(
+      "🔌 Subscribing to broadcast for conversation:",
+      conversationId
+    );
+
+    if (channelRef.current) {
+      console.log("🧹 Removing old channel");
+      supabase.removeChannel(channelRef.current);
+    }
+
+    const channel = supabase
+      .channel(`chat-${conversationId}`)
+      .on("broadcast", { event: "new-message" }, (payload) => {
+        console.log("🆕 Broadcast message received:", payload);
+
+        const newMessage = payload.payload as ChatMessage;
+
+        // تجاهل رسالتي أنا
+        if (newMessage.sender_id === userDB?.data?.user_id) {
+          console.log("⚠️ Skipping own message");
+          return;
+        }
+
+        setChats((prevChats) => {
+          const currentChat = prevChats[selectedUser?.id || ""] || [];
+
+          const exists = currentChat.some((msg) => msg.id === newMessage.id);
+          if (exists) {
+            console.log("⚠️ Message already exists");
+            return prevChats;
+          }
+
+          return {
+            ...prevChats,
+            [selectedUser?.id || ""]: [...currentChat, newMessage],
+          };
+        });
+
+        toast.success("New message received!");
+      })
+      .subscribe((status) => {
+        console.log("📡 Channel status:", status);
+      });
+
+    channelRef.current = channel;
+
+    return () => {
+      console.log("🧹 Unsubscribing from:", conversationId);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
+    };
+  }, [conversationId, selectedUser?.id, userDB?.data?.user_id]);
+
   const sendMessage = async () => {
     if (!selectedUser) {
       toast.error("Please select a user to chat with first.");
@@ -168,7 +152,6 @@ const Chat = () => {
         return;
       }
 
-      // 📡 إرسال الرسالة للـ API
       const res = await fetch(
         "https://godzilla-be.vercel.app/api/v1/chat/messages/send",
         {
@@ -186,15 +169,12 @@ const Chat = () => {
 
       const result = await res.json();
 
-      //   if (!res.ok || !result.success) {
-      //     throw new Error(result.message || "Failed to send message");
-      //   }
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to send message");
+      }
 
-      // ✅ نجاح الإرسال
-      toast.success("Message sent successfully!");
-
-      const newMessage = {
-        id: Date.now(),
+      const newMessage: ChatMessage = {
+        id: result.data?.message?.id || Date.now(),
         user: "You",
         avatar: "ME",
         time: new Date().toLocaleTimeString("en-US", {
@@ -205,28 +185,83 @@ const Chat = () => {
         sender_id: userDB?.data?.user_id,
         likes: 0,
         replies: 0,
-        created_at: new Date().toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
+        created_at: new Date().toISOString(),
+        conversation_id: conversationId || undefined,
       };
 
+      // ✅ إضافة للـ UI
       setChats((prevChats) => ({
         ...prevChats,
         [selectedUser.id]: [...(prevChats[selectedUser.id] || []), newMessage],
       }));
 
-      setMessage("");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error("❌ Error sending message:", err.message);
-      } else {
-        console.error("❌ Unknown error:", err);
+      // ✅ إرسال Broadcast للباقي
+      if (conversationId) {
+        await supabase.channel(`chat-${conversationId}`).send({
+          type: "broadcast",
+          event: "new-message",
+          payload: newMessage,
+        });
       }
+
+      setMessage("");
+      toast.success("Message sent!");
+    } catch (err: unknown) {
+      console.error("Error sending message:", err);
       toast.error("Failed to send message. Please try again.");
     }
   };
-  const { userDB } = useGetUser();
+
+  const selectUser = async (user: (typeof activeUsers)[0]) => {
+    try {
+      setLoadingUserId(user.id);
+      setSelectedUser(user);
+
+      const response = await fetch(
+        `https://godzilla-be.vercel.app/api/v1/chat/conversations/start/${user.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userDB?.data.access_token}`,
+          },
+        }
+      );
+
+      const result = await response.json();
+      const convId = result.data?.id;
+
+      if (!convId) {
+        throw new Error("No conversation ID returned");
+      }
+
+      setConversationId(convId);
+      localStorage.setItem("conversation_id", convId);
+      console.log("💾 Conversation ID saved:", convId);
+
+      const messagesRes = await fetch(
+        `https://godzilla-be.vercel.app/api/v1/chat/conversations/${convId}/messages`,
+        {
+          headers: {
+            Authorization: `Bearer ${userDB?.data.access_token}`,
+          },
+        }
+      );
+
+      const messagesData = await messagesRes.json();
+
+      setChats((prev) => ({
+        ...prev,
+        [user.id]: messagesData.data || [],
+      }));
+    } catch (err: unknown) {
+      console.error("Error selecting user:", err);
+      toast.error("Failed to load conversation");
+    } finally {
+      setLoadingUserId(null);
+    }
+  };
+
   const currentMessages = selectedUser ? chats[selectedUser.id] || [] : [];
   const shellVars = {
     "--sb-w": "88px",
@@ -242,7 +277,6 @@ const Chat = () => {
         className="w-full lg:w-[calc(100vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))] pl-[var(--extra-left)]"
       >
         <div className="min-h-screen bg-gray-50 font-sans p-5">
-          {/* Header */}
           <div className="bg-white rounded-lg shadow-sm p-4 mb-5 flex justify-between items-center">
             <h1 className="text-2xl font-semibold text-gray-800">
               {selectedUser
@@ -258,7 +292,6 @@ const Chat = () => {
           </div>
 
           <div className="flex gap-5 h-[calc(100vh-140px)]">
-            {/* Main Chat */}
             <div className="flex-[2] bg-white rounded-lg shadow-sm flex flex-col">
               <div className="flex-1 overflow-y-auto p-5 space-y-4">
                 {selectedUser ? (
@@ -273,7 +306,6 @@ const Chat = () => {
                             isMine ? "justify-end" : "justify-start"
                           }`}
                         >
-                          {/* الرسالة */}
                           <div
                             className={`flex flex-col max-w-[60%] p-3 rounded-2xl shadow-sm ${
                               isMine
@@ -281,7 +313,6 @@ const Chat = () => {
                                 : "bg-gray-100 text-gray-800 rounded-bl-none"
                             }`}
                           >
-                            {/* اسم المرسل + الأفاتار */}
                             <div className="flex items-center gap-2 mb-1">
                               {!isMine && (
                                 <div className="w-8 h-8 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center font-bold text-xs">
@@ -295,12 +326,10 @@ const Chat = () => {
                               </span>
                             </div>
 
-                            {/* محتوى الرسالة */}
                             <p className="text-sm leading-relaxed break-words">
                               {msg.content}
                             </p>
 
-                            {/* التوقيت */}
                             <div
                               className={`text-[10px] mt-2 ${
                                 isMine
@@ -334,7 +363,6 @@ const Chat = () => {
                 )}
               </div>
 
-              {/* Message Input */}
               {selectedUser && (
                 <div className="flex p-5 border-t border-gray-200 gap-3">
                   <input
@@ -355,7 +383,6 @@ const Chat = () => {
               )}
             </div>
 
-            {/* Sidebar */}
             <div className="flex-1 bg-white rounded-lg shadow-sm p-5 h-fit">
               <h3 className="text-gray-800 font-semibold mb-4">Active Users</h3>
 
@@ -372,81 +399,7 @@ const Chat = () => {
                   {activeUsers.map((user) => (
                     <div
                       key={user.id}
-                      onClick={async () => {
-                        try {
-                          setLoadingUserId(user.id);
-                          setSelectedUser(user);
-
-                          // ✅ 1. بدء المحادثة (أو استرجاعها لو موجودة)
-                          const response = await fetch(
-                            `https://godzilla-be.vercel.app/api/v1/chat/conversations/start/${user.id}`,
-                            {
-                              method: "POST",
-                              headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${userDB?.data.access_token}`,
-                              },
-                            }
-                          );
-
-                          const result = await response.json();
-                          //   if (!response.ok || !result.success)
-                          //     throw new Error(
-                          //       result.message || "Failed to start conversation"
-                          //     );
-
-                          // ✅ حفظ الـ conversation_id في localStorage
-                          const conversationId = result.data?.id;
-                          if (conversationId) {
-                            localStorage.setItem(
-                              "conversation_id",
-                              conversationId
-                            );
-                            console.log(
-                              "💾 Conversation ID saved:",
-                              conversationId
-                            );
-                          }
-
-                          setConversation(result.data);
-
-                          // ✅ 2. جلب الرسائل الخاصة بالمحادثة دي
-                          const messagesRes = await fetch(
-                            `https://godzilla-be.vercel.app/api/v1/chat/conversations/${conversationId}/messages`,
-                            {
-                              headers: {
-                                Authorization: `Bearer ${userDB?.data.access_token}`,
-                              },
-                            }
-                          );
-
-                          const messagesData = await messagesRes.json();
-                          //   if (!messagesRes.ok || !messagesData.success)
-                          //     throw new Error(
-                          //       messagesData.message || "Failed to load messages"
-                          //     );
-
-                          // ✅ 3. نحفظ الرسائل داخل state حسب المستخدم
-                          setChats((prev) => ({
-                            ...prev,
-                            [user.id]: messagesData.data || [],
-                          }));
-                        } catch (err: unknown) {
-                          if (err instanceof Error) {
-                            console.error(
-                              "❌ Error sending message:",
-                              err.message
-                            );
-                          } else {
-                            console.error("❌ Unknown error:", err);
-                          }
-                          toast.error(
-                            "Failed to send message. Please try again."
-                          );
-                        } finally {
-                          setLoadingUserId(null);
-                        }
-                      }}
+                      onClick={() => selectUser(user)}
                       className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
                         selectedUser?.id === user.id
                           ? "bg-pink-50 border border-pink-300"
