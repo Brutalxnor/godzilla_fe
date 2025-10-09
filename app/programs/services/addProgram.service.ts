@@ -15,7 +15,7 @@ export interface CreateProgramType {
     minutes_per_session: number;
     price: number;
     discount_percentage?: number;
-    equipment_needed: string;
+    equipment_needed: string[];
     space_required: string;
     target_audience: string;
     prerequisites: string;
@@ -60,7 +60,7 @@ interface StoredUser {
       user_id?: string;
     };
   }
-  
+
 
 export const CreateProgram = async (data: CreateProgramType) => {
     try {
@@ -104,3 +104,6 @@ export const CreateProgram = async (data: CreateProgramType) => {
       }
     }
   };
+
+
+  

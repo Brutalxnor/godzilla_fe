@@ -666,7 +666,7 @@ export type CreateProgramPayload = {
   minutes_per_session: number | "";
   price: number | "";
   discount_percentage?: number | "";
-  equipment_needed: string;
+  equipment_needed: string[];
   space_required: string;
   target_audience: string;
   prerequisites: string;
@@ -795,6 +795,13 @@ export default function CreateProgramModal({
     return null;
   }, [price, discountPercentage]);
 
+  const toStringArray = (v: unknown): string[] =>
+    Array.isArray(v)
+      ? v.map(String).map(s => s.trim()).filter(Boolean)
+      : typeof v === "string"
+      ? v.split(",").map(s => s.trim()).filter(Boolean)
+      : [];
+
   function pickCover(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
     if (!f) return;
@@ -823,7 +830,7 @@ export default function CreateProgramModal({
       minutes_per_session: minutesPerSession,
       price,
       discount_percentage: discountPercentage,
-      equipment_needed: equipmentNeeded,
+      equipment_needed: toStringArray(equipmentNeeded), 
       space_required: spaceRequired,
       target_audience: targetAudience,
       prerequisites,
