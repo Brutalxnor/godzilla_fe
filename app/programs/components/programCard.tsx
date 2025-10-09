@@ -57,13 +57,12 @@ export default function ProgramCard({
     <article className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       {/* Cover */}
       <div className="relative h-56 w-full">
-        <Image
-          src={safeCover}
-          alt={title || "Program cover"}
-          fill
-          className="object-cover"
-          sizes="(min-width: 1024px) 420px, 100vw"
-          priority
+        <img
+              src={safeCover}
+              alt={title || "Program cover"}
+              className="h-full w-full object-cover"   // ⬅️ add h-full w-full
+              sizes="(min-width: 1024px) 420px, 100vw"
+
         />
 
         {/* top-left badge */}

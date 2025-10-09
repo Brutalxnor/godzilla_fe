@@ -743,6 +743,13 @@ export default function ProgramsPage() {
   const [programs, setPrograms] = useState<Program[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const toStringArray = (v: unknown): string[] =>
+    Array.isArray(v)
+      ? v.map(String).map(s => s.trim()).filter(Boolean)
+      : typeof v === "string"
+      ? v.split(",").map(s => s.trim()).filter(Boolean)
+      : [];
+
   const shellVars = useMemo(
     () =>
       ({
@@ -782,7 +789,7 @@ export default function ProgramsPage() {
         parsed && typeof parsed === "object" && "data" in (parsed as { data?: { user_id?: string } })
           ? (parsed as { data?: { user_id?: string } }).data?.user_id
           : undefined;
-
+    
       let coverDataUrl: string | undefined;
       if (data.coverImageFile) {
         const b64 = await fileToBase64(data.coverImageFile);
@@ -803,7 +810,7 @@ export default function ProgramsPage() {
         minutes_per_session: typeof data.minutes_per_session === "number" ? data.minutes_per_session : 45,
         price: typeof data.price === "number" ? data.price : 0,
         discount_percentage: typeof data.discount_percentage === "number" ? data.discount_percentage : undefined,
-        equipment_needed: data.equipment_needed || "",
+        equipment_needed: toStringArray(data.equipment_needed), 
         space_required: data.space_required || "",
         target_audience: data.target_audience || "",
         prerequisites: data.prerequisites || "",
@@ -945,4 +952,6 @@ export default function ProgramsPage() {
     </div>
   );
 }
+
+
 
