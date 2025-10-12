@@ -16,6 +16,7 @@ import useGetUser from "../Hooks/useGetUser";
 import CoachHeader, { CoachProfileCore } from "./components/CoachHeader";
 import CoachProgramsList, { CoachProgramItem } from "./components/ProgramsListCard";
 import CoachCertifications, { CertificationItem } from "./components/CertificationsCard";
+import ThemeToggle from "../components/ThemeToggle";
 
 /* ===== strict types ===== */
 type ProgramLite = { id: string | number; title: string };
@@ -292,8 +293,9 @@ export default function ProfilePage() {
 
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-0 py-6 md:py-8">
         <div className="mx-auto max-w-6xl px-7 pb-24">
-          <header className="py-4">
+          <header className="py-4 flex justify-between items-center">
             <h1 className="text-4xl font-semibold">Profile</h1>
+            <ThemeToggle />
           </header>
 
           {/* header card */}
