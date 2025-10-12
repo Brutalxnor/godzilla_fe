@@ -265,3 +265,83 @@ html[data-theme="dark"] .sidebar-btm button:hover svg {
 html[data-theme="dark"] .sidebar-btm a.text-rose-600.bg-rose-100 {
   background-color: rgba(244, 63, 94, 0.14) !important; /* a bit stronger than hover */
 }
+
+
+
+
+
+
+
+/* ================================
+   ACCENT (red/rose) helpers
+   ================================ */
+   :root {
+    --accent: #f43f5e;              /* tailwind rose-500 */
+    --accent-soft: rgba(244, 63, 94, 0.12);
+    --accent-border: rgba(244, 63, 94, 0.35);
+  }
+  
+  html[data-theme="dark"] {
+    --accent: #f43f5e;
+    --accent-soft: rgba(244, 63, 94, 0.12);
+    --accent-border: rgba(244, 63, 94, 0.35);
+  }
+  
+  /* Keep icons red in dark mode when you intentionally set them to red/rose */
+  html[data-theme="dark"] svg.text-red-500,
+  html[data-theme="dark"] svg.text-red-600,
+  html[data-theme="dark"] svg.text-rose-500,
+  html[data-theme="dark"] svg.text-rose-600 {
+    color: var(--accent) !important;
+  }
+  
+  /* ================================
+     DARK MODE — RED LABELS / BADGES
+     Force red text for “pill”/badge style elements
+     ================================ */
+  
+  /* 1) If a pill uses a red/rose background, ensure contrast & red text */
+  html[data-theme="dark"] .bg-rose-50,
+  html[data-theme="dark"] .bg-red-50 {
+    background-color: var(--accent-soft) !important;
+  }
+  html[data-theme="dark"] .bg-rose-50,
+  html[data-theme="dark"] .bg-red-50,
+  html[data-theme="dark"] .bg-rose-100,
+  html[data-theme="dark"] .bg-red-100 {
+    color: var(--accent) !important;         /* make label text red */
+    border-color: var(--accent-border) !important;
+  }
+  
+/* ✅ escape the brackets */
+html[data-theme="dark"] .rounded-full.text-xs,
+html[data-theme="dark"] .rounded-full.text-\[10px\],
+html[data-theme="dark"] .rounded-full.text-\[11px\] {
+  color: var(--accent) !important;
+}
+
+  
+  /* 3) If your chip happened to use gray text utilities, override to red */
+  html[data-theme="dark"] .rounded-full.text-gray-500,
+  html[data-theme="dark"] .rounded-full.text-gray-600,
+  html[data-theme="dark"] .rounded-full.text-zinc-500,
+  html[data-theme="dark"] .rounded-full.text-zinc-600 {
+    color: var(--accent) !important;
+  }
+  
+  /* 4) Generic badge class safety (if you ever add these classes) */
+  html[data-theme="dark"] .badge,
+  html[data-theme="dark"] .label,
+  html[data-theme="dark"] .chip,
+  html[data-theme="dark"] .pill {
+    color: var(--accent) !important;
+    background-color: var(--accent-soft) !important;
+    border-color: var(--accent-border) !important;
+  }
+  
+  /* 5) If your badge has a red/rose border utility, keep it visible on dark */
+  html[data-theme="dark"] .border-rose-200,
+  html[data-theme="dark"] .border-red-200 {
+    border-color: var(--accent-border) !important;
+  }
+  
