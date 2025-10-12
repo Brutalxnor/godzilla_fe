@@ -376,7 +376,7 @@ export default function ProfilePage() {
 
           {/* header card */}
           <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-            <div>
+            <div className="flex justify-between items-center mr-5">
               <div>
                 {showLoading ? (
                   <div className="h-28 animate-pulse rounded-xl bg-zinc-200" />
@@ -390,7 +390,16 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <h1>Logout</h1>
+                <button
+                  className="bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-6 cursor-pointer py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  onClick={() => {
+                    window.location.href = "/";
+                    window.localStorage.removeItem("token");
+                    window.localStorage.removeItem("user");
+                  }}
+                >
+                  Logout
+                </button>
               </div>
             </div>
           </section>

@@ -116,7 +116,7 @@ export default function Sidebar() {
           </nav>
 
           {/* Logout pinned at bottom */}
-          <div className="mt-auto px-2 pb-2">
+          {/* <div className="mt-auto px-2 pb-2">
             <button
               onClick={onLogout}
               className="
@@ -137,7 +137,7 @@ export default function Sidebar() {
                 Logout
               </span>
             </button>
-          </div>
+          </div> */}
         </div>
       </aside>
 
