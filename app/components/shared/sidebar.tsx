@@ -10,6 +10,7 @@ import { MdOutlineFitnessCenter } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { IoLogOutOutline } from "react-icons/io5";
 import { LogoutService } from "@/app/auth/services/logout.service";
+import useGetTheme from "@/app/Hooks/useGetTheme";
 
 type Item = {
   href: string;
@@ -43,6 +44,8 @@ export default function Sidebar() {
   const onLogout = async () => {
     await LogoutService(); // handles clearing + redirect + reload
   };
+
+  const {theme} = useGetTheme()
 
   return (
     <>
@@ -81,7 +84,7 @@ export default function Sidebar() {
                   key={href}
                   href={href}
                   className={[
-                    "relative flex items-center gap-3 rounded-xl px-3 py-5",
+                    `relative  flex items-center gap-3 rounded-xl px-3 py-5`,
                     "transition-colors",
                     active
                       ? "bg-rose-500/5 text-rose-500"
@@ -102,7 +105,7 @@ export default function Sidebar() {
                   />
                   <span
                     className="
-                      ml-5 text-[14px] text-gray-800
+                      ml-5 text-[14px] text-black
                       max-w-0 overflow-hidden opacity-0
                       transition-all duration-200
                       group-hover:max-w-[160px] group-hover:opacity-100 font-extrabold
