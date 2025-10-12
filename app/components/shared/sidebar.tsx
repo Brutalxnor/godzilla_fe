@@ -144,12 +144,12 @@ export default function Sidebar() {
       {/* Bottom tab bar (< lg) with Logout item */}
       <nav
         className="
-          lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white
+          lg:hidden fixed flex justify-between w-full bottom-0 inset-x-0 z-50 bg-white
           border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]
           pb-[max(env(safe-area-inset-bottom),0px)]
         "
       >
-        <ul className="grid grid-cols-7">
+        <ul className="flex justify-between w-full mx-3">
           {items.map(({ href, label, Icon }) => {
             const active = isActive(href);
             return (
@@ -171,7 +171,7 @@ export default function Sidebar() {
           })}
 
           {/* Logout (mobile) */}
-          <li className="flex">
+          {/* <li className="flex">
             <button
               onClick={onLogout}
               className="flex flex-1 flex-col items-center justify-center gap-1 rounded-xl px-3 py-2 text-gray-700 hover:bg-rose-50 hover:text-rose-600 transition-colors"
@@ -180,7 +180,7 @@ export default function Sidebar() {
               <IoLogOutOutline className="text-xl" />
               <span className="text-[11px] font-medium">Logout</span>
             </button>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </>
