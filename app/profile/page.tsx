@@ -17,6 +17,7 @@ import CoachHeader, { CoachProfileCore } from "./components/CoachHeader";
 import CoachProgramsList, { CoachProgramItem } from "./components/ProgramsListCard";
 import CoachCertifications, { CertificationItem } from "./components/CertificationsCard";
 import ThemeToggle from "../components/ThemeToggle";
+import useGetTheme from "../Hooks/useGetTheme";
 
 /* ===== strict types ===== */
 type ProgramLite = { id: string | number; title: string };
@@ -282,9 +283,9 @@ export default function ProfilePage() {
 
   const isCoach = role === "coach";
   const showLoading = loading || (isCoach && fetchingCoachPrograms);
-
+  const {theme} = useGetTheme()
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className={`min-h-screen${theme === "dark" ? "bg-black": "bg-white"}`}>
       <Sidebar />
       <main
         style={shellVars}
