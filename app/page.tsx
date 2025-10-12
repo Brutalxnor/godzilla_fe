@@ -15,6 +15,7 @@ import axios from "axios";
 import { Program } from "./types/type";
 import { toast } from "react-toastify";
 import useGetTheme from "./Hooks/useGetTheme";
+import Link from "next/link";
 
 function StatCard({
   icon,
@@ -74,11 +75,15 @@ export default function Home() {
   }, [userDB?.data?.user_id]);
 
   console.log(programs, "sdasdad");
-  const {theme} = useGetTheme()
+  const { theme } = useGetTheme();
   return (
     <>
       {userDB ? (
-      <div className={`min-h-screen ${theme === "dark" ? "bg-black": "bg-white"}`}>
+        <div
+          className={`min-h-screen ${
+            theme === "dark" ? "bg-black" : "bg-white"
+          }`}
+        >
           <Sidebar />
           <main
             style={shellVars}
@@ -228,12 +233,16 @@ export default function Home() {
               <h2 className="text-lg font-semibold mb-3">Quick Actions</h2>
               <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-24 lg:pb-0">
                 <button className="rounded-2xl border border-gray-200 bg-white p-5 text-center hover:bg-gray-50">
-                  <div className="text-2xl mb-2"></div>
-                  <div className="font-medium">Browse Trainers</div>
+                  <Link href={"/trainers"}>
+                    <div className="text-2xl mb-2"></div>
+                    <div className="font-medium">Browse Trainers</div>
+                  </Link>
                 </button>
                 <button className="rounded-2xl border border-gray-200 bg-white p-5 text-center hover:bg-gray-50">
-                  <div className="text-2xl mb-2"></div>
-                  <div className="font-medium">View Progress</div>
+                  <Link href={"/programs"}>
+                    <div className="text-2xl mb-2"></div>
+                    <div className="font-medium">View Progress</div>
+                  </Link>
                 </button>
               </section>
             </div>
