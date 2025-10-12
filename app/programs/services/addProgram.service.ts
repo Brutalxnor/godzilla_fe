@@ -37,7 +37,7 @@ export const GetAllPrograms = async () => {
       console.error("User is not found");
     }
     const response = await axios.get(
-      `https://godzilla-be.vercel.app/api/v1/programs/programCoach/${user?.data?.user_id}`
+      `https://godzilla-be.vercel.app/api/v1/programs`
     );
 
     return response.data?.data;
