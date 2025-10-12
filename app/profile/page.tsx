@@ -16,6 +16,8 @@ import useGetUser from "../Hooks/useGetUser";
 import CoachHeader, { CoachProfileCore } from "./components/CoachHeader";
 import CoachProgramsList, { CoachProgramItem } from "./components/ProgramsListCard";
 import CoachCertifications, { CertificationItem } from "./components/CertificationsCard";
+import ThemeToggle from "../components/ThemeToggle";
+import useGetTheme from "../Hooks/useGetTheme";
 
 /* ===== strict types ===== */
 type ProgramLite = { id: string | number; title: string };
@@ -281,9 +283,9 @@ export default function ProfilePage() {
 
   const isCoach = role === "coach";
   const showLoading = loading || (isCoach && fetchingCoachPrograms);
-
+  const {theme} = useGetTheme()
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className={`min-h-screen${theme === "dark" ? "bg-black": "bg-white"}`}>
       <Sidebar />
       <main
         style={shellVars}
@@ -292,8 +294,9 @@ export default function ProfilePage() {
 
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-0 py-6 md:py-8">
         <div className="mx-auto max-w-6xl px-7 pb-24">
-          <header className="py-4">
+          <header className="py-4 flex justify-between items-center">
             <h1 className="text-4xl font-semibold">Profile</h1>
+            <ThemeToggle />
           </header>
 
           {/* header card */}

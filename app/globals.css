@@ -1,26 +1,100 @@
 @import "tailwindcss";
 
+/* === Light (default) tokens === */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #ffffff; /* page */
+  --foreground: #171717; /* text */
+  --surface: #ffffff;    /* cards/panels */
+  --muted: #6b7280;      /* secondary text */
+  --border: #e5e7eb;     /* borders */
+  --chip: #f4f4f5;       /* subtle surfaces */
 }
 
+/* === Dark tokens (activate via <html data-theme="dark">) === */
+html[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --surface: #0f0f10;
+  --muted: #a1a1aa;
+  --border: #27272a;
+  --chip: #18181b;
+
+  /* tell browsers we’re dark (affects form controls, etc.) */
+  color-scheme: dark;
+}
+
+/* Optional inline theme alias (works fine without Tailwind config) */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base page colors */
 body {
   background: var(--background);
-  /* color: var(--foreground); */
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--foreground);
 }
+
+/* ---------------------------------------------------------
+   DARK MODE BRIDGE: force popular Tailwind classes to go dark
+   (So you don’t have to refactor every bg-white, border-zinc-200, etc.)
+   --------------------------------------------------------- */
+html[data-theme="dark"] body { background-color: #0a0a0a !important; }
+
+/* Page-wide light backgrounds you’re using */
+html[data-theme="dark"] .bg-\[\#f7f7f7\] { background-color: #0a0a0a !important; }
+
+/* Card/panel backgrounds */
+html[data-theme="dark"] .bg-white,
+html[data-theme="dark"] .bg-gray-50,
+html[data-theme="dark"] .bg-zinc-50,
+html[data-theme="dark"] .bg-zinc-100 {
+  background-color: #0f0f10 !important;
+}
+
+/* Chips / subtle surfaces */
+html[data-theme="dark"] .bg-zinc-100,
+html[data-theme="dark"] .bg-gray-100 {
+  background-color: #18181b !important;
+}
+
+/* Borders */
+html[data-theme="dark"] .border-zinc-200,
+html[data-theme="dark"] .border-gray-200,
+html[data-theme="dark"] .ring-zinc-200,
+html[data-theme="dark"] .ring-gray-200,
+html[data-theme="dark"] .border {
+  border-color: #27272a !important;
+}
+
+/* Primary text */
+html[data-theme="dark"] .text-black,
+html[data-theme="dark"] .text-zinc-900,
+html[data-theme="dark"] .text-gray-900 {
+  color: #ededed !important;
+}
+
+/* Secondary text */
+html[data-theme="dark"] .text-zinc-700,
+html[data-theme="dark"] .text-zinc-600,
+html[data-theme="dark"] .text-gray-600,
+html[data-theme="dark"] .text-gray-500 {
+  color: #a1a1aa !important;
+}
+
+/* Inputs */
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select {
+  background-color: #0f0f10 !important;
+  color: #ededed !important;
+  border-color: #27272a !important;
+}
+
+/* Hover pills in your segmented tabs */
+html[data-theme="dark"] .hover\:bg-zinc-50:hover,
+html[data-theme="dark"] .hover\:bg-gray-50:hover {
+  background-color: #18181b !important;
+}
+
+/* Keep your red accents exactly the same — no override needed */

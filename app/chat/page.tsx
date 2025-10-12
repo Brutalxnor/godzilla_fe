@@ -5,6 +5,7 @@ import useGetUser from "../Hooks/useGetUser";
 import { toast } from "react-toastify";
 import { supabase } from "@/lib/client";
 import { RealtimeChannel } from "@supabase/supabase-js";
+import useGetTheme from "../Hooks/useGetTheme";
 
 type ChatMessage = {
   id: number | string;
@@ -266,18 +267,18 @@ const Chat = () => {
     "--sb-w": "88px",
     "--extra-left": "24px",
   } as React.CSSProperties;
-
+  const {theme} = useGetTheme()
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className={`min-h-screen ${theme === "dark" ? "bg-black": "bg-white"}`}>
       <Sidebar />
 
       <main
         style={shellVars}
         className="w-full lg:w-[calc(100vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))] px-3 sm:px-4 lg:pl-[var(--extra-left)]"
       >
-        <div className="min-h-screen bg-gray-50 font-sans py-3 sm:py-5">
+        <div className="min-h-screen font-sans py-3 sm:py-5">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 mb-3 sm:mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className={`rounded-lg ${theme == "dark" ? "bg-[#0f0f10] border-2 border-gray-400 text-white": "bg-white"} shadow-sm p-3 sm:p-4 mb-3 sm:mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3`}>
             <div className="flex items-center gap-2 flex-1">
               {/* Mobile: Back button when user is selected */}
               {selectedUser && (
@@ -320,7 +321,7 @@ const Chat = () => {
             <div
               className={`${
                 selectedUser ? "flex" : "hidden lg:flex"
-              } flex-col bg-white rounded-lg shadow-sm w-full lg:flex-[2]`}
+              } flex-col rounded-lg shadow-sm w-full lg:flex-[2]`}
             >
               <div className="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3 sm:space-y-4">
                 {selectedUser ? (
