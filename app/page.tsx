@@ -14,6 +14,7 @@ import LoginForm from "./auth/Components/LoginForm";
 import axios from "axios";
 import { Program } from "./types/type";
 import { toast } from "react-toastify";
+import useGetTheme from "./Hooks/useGetTheme";
 
 function StatCard({
   icon,
@@ -73,11 +74,11 @@ export default function Home() {
   }, [userDB?.data?.user_id]);
 
   console.log(programs, "sdasdad");
-
+  const {theme} = useGetTheme()
   return (
     <>
       {userDB ? (
-        <div className="min-h-screen bg-[#f7f7f7]">
+      <div className={`min-h-screen ${theme === "dark" ? "bg-black": "bg-white"}`}>
           <Sidebar />
           <main
             style={shellVars}
