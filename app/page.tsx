@@ -49,7 +49,7 @@ export default function Home() {
     const fetchGetProgramsByUserID = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:4000/api/v1/programs/programCoach/${userDB?.data?.user_id}`
+          `https://godzilla-be.vercel.app/api/v1/programs/programCoach/${userDB?.data?.user_id}`
         );
 
         setPrograms(data);
