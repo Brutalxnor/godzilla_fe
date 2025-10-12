@@ -45,10 +45,12 @@ export default function Home() {
 
   const { userDB } = useGetUser();
   const [programs, setPrograms] = useState<{ data: Program[] }>();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchGetProgramsByUserID = async () => {
       try {
+        setIsLoading(true);
         const { data } = await axios.get(
           `https://godzilla-be.vercel.app/api/v1/programs/programCoach/${userDB?.data?.user_id}`
         );
@@ -61,6 +63,8 @@ export default function Home() {
           console.error("❌ Unknown error:", err);
         }
         toast.error("Failed to fetch programs. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -78,7 +82,7 @@ export default function Home() {
           <Sidebar />
           <main
             style={shellVars}
-            className="w-full lg:w-[calc(95vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))] pl-[var(--extra-left)]"
+            className="w-full lg:w-[calc(95vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))]"
           >
             {/* Wider web layout */}
             <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-0 py-6 md:py-10">
@@ -137,8 +141,27 @@ export default function Home() {
                   expires="Expires in 7 days"
                 /> */}
 
-                {Array.isArray(programs?.data) &&
-                  programs?.data?.slice(0, 3)?.map((el) => (
+                {isLoading ? (
+                  // Loading Skeletons
+                  <>
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="bg-white rounded-lg shadow-sm p-4 space-y-3">
+                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                          <div className="h-2 bg-gray-200 rounded w-full"></div>
+                          <div className="flex gap-2">
+                            <div className="h-6 bg-gray-200 rounded w-20"></div>
+                            <div className="h-6 bg-gray-200 rounded w-24"></div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                ) : Array.isArray(programs?.data) &&
+                  programs?.data?.length > 0 ? (
+                  // Actual Programs
+                  programs.data.slice(0, 3).map((el) => (
                     <div key={el.id}>
                       <ProgramCard
                         title={el.title}
@@ -149,7 +172,16 @@ export default function Home() {
                         expires="Expires in 7 days"
                       />
                     </div>
-                  ))}
+                  ))
+                ) : (
+                  // Empty State
+                  <div className="col-span-3 text-center py-8 text-gray-500">
+                    <p className="text-lg">No programs found</p>
+                    <p className="text-sm mt-2">
+                      Start creating your first program!
+                    </p>
+                  </div>
+                )}
               </section>
 
               {/* Recent Activity */}
