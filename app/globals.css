@@ -67,14 +67,14 @@ html[data-theme="dark"] .border {
   border-color: #27272a !important;
 }
 
-/* Primary text */
+/* Primary text (existing) */
 html[data-theme="dark"] .text-black,
 html[data-theme="dark"] .text-zinc-900,
 html[data-theme="dark"] .text-gray-900 {
   color: #ededed !important;
 }
 
-/* Secondary text */
+/* Secondary text (existing) */
 html[data-theme="dark"] .text-zinc-700,
 html[data-theme="dark"] .text-zinc-600,
 html[data-theme="dark"] .text-gray-600,
@@ -96,5 +96,134 @@ html[data-theme="dark"] .hover\:bg-zinc-50:hover,
 html[data-theme="dark"] .hover\:bg-gray-50:hover {
   background-color: #18181b !important;
 }
+
+/* =========================================================
+   EXTRA TEXT BRIDGE — ensure ALL common dark text turns light
+   ========================================================= */
+
+/* Treat 700/800/900 (and 900-ish families) as PRIMARY in dark */
+html[data-theme="dark"] .text-neutral-900,
+html[data-theme="dark"] .text-neutral-800,
+html[data-theme="dark"] .text-gray-900,
+html[data-theme="dark"] .text-gray-800,
+html[data-theme="dark"] .text-slate-900,
+html[data-theme="dark"] .text-slate-800,
+html[data-theme="dark"] .text-zinc-900,
+html[data-theme="dark"] .text-zinc-800,
+html[data-theme="dark"] .text-stone-900,
+html[data-theme="dark"] .text-stone-800,
+html[data-theme="dark"] .text-foreground {
+  color: var(--foreground) !important; /* #ededed */
+}
+
+/* Treat 600/500 ranges as SECONDARY in dark */
+html[data-theme="dark"] .text-neutral-700,
+html[data-theme="dark"] .text-neutral-600,
+html[data-theme="dark"] .text-neutral-500,
+html[data-theme="dark"] .text-gray-700,
+html[data-theme="dark"] .text-gray-600,
+html[data-theme="dark"] .text-gray-500,
+html[data-theme="dark"] .text-slate-700,
+html[data-theme="dark"] .text-slate-600,
+html[data-theme="dark"] .text-slate-500,
+html[data-theme="dark"] .text-zinc-700,
+html[data-theme="dark"] .text-zinc-600,
+html[data-theme="dark"] .text-zinc-500,
+html[data-theme="dark"] .text-stone-700,
+html[data-theme="dark"] .text-stone-600,
+html[data-theme="dark"] .text-stone-500 {
+  color: var(--muted) !important; /* #a1a1aa */
+}
+
+/* Fallback for plain elements with no utility */
+html[data-theme="dark"] :where(h1,h2,h3,h4,h5,h6,p,span,li,dt,dd,small,strong,em,blockquote,label) {
+  color: var(--foreground);
+}
+
+/* Placeholders / subtle form text */
+html[data-theme="dark"] ::placeholder { color: #8e8e93 !important; }
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder { opacity: 1; }
+
+/* Badges/chips that rely on currentColor */
+html[data-theme="dark"] .badge,
+html[data-theme="dark"] .tag,
+html[data-theme="dark"] .chip { color: var(--foreground) !important; }
+
+/* ---------------------------------------------------------
+   ICONS — keep accent colors in dark; only flip dark text utilities
+   --------------------------------------------------------- */
+
+/* (1) DO NOT globally override all SVGs — this line is intentionally omitted:
+   html[data-theme="dark"] svg { color: var(--foreground); } */
+
+/* (2) Flip icons that explicitly use dark text utilities */
+html[data-theme="dark"] svg.text-black,
+html[data-theme="dark"] svg.text-neutral-900,
+html[data-theme="dark"] svg.text-neutral-800,
+html[data-theme="dark"] svg.text-gray-900,
+html[data-theme="dark"] svg.text-gray-800,
+html[data-theme="dark"] svg.text-slate-900,
+html[data-theme="dark"] svg.text-slate-800,
+html[data-theme="dark"] svg.text-zinc-900,
+html[data-theme="dark"] svg.text-zinc-800,
+html[data-theme="dark"] svg.text-stone-900,
+html[data-theme="dark"] svg.text-stone-800 {
+  color: var(--foreground) !important;
+}
+
+html[data-theme="dark"] svg.text-neutral-700,
+html[data-theme="dark"] svg.text-neutral-600,
+html[data-theme="dark"] svg.text-neutral-500,
+html[data-theme="dark"] svg.text-gray-700,
+html[data-theme="dark"] svg.text-gray-600,
+html[data-theme="dark"] svg.text-gray-500,
+html[data-theme="dark"] svg.text-slate-700,
+html[data-theme="dark"] svg.text-slate-600,
+html[data-theme="dark"] svg.text-slate-500,
+html[data-theme="dark"] svg.text-zinc-700,
+html[data-theme="dark"] svg.text-zinc-600,
+html[data-theme="dark"] svg.text-zinc-500,
+html[data-theme="dark"] svg.text-stone-700,
+html[data-theme="dark"] svg.text-stone-600,
+html[data-theme="dark"] svg.text-stone-500 {
+  color: var(--muted) !important;
+}
+
+/* (3) Flip icons that inherit color from a parent with dark text utilities */
+html[data-theme="dark"] .text-black svg,
+html[data-theme="dark"] .text-neutral-900 svg,
+html[data-theme="dark"] .text-neutral-800 svg,
+html[data-theme="dark"] .text-gray-900 svg,
+html[data-theme="dark"] .text-gray-800 svg,
+html[data-theme="dark"] .text-slate-900 svg,
+html[data-theme="dark"] .text-slate-800 svg,
+html[data-theme="dark"] .text-zinc-900 svg,
+html[data-theme="dark"] .text-zinc-800 svg,
+html[data-theme="dark"] .text-stone-900 svg,
+html[data-theme="dark"] .text-stone-800 svg {
+  color: var(--foreground) !important;
+}
+
+html[data-theme="dark"] .text-neutral-700 svg,
+html[data-theme="dark"] .text-neutral-600 svg,
+html[data-theme="dark"] .text-neutral-500 svg,
+html[data-theme="dark"] .text-gray-700 svg,
+html[data-theme="dark"] .text-gray-600 svg,
+html[data-theme="dark"] .text-gray-500 svg,
+html[data-theme="dark"] .text-slate-700 svg,
+html[data-theme="dark"] .text-slate-600 svg,
+html[data-theme="dark"] .text-slate-500 svg,
+html[data-theme="dark"] .text-zinc-700 svg,
+html[data-theme="dark"] .text-zinc-600 svg,
+html[data-theme="dark"] .text-zinc-500 svg,
+html[data-theme="dark"] .text-stone-700 svg,
+html[data-theme="dark"] .text-stone-600 svg,
+html[data-theme="dark"] .text-stone-500 svg {
+  color: var(--muted) !important;
+}
+
+/* Links default to foreground in dark (your red buttons unaffected) */
+html[data-theme="dark"] a { color: var(--foreground); }
 
 /* Keep your red accents exactly the same — no override needed */
