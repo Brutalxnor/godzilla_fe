@@ -35,6 +35,7 @@ const Chat = () => {
   const [error, setError] = useState("");
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [showUserList, setShowUserList] = useState(false);
 
   const { userDB } = useGetUser();
   const channelRef = useRef<RealtimeChannel | null>(null);
@@ -79,7 +80,6 @@ const Chat = () => {
     fetchUsers();
   }, []);
 
-  // ✅ استخدام Broadcast بدل postgres_changes
   useEffect(() => {
     if (!conversationId) return;
 
@@ -100,7 +100,6 @@ const Chat = () => {
 
         const newMessage = payload.payload as ChatMessage;
 
-        // تجاهل رسالتي أنا
         if (newMessage.sender_id === userDB?.data?.user_id) {
           console.log("⚠️ Skipping own message");
           return;
@@ -190,13 +189,11 @@ const Chat = () => {
         conversation_id: conversationId || undefined,
       };
 
-      // ✅ إضافة للـ UI
       setChats((prevChats) => ({
         ...prevChats,
         [selectedUser.id]: [...(prevChats[selectedUser.id] || []), newMessage],
       }));
 
-      // ✅ إرسال Broadcast للباقي
       if (conversationId) {
         await supabase.channel(`chat-${conversationId}`).send({
           type: "broadcast",
@@ -217,6 +214,7 @@ const Chat = () => {
     try {
       setLoadingUserId(user.id);
       setSelectedUser(user);
+      setShowUserList(false); // Close user list on mobile after selection
 
       const response = await fetch(
         `https://godzilla-be.vercel.app/api/v1/chat/conversations/start/${user.id}`,
@@ -275,26 +273,56 @@ const Chat = () => {
 
       <main
         style={shellVars}
-        className="w-full lg:w-[calc(100vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))] pl-[var(--extra-left)]"
+        className="w-full lg:w-[calc(100vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))] px-3 sm:px-4 lg:pl-[var(--extra-left)]"
       >
-        <div className="min-h-screen bg-gray-50 font-sans p-5">
-          <div className="bg-white rounded-lg shadow-sm p-4 mb-5 flex justify-between items-center">
-            <h1 className="text-2xl font-semibold text-gray-800">
-              {selectedUser
-                ? `Chat with ${selectedUser.name}`
-                : "Select a user to start chatting"}
-            </h1>
-            <button
-              onClick={fetchUsers}
-              className="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors"
-            >
-              ↻ Refresh Users
-            </button>
+        <div className="min-h-screen bg-gray-50 font-sans py-3 sm:py-5">
+          {/* Header */}
+          <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 mb-3 sm:mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div className="flex items-center gap-2 flex-1">
+              {/* Mobile: Back button when user is selected */}
+              {selectedUser && (
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  className="lg:hidden text-gray-600 hover:text-gray-800 p-2 -ml-2"
+                  aria-label="Back to users"
+                >
+                  ←
+                </button>
+              )}
+              <h1 className="text-lg sm:text-2xl font-semibold text-gray-800 truncate">
+                {selectedUser
+                  ? `Chat with ${selectedUser.name}`
+                  : "Select a user to start chatting"}
+              </h1>
+            </div>
+
+            <div className="flex gap-2 w-full sm:w-auto">
+              {/* Mobile: Toggle user list */}
+              <button
+                onClick={() => setShowUserList(!showUserList)}
+                className="lg:hidden flex-1 sm:flex-none bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-medium transition-colors"
+              >
+                {showUserList ? "Hide Users" : "👥 Users"}
+              </button>
+
+              <button
+                onClick={fetchUsers}
+                className="flex-1 sm:flex-none bg-pink-500 hover:bg-pink-600 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap"
+              >
+                ↻ Refresh
+              </button>
+            </div>
           </div>
 
-          <div className="flex gap-5 h-[calc(100vh-140px)]">
-            <div className="flex-[2] bg-white rounded-lg shadow-sm flex flex-col">
-              <div className="flex-1 overflow-y-auto p-5 space-y-4">
+          {/* Main Content */}
+          <div className="flex gap-3 sm:gap-5 h-[calc(100vh-120px)] sm:h-[calc(100vh-140px)] relative">
+            {/* Chat Area */}
+            <div
+              className={`${
+                selectedUser ? "flex" : "hidden lg:flex"
+              } flex-col bg-white rounded-lg shadow-sm w-full lg:flex-[2]`}
+            >
+              <div className="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3 sm:space-y-4">
                 {selectedUser ? (
                   currentMessages.length > 0 ? (
                     currentMessages.map((msg) => {
@@ -303,12 +331,12 @@ const Chat = () => {
                       return (
                         <div
                           key={msg.id}
-                          className={`flex mb-4 ${
+                          className={`flex mb-3 sm:mb-4 ${
                             isMine ? "justify-end" : "justify-start"
                           }`}
                         >
                           <div
-                            className={`flex flex-col max-w-[60%] p-3 rounded-2xl shadow-sm ${
+                            className={`flex flex-col max-w-[85%] sm:max-w-[70%] md:max-w-[60%] p-2.5 sm:p-3 rounded-2xl shadow-sm ${
                               isMine
                                 ? "bg-pink-500 text-white rounded-br-none"
                                 : "bg-gray-100 text-gray-800 rounded-bl-none"
@@ -316,23 +344,23 @@ const Chat = () => {
                           >
                             <div className="flex items-center gap-2 mb-1">
                               {!isMine && (
-                                <div className="w-8 h-8 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center font-bold text-xs">
+                                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center font-bold text-xs">
                                   {selectedUser?.name
                                     ?.charAt(0)
                                     ?.toUpperCase() || "U"}
                                 </div>
                               )}
-                              <span className="font-semibold text-sm">
+                              <span className="font-semibold text-xs sm:text-sm">
                                 {isMine ? "You" : selectedUser?.name || "User"}
                               </span>
                             </div>
 
-                            <p className="text-sm leading-relaxed break-words">
+                            <p className="text-xs sm:text-sm leading-relaxed break-words">
                               {msg.content}
                             </p>
 
                             <div
-                              className={`text-[10px] mt-2 ${
+                              className={`text-[9px] sm:text-[10px] mt-1.5 sm:mt-2 ${
                                 isMine
                                   ? "text-pink-200 text-right"
                                   : "text-gray-500 text-left"
@@ -353,30 +381,31 @@ const Chat = () => {
                       );
                     })
                   ) : (
-                    <div className="text-gray-500 text-center py-10">
+                    <div className="text-gray-500 text-center py-10 text-sm">
                       No messages yet. Start chatting!
                     </div>
                   )
                 ) : (
-                  <div className="text-gray-400 text-center py-10">
+                  <div className="text-gray-400 text-center py-10 text-sm">
                     👈 Select a user to start a chat
                   </div>
                 )}
               </div>
 
+              {/* Message Input */}
               {selectedUser && (
-                <div className="flex p-5 border-t border-gray-200 gap-3">
+                <div className="flex p-3 sm:p-5 border-t border-gray-200 gap-2 sm:gap-3">
                   <input
                     type="text"
                     placeholder={`Message ${selectedUser.name}...`}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                    className="flex-1 px-4 py-3 border border-gray-200 rounded-full text-sm outline-none focus:border-pink-500 transition-colors"
+                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-full text-xs sm:text-sm outline-none focus:border-pink-500 transition-colors"
                   />
                   <button
                     onClick={sendMessage}
-                    className="bg-pink-500 hover:bg-pink-600 text-white px-5 py-3 rounded-full text-sm font-medium transition-colors"
+                    className="bg-pink-500 hover:bg-pink-600 text-white px-4 sm:px-5 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
                   >
                     Send
                   </button>
@@ -384,35 +413,54 @@ const Chat = () => {
               )}
             </div>
 
-            <div className="flex-1 bg-white rounded-lg shadow-sm p-5 h-fit">
-              <h3 className="text-gray-800 font-semibold mb-4">Active Users</h3>
+            {/* User List - Desktop always visible, Mobile as overlay/toggle */}
+            <div
+              className={`
+                ${showUserList ? "flex" : "hidden"} 
+                lg:flex flex-col bg-white rounded-lg shadow-sm p-4 sm:p-5
+                absolute lg:relative inset-0 lg:inset-auto z-10 lg:z-0
+                lg:flex-1 lg:h-fit
+              `}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-gray-800 font-semibold text-sm sm:text-base">
+                  Active Users
+                </h3>
+                <button
+                  onClick={() => setShowUserList(false)}
+                  className="lg:hidden text-gray-500 hover:text-gray-700 text-xl"
+                  aria-label="Close user list"
+                >
+                  ×
+                </button>
+              </div>
 
               {loadingUsers ? (
-                <div className="text-gray-500 text-sm text-center py-4">
+                <div className="text-gray-500 text-xs sm:text-sm text-center py-4">
                   Loading users...
                 </div>
               ) : error ? (
-                <div className="text-red-500 text-sm text-center py-4">
+                <div className="text-red-500 text-xs sm:text-sm text-center py-4">
                   {error}
                 </div>
               ) : (
-                <div className="space-y-2 overflow-y-scroll h-96">
+                <div className="space-y-2 overflow-y-auto max-h-[calc(100vh-200px)] lg:max-h-96">
                   {activeUsers.map((user) => (
                     <div
                       key={user.id}
                       onClick={() => selectUser(user)}
-                      className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
+                      className={`flex items-center gap-3 p-2 sm:p-2.5 rounded-lg cursor-pointer transition-colors ${
                         selectedUser?.id === user.id
                           ? "bg-pink-50 border border-pink-300"
                           : "hover:bg-gray-50"
                       }`}
                     >
-                      <div className="w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center font-bold text-xs">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-500 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm flex-shrink-0">
                         {user.avatar}
                       </div>
 
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-gray-800 flex items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs sm:text-sm font-medium text-gray-800 flex items-center gap-2 truncate">
                           {user.name}
                           {loadingUserId === user.id && (
                             <span className="text-xs text-gray-400 animate-pulse">
@@ -421,7 +469,7 @@ const Chat = () => {
                           )}
                         </div>
                         <div
-                          className={`text-xs ${
+                          className={`text-[10px] sm:text-xs ${
                             user.status === "online"
                               ? "text-green-500"
                               : "text-gray-400"
