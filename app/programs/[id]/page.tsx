@@ -47,7 +47,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
         } else {
           console.error("❌ Unknown error:", err);
         }
-        //toast.error("Failed to fetch programs. Please try again.");
+        toast.error("Failed to fetch programs. Please try again.");
       } finally {
         setLoading(false);
       }
