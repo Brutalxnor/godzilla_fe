@@ -96,7 +96,7 @@ export default function Sidebar() {
                   />
                   <Icon
                     className={[
-                      "text-[25px] shrink-0",
+                      "text-[30px] shrink-0",
                       active ? "text-rose-400" : "text-gray-600",
                     ].join(" ")}
                   />
@@ -105,7 +105,7 @@ export default function Sidebar() {
                       ml-5 text-[14px] text-gray-800
                       max-w-0 overflow-hidden opacity-0
                       transition-all duration-200
-                      group-hover:max-w-[160px] group-hover:opacity-100
+                      group-hover:max-w-[160px] group-hover:opacity-100 font-extrabold
                     "
                   >
                     {label}
