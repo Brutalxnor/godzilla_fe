@@ -227,3 +227,41 @@ html[data-theme="dark"] .text-stone-500 svg {
 html[data-theme="dark"] a { color: var(--foreground); }
 
 /* Keep your red accents exactly the same — no override needed */
+
+
+/* Dark-mode: Sidebar hover should be red */
+html[data-theme="dark"] .sidebar a:hover,
+html[data-theme="dark"] .sidebar button:hover {
+  color: #e11d48 !important; /* rose-600 */
+}
+
+/* Also color the icons red on hover in dark */
+html[data-theme="dark"] .sidebar a:hover svg,
+html[data-theme="dark"] .sidebar button:hover svg {
+  color: #e11d48 !important; /* rose-600 */
+}
+
+/* Optional: nicer dark hover background inside sidebar */
+html[data-theme="dark"] .sidebar a:hover,
+html[data-theme="dark"] .sidebar button:hover {
+  background-color: rgba(244, 63, 94, 0.08) !important; /* ~rose-500/8 */
+}
+
+
+/* Dark-mode: Bottom mobile bar hover should be red too */
+html[data-theme="dark"] .sidebar-btm a:hover,
+html[data-theme="dark"] .sidebar-btm button:hover {
+  color: #e11d48 !important; /* rose-600 */
+  background-color: rgba(244, 63, 94, 0.08) !important; /* ~rose-500/8 */
+}
+
+/* Ensure icons also go red on hover */
+html[data-theme="dark"] .sidebar-btm a:hover svg,
+html[data-theme="dark"] .sidebar-btm button:hover svg {
+  color: #e11d48 !important; /* rose-600 */
+}
+
+/* Active state background in dark (since bg-rose-100 is too light) */
+html[data-theme="dark"] .sidebar-btm a.text-rose-600.bg-rose-100 {
+  background-color: rgba(244, 63, 94, 0.14) !important; /* a bit stronger than hover */
+}
