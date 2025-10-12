@@ -266,6 +266,25 @@ html[data-theme="dark"] .sidebar-btm a.text-rose-600.bg-rose-100 {
   background-color: rgba(244, 63, 94, 0.14) !important; /* a bit stronger than hover */
 }
 
+/* Dark-mode: Bottom mobile bar — make the LABEL text red too */
+html[data-theme="dark"] .sidebar-btm a:hover span,
+html[data-theme="dark"] .sidebar-btm button:hover span {
+  color: #e11d48 !important; /* rose-600 */
+}
+
+/* Already hover-red for the link itself, but ensure children inherit */
+html[data-theme="dark"] .sidebar-btm a:hover,
+html[data-theme="dark"] .sidebar-btm button:hover {
+  color: #e11d48 !important;
+}
+
+/* Active state: keep label text red as well */
+html[data-theme="dark"] .sidebar-btm a.text-rose-600,
+html[data-theme="dark"] .sidebar-btm a.text-rose-600 span {
+  color: #e11d48 !important;
+}
+
+
 
 
 

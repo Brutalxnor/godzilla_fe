@@ -330,6 +330,7 @@ export default function Sidebar() {
       {/* Bottom tab bar (< lg) */}
       <nav
         className="
+          sidebar-btm 
           lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white
           border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]
           pb-[max(env(safe-area-inset-bottom),0px)]
