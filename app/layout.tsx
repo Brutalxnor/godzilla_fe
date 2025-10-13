@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
+import { CommentsProvider } from "./community/context/CommentsContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,13 +15,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
 export const metadata: Metadata = {
   title: "Godzilla",
   description: "Ready to learn something new today",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   // This script runs before React hydrates and sets <html data-theme="...">
   const themeInit = `
     (function () {
@@ -48,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         }}
       >
         <ToastContainer />
-        {children}
+        <CommentsProvider>{children}</CommentsProvider>
       </body>
     </html>
   );

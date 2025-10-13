@@ -33,6 +33,11 @@ export interface Post {
   user_id: string;
   users: User;
   watch: "public" | "friends";
+  comment_new: {
+    comment: string;
+    user_id: string;
+    created_at: string;
+  }[];
 }
 
 export type Program = {
