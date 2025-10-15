@@ -119,8 +119,8 @@ export default function ProgramCard({
 
         {/* top-left badge */}
         {premium && (
-          <span className="absolute left-3 top-3 rounded-full bg-rose-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
-            premium
+          <span className="absolute left-3 top-3 rounded-full bg-rose-600/90 px-2.5 py-1  font-semibold text-white shadow-sm">
+            Premium
           </span>
         )}
 
@@ -191,8 +191,8 @@ export default function ProgramCard({
         {/* Actions */}
         <div className="mt-4 w-full flex items-center gap-3">
           <Link
-            className="inline-flex w-1/2 justify-center items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium hover:bg-gray-50"
-            href={`/programs/${program.id}`}
+            className="inline-flex w-1/2 cursor-pointer justify-center items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium hover:bg-gray-50"
+            href={`/programs/${program.id}`} 
           >
             <button
               onClick={() => onPreview?.(program)}
@@ -202,6 +202,7 @@ export default function ProgramCard({
             </button>
           </Link>
           <button
+
             disabled={isSubscribed}
             onClick={() => !isSubscribed && onSubscribe?.(program)}
             className={`inline-flex w-1/2 items-center justify-center rounded-full px-5 py-2 text-sm font-semibold transition
@@ -210,6 +211,7 @@ export default function ProgramCard({
         ? "bg-gray-300 text-gray-600 cursor-not-allowed"
         : "bg-rose-600 text-white hover:bg-rose-700"
     }`}
+
           >
             {isSubscribed ? "Subscribed" : "Subscribe"}
           </button>
