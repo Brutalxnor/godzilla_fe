@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import Sidebar from "../components/shared/sidebar";
 import { Filter, Search } from "lucide-react";
@@ -159,7 +159,9 @@ export default function TrainersPage() {
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
-      <Sidebar />
+      <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+        <Sidebar />
+      </Suspense>
 
       <main
         style={shellVars}

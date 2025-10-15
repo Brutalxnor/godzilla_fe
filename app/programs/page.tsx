@@ -572,7 +572,7 @@
 // app/programs/page.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Sidebar from "../components/shared/sidebar";
 import ProgramCard, { Program } from "./components/programCard";
 import CreateProgramModal, {
@@ -885,7 +885,9 @@ export default function ProgramsPage() {
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
-      <Sidebar />
+      <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+        <Sidebar />
+      </Suspense>
 
       <main
         style={shellVars}

@@ -433,7 +433,7 @@ export default function Sidebar() {
   return (
     <>
       {/* LEFT SIDEBAR (>= lg) */}
-      <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+      
       <aside
         className="
           sidebar  /* marker */
@@ -579,7 +579,7 @@ export default function Sidebar() {
           </li> */}
         </ul>
       </nav>
-      </Suspense>
+     
     </>
   );
 }

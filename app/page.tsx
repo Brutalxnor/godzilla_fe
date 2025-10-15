@@ -6,7 +6,7 @@ import { FaBell } from "react-icons/fa";
 import { AiOutlineRise } from "react-icons/ai";
 import { FiUsers } from "react-icons/fi";
 import { TbTrophy } from "react-icons/tb";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, Suspense, useEffect, useState } from "react";
 import ProgramCard from "./components/shared/programCard";
 import Sidebar from "./components/shared/sidebar";
 import useGetUser from "./Hooks/useGetUser";
@@ -84,7 +84,9 @@ export default function Home() {
             theme === "dark" ? "bg-black" : "bg-white"
           }`}
         >
-          <Sidebar />
+          <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+        <Sidebar />
+      </Suspense>
           <main
             style={shellVars}
             className="w-full lg:w-[calc(95vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))]"
