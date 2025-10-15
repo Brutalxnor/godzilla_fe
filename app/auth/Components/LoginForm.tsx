@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { LoginService } from "@/app/auth/services/login.service"; // ⬅️ your service
 import { toast } from "react-toastify";
+import useGetTheme from "@/app/Hooks/useGetTheme";
 
 export default function LoginForm() {
   const [showPw, setShowPw] = useState(false);
@@ -39,9 +40,11 @@ export default function LoginForm() {
     }
   }
 
+  const {theme} = useGetTheme()
+
   return (
-    <main className="min-h-screen bg-[#f7f7f7] flex items-center justify-center px-4 sm:px-6">
-      <div className="w-full max-w-[520px] sm:max-w-[620px] md:max-w-[720px] lg:max-w-[780px] rounded-2xl bg-white shadow-sm border border-gray-200 p-6 md:p-8">
+    <main className={`min-h-screen  flex items-center justify-center px-4 sm:px-6 ${theme == "dark" ? "bg-black": "bg-[#f7f7f7]"}`}>
+      <div className={`w-full max-w-[520px] sm:max-w-[620px] md:max-w-[720px] lg:max-w-[780px] rounded-2xl  ${theme == "dark" ? "bg-[#0f0f10] border border-[#27272a]": "bg-white shadow-sm border border-gray-200"} p-6 md:p-8`}>
         {/* Logo */}
         <div className="w-12 h-12 mx-auto rounded-full bg-rose-500 flex items-center justify-center">
           <svg
@@ -92,7 +95,7 @@ export default function LoginForm() {
             <input
               type="email"
               placeholder="Enter your email"
-              className="mt-2 w-full rounded-xl border border-gray-200 bg-[#f7f7fb] px-4 py-3 outline-none focus:ring-2 focus:ring-rose-400"
+              className={`mt-2 w-full ${theme === "dark" ? "bg-black!": "border border-gray-200 bg-[#f7f7fb]!" } rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-rose-400`}
               required
               value={email} // ⬅️ bind
               onChange={(e) => setEmail(e.target.value)}
