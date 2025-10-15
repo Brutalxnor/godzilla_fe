@@ -82,13 +82,11 @@
 //   );
 // }
 
-
 "use client";
 
 import React, { useMemo } from "react";
 import { Mail, MapPin, CalendarDays } from "lucide-react";
 import ThemeToggle from "@/app/components/ThemeToggle";
-
 
 export type ProfileCore = {
   id: string | number;
@@ -112,6 +110,8 @@ export default function ProfileHeader({ data }: { data: ProfileCore }) {
     const parts = (data.name || "").trim().split(/\s+/);
     return (parts[0]?.[0] || "") + (parts[1]?.[0] || "");
   }, [data.name]);
+
+  console.log(data);
 
   return (
     <div className="flex items-start gap-4">
@@ -153,8 +153,6 @@ export default function ProfileHeader({ data }: { data: ProfileCore }) {
               )}
             </div>
           </div>
-
-  
         </div>
 
         {/* Goals / Experience */}

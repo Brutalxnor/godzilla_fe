@@ -8,9 +8,10 @@ export interface SignUpFormData {
   phone: string;
   date_of_birth: string;
   interests: string[];
-  avatar?: File | null;
+  avatar?: string | null;
   experience_level: "beginner" | "intermediate" | "advanced" | "expert";
   specialization_description?: string;
+  avatar_url?: File | string | null;
 }
 
 export interface User {
@@ -33,4 +34,3 @@ export interface User {
     };
   };
 }
-
