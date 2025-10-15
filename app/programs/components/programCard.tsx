@@ -79,7 +79,7 @@ export default function ProgramCard({
       try {
         setIsLoading(true);
         const { data } = await axios.get(
-          `http://localhost:4000/api/v1/subscripe/${userDB?.data?.user_id}`
+          `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
         );
 
         // افترض إن كل subscription فيه program_id
