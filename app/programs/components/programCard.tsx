@@ -1,10 +1,14 @@
 // components/shared/ProgramCard.tsx
 "use client";
 
+import useGetUser from "@/app/Hooks/useGetUser";
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { FiStar, FiClock } from "react-icons/fi";
 import { LuDumbbell } from "react-icons/lu";
+import { toast } from "react-toastify";
 
 export type Program = {
   id: string;
@@ -62,6 +66,45 @@ export default function ProgramCard({
     : 12;
   const safeLevel = (level as string) || "Beginner";
   const safeCover = cover || "/placeholder.png";
+  const { userDB } = useGetUser();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [subscribedProgramIds, setSubscribedProgramIds] = useState<string[]>(
+    []
+  );
+
+  useEffect(() => {
+    const fetchGetProgramsByUserID = async () => {
+      try {
+        setIsLoading(true);
+        const { data } = await axios.get(
+          `http://localhost:4000/api/v1/subscripe/${userDB?.data?.user_id}`
+        );
+
+        // افترض إن كل subscription فيه program_id
+        const programIds =
+          data?.data?.map((sub: { program_id: string }) => sub.program_id) ||
+          [];
+        setSubscribedProgramIds(programIds);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error("❌ Error fetching programs:", err.message);
+        } else {
+          console.error("❌ Unknown error:", err);
+        }
+        toast.error("Failed to fetch programs. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (userDB?.data?.user_id) {
+      fetchGetProgramsByUserID();
+    }
+  }, [userDB?.data?.user_id]);
+
+  const isSubscribed = subscribedProgramIds.includes(program.id);
 
   return (
     <article className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -159,10 +202,18 @@ export default function ProgramCard({
             </button>
           </Link>
           <button
-            onClick={() => onSubscribe?.(program)}
-            className="inline-flex w-1/2 cursor-pointer items-center justify-center rounded-full bg-rose-600 px-5 py-2 text-sm font-semibold text-white hover:bg-rose-700"
+
+            disabled={isSubscribed}
+            onClick={() => !isSubscribed && onSubscribe?.(program)}
+            className={`inline-flex w-1/2 items-center justify-center rounded-full px-5 py-2 text-sm font-semibold transition
+    ${
+      isSubscribed
+        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+        : "bg-rose-600 text-white hover:bg-rose-700"
+    }`}
+
           >
-            Subscribe
+            {isSubscribed ? "Subscribed" : "Subscribe"}
           </button>
         </div>
       </div>

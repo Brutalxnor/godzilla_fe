@@ -6,8 +6,6 @@
 // // import Sidebar from "../components/shared/sidebar";
 // // import CreateProgramModal, { CreateProgramPayload } from "./components/createProgram";
 
-
-
 // // const CATS = ["All", "Strength", "Cardio", "Yoga", "Nutrition", "HIIT"];
 
 // // const DATA: Program[] = [
@@ -88,7 +86,6 @@
 // //   return (
 // //     <div className="min-h-screen bg-[#f7f7f7]">
 // //       <Sidebar />
-    
 
 // //       <main
 // //         style={shellVars}
@@ -98,14 +95,14 @@
 // //           {/* Title + Post button */}
 // //           <div className="flex items-center justify-between">
 // //             <h1 className="text-4xl font-bold">Programs</h1>
-      
+
 // //             <button
 // //               className="rounded-xl bg-rose-500 text-white text-1xl px-10 py-3 hover:bg-rose-600"
-// //               onClick={() => setOpenCreate(true)}       
+// //               onClick={() => setOpenCreate(true)}
 // //             >
 // //               + Create
 // //             </button>
-            
+
 // //           </div>
 // //           <div className="mt-5 h-[2px] w-full bg-gray-200 rounded-full" />
 
@@ -186,14 +183,13 @@
 // //         coach={{
 // //           name: "Youssef Tarek",
 // //           subtitle: "Share with your community",
-// //           avatarUrl: "/avatar-1.jpg", 
+// //           avatarUrl: "/avatar-1.jpg",
 // //         }}
 // //       />
-      
+
 // //     </div>
 // //   );
 // // }
-
 
 // // app/programs/page.tsx
 // // app/programs/page.tsx
@@ -284,7 +280,7 @@
 
 // function mapApiToProgramCard(p: ApiProgram): Program {
 //   const isPremium = (p.price ?? 0) > 0;
-//   const originalPrice = p.price && p.discount_percentage 
+//   const originalPrice = p.price && p.discount_percentage
 //     ? p.price / (1 - p.discount_percentage / 100)
 //     : undefined;
 
@@ -554,7 +550,6 @@
 //     })()}
 // </section>
 
-
 //           <div className="pb-24 lg:pb-0" />
 //         </div>
 //       </main>
@@ -574,7 +569,6 @@
 //   );
 // }
 
-
 // app/programs/page.tsx
 "use client";
 
@@ -584,7 +578,12 @@ import ProgramCard, { Program } from "./components/programCard";
 import CreateProgramModal, {
   CreateProgramPayload,
 } from "./components/createProgram";
-import { CreateProgram, CreateProgramType, GetAllPrograms } from "./services/addProgram.service";
+import {
+  CreateProgram,
+  CreateProgramType,
+  GetAllPrograms,
+} from "./services/addProgram.service";
+import useGetUser from "../Hooks/useGetUser";
 
 // ---------- Types that mirror your API shape ----------
 export interface ApiProgram {
@@ -663,7 +662,8 @@ async function fileToBase64(file: File): Promise<string> {
   const buff = await file.arrayBuffer();
   let binary = "";
   const bytes = new Uint8Array(buff);
-  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+  for (let i = 0; i < bytes.byteLength; i++)
+    binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
 }
 
@@ -672,7 +672,9 @@ function isApiProgramArray(v: unknown): v is ApiProgram[] {
 }
 
 function hasDataField(v: unknown): v is { data: unknown } {
-  return typeof v === "object" && v !== null && "data" in (v as { data?: unknown });
+  return (
+    typeof v === "object" && v !== null && "data" in (v as { data?: unknown })
+  );
 }
 
 function toApiProgramArray(v: unknown): ApiProgram[] {
@@ -702,7 +704,9 @@ function mapApiToProgramCard(p: ApiProgram): Program {
       ? p.price / (1 - p.discount_percentage / 100)
       : undefined;
 
-  const coachFromUsers = `${pExtra.users?.first_name ?? ""} ${pExtra.users?.second_name ?? ""}`.trim();
+  const coachFromUsers = `${pExtra.users?.first_name ?? ""} ${
+    pExtra.users?.second_name ?? ""
+  }`.trim();
 
   // Build features array from boolean flags
   const features: string[] = [];
@@ -711,7 +715,8 @@ function mapApiToProgramCard(p: ApiProgram): Program {
   if (p.includes_progress_tracking) features.push("Progress Tracking");
   if (p.includes_chat_support) features.push("Chat Support");
   if (p.sessions_per_week) features.push(`${p.sessions_per_week}x/week`);
-  if (p.minutes_per_session) features.push(`${p.minutes_per_session} min/session`);
+  if (p.minutes_per_session)
+    features.push(`${p.minutes_per_session} min/session`);
 
   return {
     id: String(p.id ?? p._id ?? crypto.randomUUID()),
@@ -719,21 +724,32 @@ function mapApiToProgramCard(p: ApiProgram): Program {
     // prefer nested users name if present
     coach: coachFromUsers || p.coachName || "Coach",
     // prefer backend-saved URL
-    cover: pExtra.cover_image_url ??  "/godzillaimage.jpeg",
+
+    cover: pExtra.cover_image_url ?? "/placeholder.png",
+
     rating: typeof p.rating === "number" ? p.rating : 4.9,
     ratingsCount: typeof p.ratingsCount === "number" ? p.ratingsCount : 0,
     durationWeeks: typeof p.duration_weeks === "number" ? p.duration_weeks : 12,
-    level: (titleCase(String(p.difficulty_level ?? "Beginner")) as Program["level"]) ?? "Beginner",
+    level:
+      (titleCase(
+        String(p.difficulty_level ?? "Beginner")
+      ) as Program["level"]) ?? "Beginner",
     tags: features,
     premium: isPremium,
     price: isPremium && p.price ? `$${p.price}/month` : undefined,
-    compareAtPrice: originalPrice ? `$${originalPrice.toFixed(2)}/month` : undefined,
+    compareAtPrice: originalPrice
+      ? `$${originalPrice.toFixed(2)}/month`
+      : undefined,
     blurb: p.description ?? "",
   };
 }
 
+
 // // ---------- UI constants ----------
 // const CATS = ["All", "Strength", "Cardio", "Yoga", "Nutrition", "HIIT"] as const;
+
+// ---------- UI constants ----------
+
 
 export default function ProgramsPage() {
   const [tab, setTab] = useState<"browse" | "subs">("browse");
@@ -745,9 +761,15 @@ export default function ProgramsPage() {
 
   const toStringArray = (v: unknown): string[] =>
     Array.isArray(v)
-      ? v.map(String).map(s => s.trim()).filter(Boolean)
+      ? v
+          .map(String)
+          .map((s) => s.trim())
+          .filter(Boolean)
       : typeof v === "string"
-      ? v.split(",").map(s => s.trim()).filter(Boolean)
+      ? v
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
       : [];
 
   const shellVars = useMemo(
@@ -755,7 +777,7 @@ export default function ProgramsPage() {
       ({
         "--sb-w": "88px",
         "--extra-left": "24px",
-      }) as React.CSSProperties,
+      } as React.CSSProperties),
     []
   );
 
@@ -786,10 +808,12 @@ export default function ProgramsPage() {
       const stored = localStorage.getItem("user");
       const parsed: unknown = stored ? JSON.parse(stored) : null;
       const user_id =
-        parsed && typeof parsed === "object" && "data" in (parsed as { data?: { user_id?: string } })
+        parsed &&
+        typeof parsed === "object" &&
+        "data" in (parsed as { data?: { user_id?: string } })
           ? (parsed as { data?: { user_id?: string } }).data?.user_id
           : undefined;
-    
+
       let coverDataUrl: string | undefined;
       if (data.coverImageFile) {
         const b64 = await fileToBase64(data.coverImageFile);
@@ -797,7 +821,12 @@ export default function ProgramsPage() {
       }
 
       // Generate slug from title if not provided
-      const slug = data.slug || data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+      const slug =
+        data.slug ||
+        data.title
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^\w-]/g, "");
 
       const body: CreateProgramType = {
         title: data.title,
@@ -805,12 +834,22 @@ export default function ProgramsPage() {
         description: data.description,
         category: data.category,
         difficulty_level: data.difficulty_level || "beginner",
-        duration_weeks: typeof data.duration_weeks === "number" ? data.duration_weeks : 12,
-        sessions_per_week: typeof data.sessions_per_week === "number" ? data.sessions_per_week : 3,
-        minutes_per_session: typeof data.minutes_per_session === "number" ? data.minutes_per_session : 45,
+        duration_weeks:
+          typeof data.duration_weeks === "number" ? data.duration_weeks : 12,
+        sessions_per_week:
+          typeof data.sessions_per_week === "number"
+            ? data.sessions_per_week
+            : 3,
+        minutes_per_session:
+          typeof data.minutes_per_session === "number"
+            ? data.minutes_per_session
+            : 45,
         price: typeof data.price === "number" ? data.price : 0,
-        discount_percentage: typeof data.discount_percentage === "number" ? data.discount_percentage : undefined,
-        equipment_needed: toStringArray(data.equipment_needed), 
+        discount_percentage:
+          typeof data.discount_percentage === "number"
+            ? data.discount_percentage
+            : undefined,
+        equipment_needed: toStringArray(data.equipment_needed),
         space_required: data.space_required || "",
         target_audience: data.target_audience || "",
         prerequisites: data.prerequisites || "",
@@ -820,7 +859,7 @@ export default function ProgramsPage() {
         includes_progress_tracking: data.includes_progress_tracking,
         includes_chat_support: data.includes_chat_support,
         cover_image_url: coverDataUrl,
-        user_id : user_id || ""
+        user_id: user_id || "",
       };
 
       const res: ServiceOk | ServiceErr = await CreateProgram(body);
@@ -842,6 +881,8 @@ export default function ProgramsPage() {
     console.log("Subscribe", p.id);
   }
 
+  const { userDB } = useGetUser();
+
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
       <Sidebar />
@@ -854,12 +895,14 @@ export default function ProgramsPage() {
           {/* Title + Create */}
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold">Programs</h1>
-            <button
-              className="rounded-xl bg-rose-500 text-white text-1xl px-10 py-3 hover:bg-rose-600"
-              onClick={() => setOpenCreate(true)}
-            >
-              + Create
-            </button>
+            {userDB?.data?.user?.user_type === "coach" && (
+              <button
+                className="rounded-xl bg-rose-500 text-white text-1xl px-10 py-3 hover:bg-rose-600"
+                onClick={() => setOpenCreate(true)}
+              >
+                + Create
+              </button>
+            )}
           </div>
           <div className="mt-5 h-[2px] w-full bg-gray-200 rounded-full" />
 
@@ -919,7 +962,10 @@ export default function ProgramsPage() {
           {/* Grid */}
           <section className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-1">
             {loading ? (
-              <div className="text-sm text-gray-500">Loading programs…</div>
+              <div className="flex justify-center items-center py-10">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+                {/* أو استخدم أي loader component عندك */}
+              </div>
             ) : programs.length === 0 ? (
               <div className="text-sm text-gray-500">No programs found.</div>
             ) : (
@@ -952,6 +998,3 @@ export default function ProgramsPage() {
     </div>
   );
 }
-
-
-

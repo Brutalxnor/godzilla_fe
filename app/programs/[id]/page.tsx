@@ -20,6 +20,48 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("Overview");
+  const [programMedia, setProgramMedia] = useState<
+    {
+      id: string;
+      title: string;
+      description: string;
+      url: string;
+      media_type: string;
+      mime_type: string;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    const fetchProgramMedia = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get(
+          `http://localhost:4000/api/v1/programs/f2f50790-dbdb-4a2b-8402-7fa07c527b07/media`,
+          {
+            headers: {
+              Authorization: `Bearer ${userDB?.data.access_token}`,
+            },
+          }
+        );
+
+        // لو الـ backend بيرجع بالشكل:
+        // { status: "success", data: [...] }
+        setProgramMedia(data?.data || []);
+
+        console.log("🎬 Program media:", data?.data);
+      } catch (err: unknown) {
+        console.error("❌ Error fetching program media:", err);
+        toast.error("Failed to load program media");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchProgramMedia();
+    }
+  }, [id]);
+
   const shellVars = useMemo(
     () =>
       ({
@@ -30,6 +72,48 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   );
   const { userDB } = useGetUser();
   const [programs, setPrograms] = useState<{ data: Program }>();
+  const [subscribedProgramIds, setSubscribedProgramIds] = useState<string[]>(
+    []
+  );
+  const [selectedMedia, setSelectedMedia] = useState<{
+    title: string;
+    media_type: string;
+    url: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchProgramAndSubscriptions = async () => {
+      try {
+        setLoading(true);
+
+        // 1️⃣ هات بيانات البرنامج الحالي
+        const { data: programRes } = await axios.get(
+          `https://godzilla-be.vercel.app/api/v1/programs/${id}`
+        );
+        setPrograms(programRes);
+
+        // 2️⃣ هات اشتراكات المستخدم
+        const { data: subsRes } = await axios.get(
+          `http://localhost:4000/api/v1/subscripe/${userDB?.data?.user_id}`
+        );
+
+        // لو الـ backend بيرجع array فيه program_id
+        const ids =
+          subsRes?.data?.map((sub: { program_id: string }) => sub.program_id) ||
+          [];
+        setSubscribedProgramIds(ids);
+      } catch (err: unknown) {
+        console.error("❌ Error fetching data:", err);
+        toast.error("Failed to fetch data. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userDB?.data?.user_id && id) {
+      fetchProgramAndSubscriptions();
+    }
+  }, [id, userDB?.data?.user_id]);
 
   const tabs = ["Overview", "Materials", "Reviews", "FAQ"];
   
@@ -58,6 +142,8 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       fetchGetProgramsByUserID();
     }
   }, [id, userDB?.data?.user_id]);
+
+  const isSubscribed = subscribedProgramIds.includes(id as string);
 
   console.log(programs);
   
@@ -200,8 +286,23 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
 
             {/* Subscribe Button */}
-            <button className="w-full bg-rose-500 cursor-pointer text-white py-3 rounded font-medium hover:bg-rose-700 transition-colors mb-8">
-              Subscribe Now
+
+            <button
+              disabled={isSubscribed}
+              onClick={() => {
+                if (!isSubscribed) {
+                  // هنا تقدر تضيف كود الاشتراك الفعلي لو لسه مشتركش
+                  console.log("Subscribing to program:", programs?.data?.id);
+                }
+              }}
+              className={`w-full py-3 rounded font-medium transition-colors mb-8 ${
+                isSubscribed
+                  ? "bg-gray-300 text-gray-700 cursor-not-allowed"
+                  : "bg-rose-500 text-white hover:bg-rose-700"
+              }`}
+            >
+              {isSubscribed ? "Subscribed" : "Subscribe Now"}
+
             </button>
 
             {/* Navigation Tabs */}
@@ -232,20 +333,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                     About This Program
                   </h2>
                   <div className="space-y-4 text-gray-700">
-                    <p>
-                      This 12-week strength foundation program is designed to
-                      help beginners build a solid base of strength while
-                      learning proper form and technique. You will progress
-                      through carefully structured workouts that target all
-                      major muscle groups, with detailed video demonstrations
-                      and form cues for every exercise.
-                    </p>
-                    <p>
-                      The program includes progressive overload principles,
-                      ensuring you continue to get stronger week after week. You
-                      will also receive nutrition guidance to support your
-                      strength gains and recovery.
-                    </p>
+                    <p>{programs?.data?.description}</p>
                   </div>
                 </div>
 
@@ -277,10 +365,106 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
             {activeTab === "Materials" && (
               <div className="space-y-6">
-                <h2 className="text-lg font-semibold">Program Materials</h2>
-                <p className="text-gray-700">
-                  Materials content will be displayed here.
-                </p>
+                <h2 className="text-lg font-semibold mb-4">
+                  Program Materials
+                </h2>
+
+                <div className="mt-6">
+                  {programMedia?.length > 0 ? (
+                    <div className="gap-6 flex flex-col">
+                      {programMedia.map((item) => (
+                        <div
+                          key={item.id}
+                          onClick={() => setSelectedMedia(item)}
+                          className="border rounded-lg p-4 cursor-pointer hover:shadow-lg transition bg-white"
+                        >
+                          <div className="flex justify-between mx-3">
+                            <div className="flex items-center gap-3">
+                              <Play size={20} />
+                              <h3 className="font-semibold text-gray-800 mb-2">
+                                {item.title}
+                              </h3>
+                            </div>
+
+                            <div>
+                              <h1 className="bg-[#dddddd] px-4 py-1 rounded-xl font-bold">
+                                {item.mime_type === "video/quicktime"
+                                  ? "Video"
+                                  : "Image"}
+                              </h1>
+                            </div>
+                          </div>
+
+                          <p className="text-sm text-gray-600 mb-3">
+                            {item.description}
+                          </p>
+
+                          <div className="relative">
+                            {/* <video
+                                src={item.url}
+                                className="w-full rounded-lg opacity-70"
+                                muted
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="bg-white/80 rounded-full p-3 shadow">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 16 16"
+                                    className="w-6 h-6 text-black"
+                                  >
+                                    <path d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z" />
+                                  </svg>
+                                </div>
+                              </div> */}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">No materials available yet.</p>
+                  )}
+
+                  {/* ✅ Custom Modal */}
+                  {selectedMedia && (
+                    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+                      <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full mx-4 relative">
+                        {/* Close Button */}
+                        <button
+                          onClick={() => setSelectedMedia(null)}
+                          className="absolute top-2 right-2 text-gray-700 hover:text-black text-2xl"
+                        >
+                          &times;
+                        </button>
+
+                        {/* Title */}
+                        <div className="p-4 border-b">
+                          <h2 className="text-lg font-semibold text-gray-800">
+                            {selectedMedia.title}
+                          </h2>
+                        </div>
+
+                        {/* Media */}
+                        <div className="p-4 flex justify-center">
+                          {selectedMedia.media_type?.includes("video") ? (
+                            <video
+                              src={selectedMedia.url}
+                              controls
+                              autoPlay
+                              className="w-full rounded-lg"
+                            />
+                          ) : (
+                            <img
+                              src={selectedMedia.url}
+                              alt={selectedMedia.title}
+                              className="w-full rounded-lg"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
