@@ -116,6 +116,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   }, [id, userDB?.data?.user_id]);
 
   const tabs = ["Overview", "Materials", "Reviews", "FAQ"];
+  
 
   useEffect(() => {
     const fetchGetProgramsByUserID = async () => {
@@ -145,6 +146,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const isSubscribed = subscribedProgramIds.includes(id as string);
 
   console.log(programs);
+  
 
   if (loading) {
     return (
@@ -258,9 +260,10 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                     <h3 className="font-semibold">
                       {programs?.data?.users?.first_name}
                     </h3>
-                    <span className="text-blue-500 text-xs bg-blue-50 px-2 py-1 rounded">
-                      Verified Coach
+                    <span className="text-[var(--accent)] text-xs bg-[var(--accent-soft)] border border-[var(--accent-border)] px-2 py-1 rounded">
+                        Verified Coach
                     </span>
+
                   </div>
                   <div className="flex items-center gap-1">
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -268,12 +271,22 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                   </div>
                 </div>
               </div>
-              <button className="text-gray-600 hover:text-gray-800 font-medium">
-                View Profile
-              </button>
+              <Link
+    href={
+      programs?.data?.users?.id
+        ? `/profile?user_id=${programs.data.users.id}`
+        : "#"
+    }
+    className="text-gray-600 cursor-pointer hover:text-gray-800 font-medium"
+    aria-disabled={!programs?.data?.users?.id}
+  >
+    View Profile
+  </Link>
+              
             </div>
 
             {/* Subscribe Button */}
+
             <button
               disabled={isSubscribed}
               onClick={() => {
@@ -289,6 +302,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
               }`}
             >
               {isSubscribed ? "Subscribed" : "Subscribe Now"}
+
             </button>
 
             {/* Navigation Tabs */}
@@ -312,7 +326,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
             {/* Tab Content */}
             {activeTab === "Overview" && (
-              <div className="space-y-8">
+              <div className="space-y-8 ">
                 {/* About This Program Section */}
                 <div>
                   <h2 className="text-lg font-semibold mb-4">

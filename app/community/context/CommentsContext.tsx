@@ -37,7 +37,9 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const { data } = await axios.get(
-        `http://https://godzilla-be.vercel.app/api/v1/posts/df2a3584-aeb4-42e8-8a9b-3b8eeffc51a9`
+
+        `https://godzilla-be.vercel.app/api/v1/posts/df2a3584-aeb4-42e8-8a9b-3b8eeffc51a9`
+
       );
       setComments(data);
     } catch (error) {
