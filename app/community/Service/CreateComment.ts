@@ -7,7 +7,7 @@ export const CreateComment = async (
 ) => {
   try {
     const response = await axios.put(
-      "http://localhost:4000/api/v1/posts/update-comment",
+      "https://godzilla-be.vercel.app/api/v1/posts/update-comment",
       {
         postId,
         user_id,
