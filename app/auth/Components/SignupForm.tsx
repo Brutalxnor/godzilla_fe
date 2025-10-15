@@ -1615,6 +1615,8 @@ import { InterestType } from "@/app/types/type";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import Link from "next/link";
+
 
 export const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -1648,7 +1650,9 @@ export const SignupForm = () => {
     try {
       const res = await SignUoService(formData);
       if ("error" in res) {
-        toast.error(res.error || "Signup failed");
+        toast.error(res.message || "This email already has an account!");
+        console.log(res);
+        
       } else {
         toast.success("Signup Successfully! Welcome!");
         setTimeout(() => (location.href = "/"), 1500);
@@ -2075,14 +2079,26 @@ export const SignupForm = () => {
           </button>
 
           {/* Sign in link / Terms */}
-          <div className="text-center pt-4">
+          {/* <div className="text-center pt-4">
             <p className="text-[var(--muted)] text-sm">
               Already have an account?
               <span className="text-red-500 font-medium hover:text-red-600 cursor-pointer ml-1 underline-offset-2 hover:underline">
                 Sign in
               </span>
             </p>
-          </div>
+          </div> */}
+          <div className="text-center pt-4">
+  <p className="text-[var(--muted)] text-sm">
+    Already have an account?
+    <Link
+      href="/"   // ← change to your actual route if different (e.g. "/login")
+      className="text-red-500 font-medium hover:text-red-600 cursor-pointer ml-1 underline-offset-2 hover:underline"
+    >
+      Sign in
+    </Link>
+  </p>
+</div>
+
 
           <div className="text-center pt-2">
             <p className="text-xs leading-relaxed max-w-sm mx-auto text-[var(--muted)]">

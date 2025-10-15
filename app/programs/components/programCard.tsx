@@ -148,8 +148,8 @@ export default function ProgramCard({
         {/* Actions */}
         <div className="mt-4 w-full flex items-center gap-3">
           <Link
-            className="inline-flex w-1/2 justify-center items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium hover:bg-gray-50"
-            href={`/programs/${program.id}`}
+            className="inline-flex w-1/2 cursor-pointer justify-center items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium hover:bg-gray-50"
+            href={`/programs/${program.id}`} 
           >
             <button
               onClick={() => onPreview?.(program)}
@@ -160,7 +160,7 @@ export default function ProgramCard({
           </Link>
           <button
             onClick={() => onSubscribe?.(program)}
-            className="inline-flex w-1/2 items-center justify-center rounded-full bg-rose-600 px-5 py-2 text-sm font-semibold text-white hover:bg-rose-700"
+            className="inline-flex w-1/2 cursor-pointer items-center justify-center rounded-full bg-rose-600 px-5 py-2 text-sm font-semibold text-white hover:bg-rose-700"
           >
             Subscribe
           </button>

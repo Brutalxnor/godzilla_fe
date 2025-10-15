@@ -96,11 +96,11 @@ export default function CommunityPage() {
             <h2 className="text-0xl font-bold text-gray-700 mb-5 ">
               Trending Topics
             </h2>
-            <div className="flex flex-wrap gap-2">
+            {/* <div className="flex flex-wrap gap-2">
               <Tag label="StrengthTraining" count={234} />
               <Tag label="Nutrition" count={156} />
               <Tag label="MorningWorkout" count={89} />
-            </div>
+            </div> */}
           </section>
 
           {/* Tabs */}

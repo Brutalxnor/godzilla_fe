@@ -172,9 +172,10 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                     <h3 className="font-semibold">
                       {programs?.data?.users?.first_name}
                     </h3>
-                    <span className="text-blue-500 text-xs bg-blue-50 px-2 py-1 rounded">
-                      Verified Coach
+                    <span className="text-[var(--accent)] text-xs bg-[var(--accent-soft)] border border-[var(--accent-border)] px-2 py-1 rounded">
+                        Verified Coach
                     </span>
+
                   </div>
                   <div className="flex items-center gap-1">
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -182,13 +183,14 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                   </div>
                 </div>
               </div>
-              <button className="text-gray-600 hover:text-gray-800 font-medium">
+              <button className="text-gray-600 cursor-pointer  hover:text-gray-800 font-medium">
                 View Profile
               </button>
+              
             </div>
 
             {/* Subscribe Button */}
-            <button className="w-full bg-rose-500 text-white py-3 rounded font-medium hover:bg-rose-700 transition-colors mb-8">
+            <button className="w-full bg-rose-500 cursor-pointer text-white py-3 rounded font-medium hover:bg-rose-700 transition-colors mb-8">
               Subscribe Now
             </button>
 
@@ -213,7 +215,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
             {/* Tab Content */}
             {activeTab === "Overview" && (
-              <div className="space-y-8">
+              <div className="space-y-8 ">
                 {/* About This Program Section */}
                 <div>
                   <h2 className="text-lg font-semibold mb-4">
