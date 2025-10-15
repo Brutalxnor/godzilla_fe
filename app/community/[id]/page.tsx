@@ -50,7 +50,7 @@
 // export default Page;
 
 "use client";
-import { use, useEffect, useState } from "react";
+import { Suspense, use, useEffect, useState } from "react";
 import {
   Heart,
   MessageCircle,
@@ -115,7 +115,9 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
-      <Sidebar />
+      <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+        <Sidebar />
+      </Suspense>
       <main
         style={shellVars}
         className="w-full lg:w-[calc(95vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))]"

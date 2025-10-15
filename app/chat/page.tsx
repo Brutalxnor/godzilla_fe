@@ -495,7 +495,7 @@
 
 
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import Sidebar from "../components/shared/sidebar";
 import useGetUser from "../Hooks/useGetUser";
 import { toast } from "react-toastify";
@@ -743,7 +743,9 @@ const Chat = () => {
      ========================= */
   return (
     <div className={`min-h-screen ${theme === "dark" ? "bg-black" : "bg-white"}`}>
-      <Sidebar />
+      <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+        <Sidebar />
+      </Suspense>
 
       <main
         style={shellVars}

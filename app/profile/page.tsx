@@ -1163,11 +1163,13 @@ export default function ProfilePage() {
 
 
   return (
-   <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+   
      <div
       className={`min-h-screen${theme === "dark" ? "bg-black" : "bg-white"}`}
     >
-      <Sidebar />
+      <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+        <Sidebar />
+      </Suspense>
       <main
         style={shellVars}
         className="w-full lg:w-[calc(100vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))]"
@@ -1291,6 +1293,6 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
-   </Suspense>
+   
   );
 }
