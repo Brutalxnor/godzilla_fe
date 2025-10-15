@@ -76,8 +76,8 @@ export default function ProgramCard({
 
         {/* top-left badge */}
         {premium && (
-          <span className="absolute left-3 top-3 rounded-full bg-rose-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
-            premium
+          <span className="absolute left-3 top-3 rounded-full bg-rose-600/90 px-2.5 py-1  font-semibold text-white shadow-sm">
+            Premium
           </span>
         )}
 

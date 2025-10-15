@@ -32,6 +32,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const [programs, setPrograms] = useState<{ data: Program }>();
 
   const tabs = ["Overview", "Materials", "Reviews", "FAQ"];
+  
 
   useEffect(() => {
     const fetchGetProgramsByUserID = async () => {
@@ -59,6 +60,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   }, [id, userDB?.data?.user_id]);
 
   console.log(programs);
+  
 
   if (loading) {
     return (
@@ -183,9 +185,17 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                   </div>
                 </div>
               </div>
-              <button className="text-gray-600 cursor-pointer  hover:text-gray-800 font-medium">
-                View Profile
-              </button>
+              <Link
+    href={
+      programs?.data?.users?.id
+        ? `/profile?user_id=${programs.data.users.id}`
+        : "#"
+    }
+    className="text-gray-600 cursor-pointer hover:text-gray-800 font-medium"
+    aria-disabled={!programs?.data?.users?.id}
+  >
+    View Profile
+  </Link>
               
             </div>
 

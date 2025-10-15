@@ -719,7 +719,7 @@ function mapApiToProgramCard(p: ApiProgram): Program {
     // prefer nested users name if present
     coach: coachFromUsers || p.coachName || "Coach",
     // prefer backend-saved URL
-    cover: pExtra.cover_image_url ??  "/placeholder.png",
+    cover: pExtra.cover_image_url ??  "/godzillaimage.jpeg",
     rating: typeof p.rating === "number" ? p.rating : 4.9,
     ratingsCount: typeof p.ratingsCount === "number" ? p.ratingsCount : 0,
     durationWeeks: typeof p.duration_weeks === "number" ? p.duration_weeks : 12,
@@ -732,12 +732,12 @@ function mapApiToProgramCard(p: ApiProgram): Program {
   };
 }
 
-// ---------- UI constants ----------
-const CATS = ["All", "Strength", "Cardio", "Yoga", "Nutrition", "HIIT"] as const;
+// // ---------- UI constants ----------
+// const CATS = ["All", "Strength", "Cardio", "Yoga", "Nutrition", "HIIT"] as const;
 
 export default function ProgramsPage() {
   const [tab, setTab] = useState<"browse" | "subs">("browse");
-  const [cat, setCat] = useState<(typeof CATS)[number]>("All");
+  // const [cat, setCat] = useState<(typeof CATS)[number]>("All");
   const [openCreate, setOpenCreate] = useState(false);
 
   const [programs, setPrograms] = useState<Program[] | []>([]);
@@ -895,7 +895,7 @@ export default function ProgramsPage() {
             </div>
           </div>
 
-          {/* Categories */}
+          {/* Categories
           <div className="mt-5 flex flex-wrap gap-2">
             {CATS.map((c) => {
               const active = cat === c;
@@ -914,7 +914,7 @@ export default function ProgramsPage() {
                 </button>
               );
             })}
-          </div>
+          </div> */}
 
           {/* Grid */}
           <section className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-1">
