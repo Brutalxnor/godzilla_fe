@@ -678,7 +678,7 @@
 
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import {
   TrendingUp,
@@ -1163,7 +1163,8 @@ export default function ProfilePage() {
 
 
   return (
-    <div
+   <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+     <div
       className={`min-h-screen${theme === "dark" ? "bg-black" : "bg-white"}`}
     >
       <Sidebar />
@@ -1290,5 +1291,6 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
+   </Suspense>
   );
 }

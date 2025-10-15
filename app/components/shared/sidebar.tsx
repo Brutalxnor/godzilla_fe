@@ -383,7 +383,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation"; // ⬅️ added useSearchParams
+import { usePathname, useSearchParams } from "next/navigation"; // ⬅️ added Params
 import { IconType } from "react-icons";
 import { AiOutlineHome, AiOutlineTrophy } from "react-icons/ai";
 import { FiUsers, FiMessageSquare } from "react-icons/fi";
@@ -392,6 +392,7 @@ import { CgProfile } from "react-icons/cg";
 import { IoLogOutOutline } from "react-icons/io5";
 import { LogoutService } from "@/app/auth/services/logout.service";
 import useGetTheme from "@/app/Hooks/useGetTheme";
+import { Suspense } from "react";
 
 type Item = { href: string; label: string; Icon: IconType };
 
@@ -432,6 +433,7 @@ export default function Sidebar() {
   return (
     <>
       {/* LEFT SIDEBAR (>= lg) */}
+      <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
       <aside
         className="
           sidebar  /* marker */
@@ -577,6 +579,7 @@ export default function Sidebar() {
           </li> */}
         </ul>
       </nav>
+      </Suspense>
     </>
   );
 }
