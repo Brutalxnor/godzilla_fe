@@ -36,7 +36,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          `http://localhost:4000/api/v1/programs/f2f50790-dbdb-4a2b-8402-7fa07c527b07/media`,
+          `https://godzilla-be.vercel.app/api/v1/programs/f2f50790-dbdb-4a2b-8402-7fa07c527b07/media`,
           {
             headers: {
               Authorization: `Bearer ${userDB?.data.access_token}`,
@@ -94,7 +94,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
         // 2️⃣ هات اشتراكات المستخدم
         const { data: subsRes } = await axios.get(
-          `http://localhost:4000/api/v1/subscripe/${userDB?.data?.user_id}`
+          `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
         );
 
         // لو الـ backend بيرجع array فيه program_id

@@ -912,7 +912,7 @@ export const SignupForm = () => {
         avatar_url: avatarUrl, // 🔥 ده المهم
       };
 
-      const res = await fetch("http://localhost:4000/api/v1/auth/register", {
+      const res = await fetch("https://godzilla-be.vercel.app/api/v1/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

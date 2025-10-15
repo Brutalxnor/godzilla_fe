@@ -53,7 +53,7 @@ export default function Home() {
       try {
         setIsLoading(true);
         const { data } = await axios.get(
-          `http://localhost:4000/api/v1/subscripe/${userDB?.data?.user_id}`
+          `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
         );
 
         setPrograms(data);
@@ -63,7 +63,7 @@ export default function Home() {
         } else {
           console.error("❌ Unknown error:", err);
         }
-        toast.error("Failed to fetch programs. Please try again.");
+        
       } finally {
         setIsLoading(false);
       }
