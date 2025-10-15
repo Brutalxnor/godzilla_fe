@@ -53,7 +53,7 @@ export default function Home() {
       try {
         setIsLoading(true);
         const { data } = await axios.get(
-          `https://godzilla-be.vercel.app/api/v1/programs/programCoach/${userDB?.data?.user_id}`
+          `http://localhost:4000/api/v1/subscripe/${userDB?.data?.user_id}`
         );
 
         setPrograms(data);

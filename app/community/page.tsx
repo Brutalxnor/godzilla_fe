@@ -42,8 +42,8 @@ export default function CommunityPage() {
     console.log("CreatePost payload:", data);
     // optionally optimistically add to feed here
   }
-
   const { userDB } = useGetUser();
+
   const { openPostId, addComment, handleTriggerOpenCommentModal } =
     useComments();
 
@@ -218,7 +218,7 @@ export default function CommunityPage() {
                                 {userDB?.data?.user ? (
                                   <img
                                     src={
-                                      // author.avatar ||
+                                      post.users?.avatar_url ||
                                       "https://example.com/images/sunset.jpg"
                                     }
                                     alt={

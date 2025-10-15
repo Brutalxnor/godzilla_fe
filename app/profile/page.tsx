@@ -31,8 +31,12 @@ import CoachHeader, { CoachProfileCore } from "./components/CoachHeader";
 // import CoachCertifications, { CertificationItem } from "./components/CertificationsCard";
 import ThemeToggle from "../components/ThemeToggle";
 import useGetTheme from "../Hooks/useGetTheme";
-import CoachCertifications, { CertificationItem } from "./components/CertificationsCard";
-import CoachProgramsList, { CoachProgramItem } from "./components/ProgramsListCard";
+import CoachCertifications, {
+  CertificationItem,
+} from "./components/CertificationsCard";
+import CoachProgramsList, {
+  CoachProgramItem,
+} from "./components/ProgramsListCard";
 
 /* ===== strict types ===== */
 type ProgramLite = { id: string | number; title: string };
@@ -60,6 +64,7 @@ type UserDBUser = {
   last_login: string;
   experience_level: string; // re-used as "bio"
   message: string;
+  avatar_url?: string;
 
   /* IDs the backend may also send */
   user_id?: string | number;
@@ -254,7 +259,7 @@ export default function ProfilePage() {
           email,
           location: u.location || null,
           joined_at: null,
-          avatar_url: null,
+          avatar_url: u.avatar_url,
           goals: u.experience_level || null, // reuse if desired
           experience: u.experience_level || null,
         };
@@ -358,9 +363,11 @@ export default function ProfilePage() {
 
   const isCoach = role === "coach";
   const showLoading = loading || (isCoach && fetchingCoachPrograms);
-  const {theme} = useGetTheme()
+  const { theme } = useGetTheme();
   return (
-    <div className={`min-h-screen${theme === "dark" ? "bg-black": "bg-white"}`}>
+    <div
+      className={`min-h-screen${theme === "dark" ? "bg-black" : "bg-white"}`}
+    >
       <Sidebar />
       <main
         style={shellVars}
