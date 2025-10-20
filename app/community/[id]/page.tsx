@@ -16,7 +16,7 @@
 //   useEffect(() => {
 //     const fetchGetPostById = async () => {
 //       const data = await axios.get(
-//         `http://localhost:4000/api/v1/posts/postbyid/${id}`
+//         `https://godzilla-be.vercel.app/api/v1/posts/postbyid/${id}`
 //       );
 //       setPost(data.data.data);
 //     };

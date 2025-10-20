@@ -63,7 +63,7 @@ export default function Home() {
         } else {
           console.error("❌ Unknown error:", err);
         }
-        toast.error("Failed to fetch programs. Please try again.");
+        
       } finally {
         setIsLoading(false);
       }
