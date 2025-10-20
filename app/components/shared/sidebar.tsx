@@ -380,6 +380,7 @@
 // }
 
 
+
 "use client";
 
 import Link from "next/link";
@@ -428,12 +429,16 @@ export default function Sidebar() {
     await LogoutService();
   };
 
+// =======
+//   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname?.startsWith(href));
+//   const onLogout = async () => { await LogoutService(); };
+// >>>>>>> Stashed changes
   const { theme } = useGetTheme();
 
   return (
     <>
       {/* LEFT SIDEBAR (>= lg) */}
-      
+
       <aside
         className="
           sidebar  /* marker */
@@ -535,6 +540,7 @@ export default function Sidebar() {
       <nav
         className="
           sidebar-btm 
+
           lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white
           border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]
           pb-[max(env(safe-area-inset-bottom),0px)]
