@@ -688,7 +688,6 @@ import {
   Users,
   DollarSign,
   Star,
-  Sidebar,
 } from "lucide-react";
 
 import { useSearchParams, useRouter } from "next/navigation"; // ✅ added useRouter
@@ -702,6 +701,7 @@ import ProfileHeader, { ProfileCore } from "./ProfileHeader";
 import CoachProgramsList, { CoachProgramItem } from "./ProgramsListCard";
 import StatCard from "./StatGrid";
 import SubscriptionsList from "./SubscriptionsCard";
+import Sidebar from "@/app/components/shared/sidebar";
 
 /* ===== strict types ===== */
 type ProgramLite = { id: string | number; title: string };

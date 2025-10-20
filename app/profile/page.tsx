@@ -679,8 +679,9 @@
 "use client";
 
 import { Suspense } from "react";
+import ProfilePage from "./components/ProfilePage";
 
-export default function ProfilePage() {
+export default function Profile() {
   return (
    
      <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
