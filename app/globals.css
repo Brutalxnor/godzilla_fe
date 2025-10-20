@@ -266,6 +266,7 @@ html[data-theme="dark"] .sidebar-btm a.text-rose-600.bg-rose-100 {
   background-color: rgba(244, 63, 94, 0.14) !important; /* a bit stronger than hover */
 }
 
+
 /* Dark-mode: Bottom mobile bar — make the LABEL text red too */
 html[data-theme="dark"] .sidebar-btm a:hover span,
 html[data-theme="dark"] .sidebar-btm button:hover span {
@@ -364,4 +365,3 @@ html[data-theme="dark"] .rounded-full.text-\[11px\] {
   html[data-theme="dark"] .border-red-200 {
     border-color: var(--accent-border) !important;
   }
-  
