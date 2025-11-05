@@ -1,4 +1,3 @@
-
 // "use client";
 
 // import { useEffect, useMemo, useState } from "react";
@@ -847,20 +846,27 @@ type UserFromAPI = {
 };
 type UserResp = { data?: UserFromAPI };
 
-async function getUserById(id: string | number): Promise<UserFromAPI | undefined> {
+async function getUserById(
+  id: string | number
+): Promise<UserFromAPI | undefined> {
   const { data } = await axios.get<UserResp>(`${API_BASE}/auth/getusers/${id}`);
   return data?.data;
 }
 
 const toSafeTitle = (s: string) =>
-  s.trim().replace(/\s+/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
+  s
+    .trim()
+    .replace(/\s+/g, " ")
+    .replace(/\b\w/g, (m) => m.toUpperCase());
 
 export default function ProfilePage() {
   const [athleteVM, setAthleteVM] = useState<AthleteVM | null>(null);
   const [coachVM, setCoachVM] = useState<CoachVM | null>(null);
   const [loading, setLoading] = useState(true);
   const [fetchingCoachPrograms, setFetchingCoachPrograms] = useState(false);
-  const [tab, setTab] = useState<"overview" | "activity" | "settings">("overview");
+  const [tab, setTab] = useState<"overview" | "activity" | "settings">(
+    "overview"
+  );
   const [error, setError] = useState<string | null>(null);
 
   const { userDB } = useGetUser();
@@ -908,12 +914,14 @@ export default function ProfilePage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      console.log("hi");
       if (!userIdParam) return;
       try {
         setLoading(true);
         setError(null);
 
         const u = await getUserById(userIdParam);
+        console.log("current user: ", u);
         if (!u) throw new Error("User not found");
 
         const r = (u.user_type ?? "athlete").toLowerCase();
@@ -921,7 +929,10 @@ export default function ProfilePage() {
         if (r === "coach") {
           const header: CoachProfileCore = {
             id: u.user_id ?? userIdParam,
-            name: toSafeTitle(`${u.first_name ?? ""} ${u.second_name ?? ""}`.trim()) || "Coach",
+            name:
+              toSafeTitle(
+                `${u.first_name ?? ""} ${u.second_name ?? ""}`.trim()
+              ) || "Coach",
             email: u.email ?? "",
             location: u.location ?? null,
             joined_at: null,
@@ -948,7 +959,9 @@ export default function ProfilePage() {
               rating:
                 mapped.length > 0
                   ? Math.round(
-                      (mapped.reduce((a, b) => a + (b.rating ?? 0), 0) / mapped.length) * 10
+                      (mapped.reduce((a, b) => a + (b.rating ?? 0), 0) /
+                        mapped.length) *
+                        10
                     ) / 10
                   : 0,
               monthly: 0,
@@ -960,7 +973,10 @@ export default function ProfilePage() {
         } else {
           const profile: ProfileCore = {
             id: u.user_id ?? userIdParam,
-            name: toSafeTitle(`${u.first_name ?? ""} ${u.second_name ?? ""}`.trim()) || "User",
+            name:
+              toSafeTitle(
+                `${u.first_name ?? ""} ${u.second_name ?? ""}`.trim()
+              ) || "User",
             email: u.email ?? "",
             location: u.location ?? null,
             joined_at: null,
@@ -985,7 +1001,8 @@ export default function ProfilePage() {
           setCoachVM(null);
         }
       } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : "Failed to load profile.");
+        if (!cancelled)
+          setError(e instanceof Error ? e.message : "Failed to load profile.");
       } finally {
         if (!cancelled) {
           setFetchingCoachPrograms(false);
@@ -1035,10 +1052,14 @@ export default function ProfilePage() {
         };
 
         const coachBlock: CoachBlock = d.coach ?? {};
-        const seededPrograms: CoachProgramItem[] = Array.isArray(coachBlock.programs)
+        const seededPrograms: CoachProgramItem[] = Array.isArray(
+          coachBlock.programs
+        )
           ? coachBlock.programs
           : [];
-        const certs: CertificationItem[] = Array.isArray(coachBlock.certifications)
+        const certs: CertificationItem[] = Array.isArray(
+          coachBlock.certifications
+        )
           ? coachBlock.certifications
           : [];
 
@@ -1069,9 +1090,15 @@ export default function ProfilePage() {
           experience: u.experience_level || null,
         };
 
-        const programs: ProgramLite[] = Array.isArray(d.programs) ? d.programs : [];
-        const achievements: Achievement[] = Array.isArray(d.achievements) ? d.achievements : [];
-        const subscriptions: Subscription[] = Array.isArray(d.subscriptions) ? d.subscriptions : [];
+        const programs: ProgramLite[] = Array.isArray(d.programs)
+          ? d.programs
+          : [];
+        const achievements: Achievement[] = Array.isArray(d.achievements)
+          ? d.achievements
+          : [];
+        const subscriptions: Subscription[] = Array.isArray(d.subscriptions)
+          ? d.subscriptions
+          : [];
 
         const workouts = Number(d.stats?.workouts ?? 0) || 0;
         const dayStreak = Number(d.stats?.day_streak ?? 0) || 0;
@@ -1090,15 +1117,22 @@ export default function ProfilePage() {
             achievements: achievements.length,
             day_streak: dayStreak,
           },
-          achievements: achievements.slice(0, 3).map((a) => ({ ...a, emoji: a.emoji ?? "💪" })),
-          subscriptions: subscriptions.map((s) => ({ ...s, status: s.status ?? "active" })),
+          achievements: achievements
+            .slice(0, 3)
+            .map((a) => ({ ...a, emoji: a.emoji ?? "💪" })),
+          subscriptions: subscriptions.map((s) => ({
+            ...s,
+            status: s.status ?? "active",
+          })),
         };
 
         setAthleteVM(vm);
         setCoachVM(null);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to build profile from userDB.");
+      setError(
+        e instanceof Error ? e.message : "Failed to build profile from userDB."
+      );
     } finally {
       setLoading(false);
     }
@@ -1111,7 +1145,8 @@ export default function ProfilePage() {
     const d = (userDB as UserDBShape | undefined)?.data;
     if (!d) return;
 
-    const isCoachSelf = (d.user.user_type ?? "athlete").toLowerCase() === "coach";
+    const isCoachSelf =
+      (d.user.user_type ?? "athlete").toLowerCase() === "coach";
     const coachId = resolveUserId(d);
     if (!isCoachSelf || coachId === undefined) return;
 
@@ -1159,10 +1194,8 @@ export default function ProfilePage() {
   const showLoading = loading || (displayCoach && fetchingCoachPrograms);
   const { theme } = useGetTheme();
 
-
   return (
-   
-     <div
+    <div
       className={`min-h-screen${theme === "dark" ? "bg-black" : "bg-white"}`}
     >
       <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
@@ -1199,7 +1232,7 @@ export default function ProfilePage() {
                 {/* Show Back when viewing other, otherwise show Logout */}
                 {viewingOther ? (
                   <button
-                     className="bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-6 cursor-pointer py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-6 cursor-pointer py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl"
                     onClick={handleBack}
                   >
                     Back
@@ -1224,17 +1257,57 @@ export default function ProfilePage() {
           <section className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
             {displayCoach && coachVM ? (
               <>
-                <StatCard loading={showLoading} icon={<Users className="h-5 w-5 text-red-600" />} value={coachVM.stats.subscribers} label="Subscribers" />
-                <StatCard loading={showLoading} icon={<BookOpen className="h-5 w-5 text-red-600" />} value={coachVM.stats.programs} label="Programs" />
-                <StatCard loading={showLoading} icon={<Star className="h-5 w-5 text-red-600" />} value={coachVM.stats.rating} label="Rating" />
-                <StatCard loading={showLoading} icon={<DollarSign className="h-5 w-5 text-red-600" />} value={coachVM.stats.monthly} label="Monthly" />
+                <StatCard
+                  loading={showLoading}
+                  icon={<Users className="h-5 w-5 text-red-600" />}
+                  value={coachVM.stats.subscribers}
+                  label="Subscribers"
+                />
+                <StatCard
+                  loading={showLoading}
+                  icon={<BookOpen className="h-5 w-5 text-red-600" />}
+                  value={coachVM.stats.programs}
+                  label="Programs"
+                />
+                <StatCard
+                  loading={showLoading}
+                  icon={<Star className="h-5 w-5 text-red-600" />}
+                  value={coachVM.stats.rating}
+                  label="Rating"
+                />
+                <StatCard
+                  loading={showLoading}
+                  icon={<DollarSign className="h-5 w-5 text-red-600" />}
+                  value={coachVM.stats.monthly}
+                  label="Monthly"
+                />
               </>
             ) : athleteVM ? (
               <>
-                <StatCard loading={showLoading} icon={<TrendingUp className="h-5 w-5 text-red-600" />} value={athleteVM.stats.workouts} label="Workouts" />
-                <StatCard loading={showLoading} icon={<BookOpen className="h-5 w-5 text-red-600" />} value={athleteVM.stats.programs} label="Programs" />
-                <StatCard loading={showLoading} icon={<Award className="h-5 w-5 text-red-600" />} value={athleteVM.stats.achievements} label="Achievements" />
-                <StatCard loading={showLoading} icon={<Flame className="h-5 w-5 text-red-600" />} value={athleteVM.stats.day_streak} label="Day Streak" />
+                <StatCard
+                  loading={showLoading}
+                  icon={<TrendingUp className="h-5 w-5 text-red-600" />}
+                  value={athleteVM.stats.workouts}
+                  label="Workouts"
+                />
+                <StatCard
+                  loading={showLoading}
+                  icon={<BookOpen className="h-5 w-5 text-red-600" />}
+                  value={athleteVM.stats.programs}
+                  label="Programs"
+                />
+                <StatCard
+                  loading={showLoading}
+                  icon={<Award className="h-5 w-5 text-red-600" />}
+                  value={athleteVM.stats.achievements}
+                  label="Achievements"
+                />
+                <StatCard
+                  loading={showLoading}
+                  icon={<Flame className="h-5 w-5 text-red-600" />}
+                  value={athleteVM.stats.day_streak}
+                  label="Day Streak"
+                />
               </>
             ) : null}
           </section>
@@ -1244,19 +1317,31 @@ export default function ProfilePage() {
             <div className="flex gap-2 rounded-full bg-zinc-100 p-1 text-sm">
               <button
                 onClick={() => setTab("overview")}
-                className={`flex-1 rounded-full px-4 py-2 ${tab === "overview" ? "bg-white shadow text-zinc-900" : "text-zinc-600"}`}
+                className={`flex-1 rounded-full px-4 py-2 ${
+                  tab === "overview"
+                    ? "bg-white shadow text-zinc-900"
+                    : "text-zinc-600"
+                }`}
               >
                 Overview
               </button>
               <button
                 onClick={() => setTab("activity")}
-                className={`flex-1 rounded-full px-4 py-2 ${tab === "activity" ? "bg-white shadow text-zinc-900" : "text-zinc-600"}`}
+                className={`flex-1 rounded-full px-4 py-2 ${
+                  tab === "activity"
+                    ? "bg-white shadow text-zinc-900"
+                    : "text-zinc-600"
+                }`}
               >
                 Activity
               </button>
               <button
                 onClick={() => setTab("settings")}
-                className={`flex-1 rounded-full px-4 py-2 ${tab === "settings" ? "bg-white shadow text-zinc-900" : "text-zinc-600"}`}
+                className={`flex-1 rounded-full px-4 py-2 ${
+                  tab === "settings"
+                    ? "bg-white shadow text-zinc-900"
+                    : "text-zinc-600"
+                }`}
               >
                 Settings
               </button>
@@ -1266,13 +1351,25 @@ export default function ProfilePage() {
               {tab === "overview" &&
                 (displayCoach && coachVM ? (
                   <>
-                    <CoachProgramsList loading={showLoading} items={coachVM.programs} />
-                    <CoachCertifications loading={showLoading} items={coachVM.certs} />
+                    <CoachProgramsList
+                      loading={showLoading}
+                      items={coachVM.programs}
+                    />
+                    <CoachCertifications
+                      loading={showLoading}
+                      items={coachVM.certs}
+                    />
                   </>
                 ) : athleteVM ? (
                   <>
-                    <SubscriptionsList loading={showLoading} items={athleteVM.subscriptions} />
-                    <RecentAchievements loading={showLoading} items={athleteVM.achievements} />
+                    <SubscriptionsList
+                      loading={showLoading}
+                      items={athleteVM.subscriptions}
+                    />
+                    <RecentAchievements
+                      loading={showLoading}
+                      items={athleteVM.achievements}
+                    />
                   </>
                 ) : null)}
 
@@ -1291,6 +1388,5 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
-   
   );
 }

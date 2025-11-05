@@ -417,7 +417,7 @@
 //             {/* User List - Desktop always visible, Mobile as overlay/toggle */}
 //             <div
 //               className={`
-//                 ${showUserList ? "flex" : "hidden"} 
+//                 ${showUserList ? "flex" : "hidden"}
 //                 lg:flex flex-col bg-white rounded-lg shadow-sm p-4 sm:p-5
 //                 absolute lg:relative inset-0 lg:inset-auto z-10 lg:z-0
 //                 lg:flex-1 lg:h-fit
@@ -493,7 +493,6 @@
 
 // export default Chat;
 
-
 "use client";
 import React, { useEffect, useState, useRef, Suspense } from "react";
 import Sidebar from "../components/shared/sidebar";
@@ -541,7 +540,9 @@ const OnlineDot = ({ online }: { online: boolean }) => (
 );
 
 const Skeleton = ({ className = "" }: { className?: string }) => (
-  <div className={`animate-pulse rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 ${className}`} />
+  <div
+    className={`animate-pulse rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 ${className}`}
+  />
 );
 
 /* =========================
@@ -577,21 +578,33 @@ const Chat = () => {
       setLoadingUsers(true);
       setError("");
 
-      const res = await fetch("https://godzilla-be.vercel.app/api/v1/auth/getusers");
+      const res = await fetch(
+        "https://godzilla-be.vercel.app/api/v1/auth/getusers"
+      );
       if (!res.ok) throw new Error("Failed to fetch users");
 
       const result = await res.json();
       if (!result || !result.data) throw new Error("Invalid response format");
 
-      const formattedUsers: LiteUser[] = result.data.map(
-        (user: { id: string; first_name: string; status: string }) => ({
+      const formattedUsers: LiteUser[] = result.data
+        .map((user: { id: string; first_name: string; status: string }) => ({
           id: user.id,
           name: user.first_name || "Unknown",
           status: user.status || "online",
           avatar:
-            user.first_name?.split(" ").map((n: string) => n[0]).join("") || "U",
-        })
-      );
+            user.first_name
+              ?.split(" ")
+              .map((n: string) => n[0])
+              .join("") || "U",
+        }))
+        .filter(
+          (user: { id: string; first_name: string; status: string }) =>
+            user.id !== userDB?.data?.user_id
+        );
+      console.log(formattedUsers);
+      formattedUsers.filter((user) => user.id !== userDB?.data?.user_id);
+      console.log(userDB?.data?.user_id);
+      console.log(formattedUsers);
 
       setActiveUsers(formattedUsers);
     } catch (err) {
@@ -604,8 +617,8 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (userDB?.data?.user_id) fetchUsers();
+  }, [userDB?.data?.user_id]);
 
   /* =========================
      Supabase realtime per conversation
@@ -696,11 +709,20 @@ const Chat = () => {
       const token = userDB?.data?.access_token;
       if (!token) return toast.error("You're not logged in.");
 
-      const res = await fetch("https://godzilla-be.vercel.app/api/v1/chat/messages/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ recipient_id: selectedUser.id, content: message }),
-      });
+      const res = await fetch(
+        "https://godzilla-be.vercel.app/api/v1/chat/messages/send",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            recipient_id: selectedUser.id,
+            content: message,
+          }),
+        }
+      );
 
       const result = await res.json();
       if (!res.ok) throw new Error(result.message || "Failed to send message");
@@ -709,7 +731,10 @@ const Chat = () => {
         id: result?.data?.message?.id || Date.now(),
         user: "You",
         avatar: "ME",
-        time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+        time: new Date().toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         content: message,
         sender_id: userDB?.data?.user_id,
         likes: 0,
@@ -742,7 +767,9 @@ const Chat = () => {
      Render
      ========================= */
   return (
-    <div className={`min-h-screen ${theme === "dark" ? "bg-black" : "bg-white"}`}>
+    <div
+      className={`min-h-screen ${theme === "dark" ? "bg-black" : "bg-white"}`}
+    >
       <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
         <Sidebar />
       </Suspense>
@@ -814,9 +841,13 @@ const Chat = () => {
                   <Skeleton className="h-[58px]" />
                 </>
               ) : error ? (
-                <div className="text-sm text-red-500 text-center py-6">{error}</div>
+                <div className="text-sm text-red-500 text-center py-6">
+                  {error}
+                </div>
               ) : activeUsers.length === 0 ? (
-                <div className="text-sm text-zinc-500 text-center py-6">No users</div>
+                <div className="text-sm text-zinc-500 text-center py-6">
+                  No users
+                </div>
               ) : (
                 activeUsers.map((user) => {
                   const active = selectedUser?.id === user.id;
@@ -838,7 +869,9 @@ const Chat = () => {
                         <div className="flex items-center gap-2">
                           <p className="truncate font-medium">{user.name}</p>
                           {loadingUserId === user.id && (
-                            <span className="text-xs text-zinc-400 animate-pulse">⏳</span>
+                            <span className="text-xs text-zinc-400 animate-pulse">
+                              ⏳
+                            </span>
                           )}
                         </div>
                         <div className="mt-0.5 flex items-center gap-1 text-xs text-zinc-500">
@@ -873,11 +906,15 @@ const Chat = () => {
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <h3 className="truncate font-semibold">{selectedUser.name}</h3>
+                      <h3 className="truncate font-semibold">
+                        {selectedUser.name}
+                      </h3>
                       <Circle
                         className={[
                           "h-2.5 w-2.5",
-                          selectedUser.status === "online" ? "text-green-500" : "text-zinc-400",
+                          selectedUser.status === "online"
+                            ? "text-green-500"
+                            : "text-zinc-400",
                         ].join(" ")}
                         fill="currentColor"
                       />
@@ -888,7 +925,9 @@ const Chat = () => {
                   </div>
                 </>
               ) : (
-                <p className="text-sm text-zinc-500">Select a user to start chatting</p>
+                <p className="text-sm text-zinc-500">
+                  Select a user to start chatting
+                </p>
               )}
             </div>
 
@@ -906,7 +945,12 @@ const Chat = () => {
                 currentMessages.map((msg) => {
                   const mine = msg.sender_id === userDB?.data?.user_id;
                   return (
-                    <div key={msg.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
+                    <div
+                      key={msg.id}
+                      className={`flex ${
+                        mine ? "justify-end" : "justify-start"
+                      }`}
+                    >
                       <div
                         className={[
                           "max-w-[85%] sm:max-w-[70%] md:max-w-[60%] rounded-2xl px-3 py-2.5 shadow-sm",
@@ -920,7 +964,9 @@ const Chat = () => {
                             {selectedUser?.name}
                           </div>
                         )}
-                        <p className="text-sm leading-relaxed break-words">{msg.content}</p>
+                        <p className="text-sm leading-relaxed break-words">
+                          {msg.content}
+                        </p>
                         <div
                           className={[
                             "mt-1.5 text-[10px]",
@@ -928,10 +974,13 @@ const Chat = () => {
                           ].join(" ")}
                         >
                           {msg.created_at
-                            ? new Date(msg.created_at).toLocaleTimeString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
+                            ? new Date(msg.created_at).toLocaleTimeString(
+                                "en-US",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )
                             : msg.time || ""}
                         </div>
                       </div>
@@ -945,7 +994,10 @@ const Chat = () => {
             {selectedUser && (
               <div className="border-t border-zinc-200 p-3 sm:p-4">
                 <div className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-2.5 py-2">
-                  <button className="p-2 rounded-full hover:bg-zinc-50" aria-label="Attach">
+                  <button
+                    className="p-2 rounded-full hover:bg-zinc-50"
+                    aria-label="Attach"
+                  >
                     <Paperclip className="h-5 w-5 text-zinc-500" />
                   </button>
                   <input
@@ -955,7 +1007,10 @@ const Chat = () => {
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                   />
-                  <button className="p-2 rounded-full hover:bg-zinc-50" aria-label="Emoji">
+                  <button
+                    className="p-2 rounded-full hover:bg-zinc-50"
+                    aria-label="Emoji"
+                  >
                     <Smile className="h-5 w-5 text-zinc-500" />
                   </button>
                   <button
