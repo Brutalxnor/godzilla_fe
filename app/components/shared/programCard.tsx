@@ -48,7 +48,7 @@ export default function ProgramCard({
 }: ProgramCardProps) {
   return (
     <Link href={"/programs"}>
-      <div className="rounded-2xl border border-gray-200 bg-white p-4">
+      <div className="rounded-2xl border cursor-pointer border-gray-200 bg-white p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="font-semibold">{title}</div>
@@ -57,10 +57,10 @@ export default function ProgramCard({
           {badge && badgeTone && <Badge tone={badgeTone}>{badge}</Badge>}
         </div>
 
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <div className="text-xs text-gray-600 mb-1">Progress</div>
           <ProgressBar percent={percent} />
-        </div>
+        </div> */}
 
         <div className="mt-4 flex items-center justify-between">
           <div className="text-xs text-gray-500">{expires}</div>

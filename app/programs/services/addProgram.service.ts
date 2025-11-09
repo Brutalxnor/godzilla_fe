@@ -28,6 +28,15 @@ export interface CreateProgramType {
   user_id: string;
 }
 
+
+export type ProgramFromAPI = {
+  id: string | number;
+  title: string;
+  subscribers?: number;
+  rating?: number;
+};
+
+
 // GET all programs for the current user
 export const GetAllPrograms = async () => {
   try {
@@ -100,5 +109,44 @@ export const CreateProgram = async (data: CreateProgramType) => {
       console.error("Unexpected error:", error);
       return { error: "An unexpected error occurred" };
     }
+  }
+};
+
+
+export const GetProgramsByCoachId = async (
+  coachId: string | number
+): Promise<ProgramFromAPI[]> => {
+  try {
+    const userString = localStorage.getItem("user");
+    let accessToken: string | undefined;
+
+    if (userString) {
+      const user: StoredUser = JSON.parse(userString);
+      accessToken = user?.data?.access_token;
+    }
+
+    const response = await axios.get(
+      `https://godzilla-be.vercel.app/api/v1/programs/programCoach/${coachId}`,
+      accessToken
+        ? {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        : undefined
+    );
+
+    const raw = response.data?.data;
+    return Array.isArray(raw) ? (raw as ProgramFromAPI[]) : [];
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error(
+        "Axios error (GetProgramsByCoachId):",
+        error.response?.data || error.message
+      );
+    } else {
+      console.error("Unexpected error (GetProgramsByCoachId):", error);
+    }
+    return [];
   }
 };
