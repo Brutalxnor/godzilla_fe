@@ -46,7 +46,7 @@ export const GetAllPrograms = async () => {
       console.error("User is not found");
     }
     const response = await axios.get(
-      `http://localhost:4000/api/v1/programs`
+      `https://godzilla-be.vercel.app/api/v1/programs`
     );
 
     return response.data?.data;
@@ -126,7 +126,7 @@ export const GetProgramsByCoachId = async (
     }
 
     const response = await axios.get(
-      `http://localhost:4000/api/v1/programs/programCoach/${coachId}`,
+      `https://godzilla-be.vercel.app/api/v1/programs/programCoach/${coachId}`,
       accessToken
         ? {
             headers: {

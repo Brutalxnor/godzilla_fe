@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000/api/v1/subscripe"; // 👈 adjust if your backend route differs
+const BASE_URL = "https://godzilla-be.vercel.app/api/v1/subscripe"; // 👈 adjust if your backend route differs
 
 export interface SubscriptionPayload {
   athlete_id: string;

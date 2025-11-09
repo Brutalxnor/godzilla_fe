@@ -361,7 +361,7 @@ export default function Home() {
           // ---------- ATHLETE: programs this athlete is subscribed to ----------
           // use same base URL you use in /programs page
           const response = await axios.get(
-            `http://localhost:4000/api/v1/subscripe/${userId}`
+            `https://godzilla-be.vercel.app/api/v1/subscripe/${userId}`
           );
 
           type Row = {
