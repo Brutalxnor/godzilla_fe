@@ -18,7 +18,7 @@ export default function CoachProgramsList({
   return (
     <div className="rounded-2xl border border-zinc-200 bg-white p-5">
       <div className="mb-3 font-medium">Your Programs</div>
-      <div className="space-y-3">
+      <div className="space-y-3 cursor-pointer">
         {loading ? (
           <>
             <div className="h-14 animate-pulse rounded-xl bg-zinc-200" />
