@@ -515,23 +515,14 @@ export default function ProgramCard({
 
       return {
         safeRating: Number.isFinite(r) ? r : 4.9,
-        safeRatingsCount:
-          typeof program.ratingsCount === "number" ? program.ratingsCount : 0,
+        safeRatingsCount: typeof program.ratingsCount === "number" ? program.ratingsCount : 0,
         safeWeeks: Number.isFinite(w) ? w : 12,
         safeLevel: (program.level as string) || "Beginner",
         safeCover: program.cover || "/placeholder.png",
       };
-    }, [
-      program.rating,
-      program.ratingsCount,
-      program.durationWeeks,
-      program.level,
-      program.cover,
-    ]);
+    }, [rating, ratingsCount, durationWeeks, level, cover]);
 
   const hasSubscribe = Boolean(onSubscribe);
-
-  console.log(program, "saklfhasjkhjksadjk");
 
   return (
     <article className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -539,27 +530,27 @@ export default function ProgramCard({
       <div className="relative h-56 w-full">
         <img
           src={safeCover}
-          alt={program.title || "Program cover"}
+          alt={title || "Program cover"}
           className="h-full w-full object-cover"
           sizes="(min-width: 1024px) 420px, 100vw"
         />
 
-        {program.premium && (
+        {premium && (
           <span className="absolute left-3 top-3 rounded-full bg-rose-600/90 px-2.5 py-1 font-semibold text-white shadow-sm">
             Premium
           </span>
         )}
 
-        {(program.price || program.compareAtPrice) && (
+        {(price || compareAtPrice) && (
           <div className="absolute right-3 top-3 grid gap-0.5 text-right">
-            {program.compareAtPrice && (
+            {compareAtPrice && (
               <span className="rounded-full bg-black/70 px-2 py-0.5 text-[10px] text-white line-through">
-                {program.compareAtPrice}
+                {compareAtPrice}
               </span>
             )}
-            {program.price && (
+            {price && (
               <span className="rounded-full bg-black/80 px-2 py-0.5 text-[11px] font-semibold text-white">
-                {program.price}
+                {price}
               </span>
             )}
           </div>
@@ -568,11 +559,11 @@ export default function ProgramCard({
 
       {/* Body */}
       <div className="p-4 lg:p-5">
-        <h3 className="text-lg font-semibold">{program.title}</h3>
+        <h3 className="text-lg font-semibold">{title}</h3>
 
         <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
           <LuDumbbell className="text-gray-500" />
-          <span>{program.coach?.first_name}</span>
+          <span>{coach?.first_name}</span>
         </div>
 
         {/* meta row */}
@@ -594,15 +585,13 @@ export default function ProgramCard({
           </div>
         </div>
 
-        {program.blurb && (
-          <p className="mt-3 text-sm leading-6 text-gray-700">
-            {program.blurb}
-          </p>
+        {blurb && (
+          <p className="mt-3 text-sm leading-6 text-gray-700">{blurb}</p>
         )}
 
-        {Array.isArray(program.tags) && program.tags.length > 0 && (
+        {Array.isArray(tags) && tags.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
-            {program.tags.map((t) => (
+            {tags.map((t) => (
               <span
                 key={t}
                 className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs text-gray-700"

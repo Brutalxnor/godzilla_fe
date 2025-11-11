@@ -1654,9 +1654,6 @@ export interface ApiProgram {
   pdfs?: string;
   coachName?: string;
   rating?: number;
-  coach: {
-    first_name: string;
-  };
   ratingsCount?: number;
 }
 
@@ -1738,14 +1735,10 @@ function mapApiToProgramCard(p: ApiProgram): Program {
   if (p.minutes_per_session)
     features.push(`${p.minutes_per_session} min/session`);
 
-  console.log(p.coach?.first_name, "PPPPPPP");
-
   return {
     id: String(p.id ?? p._id ?? crypto.randomUUID()),
     title: p.title ?? "Untitled Program",
-    coach: {
-      first_name: coachFromUsers || p.coach?.first_name || "Coach",
-    },
+    coach: coachFromUsers || p.coachName || "Coach",
     cover: pExtra.cover_image_url ?? "/placeholder.png",
     rating: typeof p.rating === "number" ? p.rating : 4.9,
     ratingsCount: typeof p.ratingsCount === "number" ? p.ratingsCount : 0,
@@ -1769,9 +1762,7 @@ function mapCoachProgramToCard(p: ProgramFromAPI, coachName: string): Program {
   return {
     id: String(p.id),
     title: p.title ?? "Untitled Program",
-    coach: {
-      first_name: coachName || "Coach",
-    },
+    coach: coachName || "Coach",
     cover: "/placeholder.png",
     rating: typeof p.rating === "number" ? p.rating : 4.9,
     ratingsCount: typeof p.subscribers === "number" ? p.subscribers : 0,
@@ -1828,9 +1819,7 @@ function mapSubsToPrograms(
     return {
       id: programId,
       title: s.programs?.title ?? "Untitled Program",
-      coach: {
-        first_name: s.users?.first_name ?? "Coach",
-      },
+      coach: s.users?.first_name ?? "Coach",
       cover: s.programs?.cover_image_url ?? "/placeholder.png",
       rating: 4.9,
       ratingsCount: 0,
@@ -1936,7 +1925,7 @@ export default function ProgramsPage() {
         setLoadingAll(false);
       }
     })();
-  }, [tab, isCoach]);
+  }, [tab, isCoach, loadingAll]);
 
   /* ---- load MY programs (coach only) ---- */
   useEffect(() => {

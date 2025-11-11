@@ -28,12 +28,14 @@ export interface CreateProgramType {
   user_id: string;
 }
 
+
 export type ProgramFromAPI = {
   id: string | number;
   title: string;
   subscribers?: number;
   rating?: number;
 };
+
 
 // GET all programs for the current user
 export const GetAllPrograms = async () => {
@@ -109,6 +111,7 @@ export const CreateProgram = async (data: CreateProgramType) => {
     }
   }
 };
+
 
 export const GetProgramsByCoachId = async (
   coachId: string | number

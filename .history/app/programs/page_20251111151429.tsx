@@ -1655,8 +1655,8 @@ export interface ApiProgram {
   coachName?: string;
   rating?: number;
   coach: {
-    first_name: string;
-  };
+    first_name: string
+  }
   ratingsCount?: number;
 }
 
@@ -1744,7 +1744,7 @@ function mapApiToProgramCard(p: ApiProgram): Program {
     id: String(p.id ?? p._id ?? crypto.randomUUID()),
     title: p.title ?? "Untitled Program",
     coach: {
-      first_name: coachFromUsers || p.coach?.first_name || "Coach",
+      first_name: coachFromUsers || p.p.coach?.first_name || "Coach",
     },
     cover: pExtra.cover_image_url ?? "/placeholder.png",
     rating: typeof p.rating === "number" ? p.rating : 4.9,
