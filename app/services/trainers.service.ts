@@ -2,7 +2,7 @@ import axios from "axios";
 import { Trainer } from "../trainers/TrainerCard";
  // 👈 same Trainer type you already use in the page
 
-const BASE_URL = "http://localhost:4000/api/v1/coaches"; 
+const BASE_URL = "https://godzilla-be.vercel.app/api/v1/coaches"; 
 // adjust if your backend route is different
 
 // === Raw shape from your backend (coach_profiles joined with users) ===
