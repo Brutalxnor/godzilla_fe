@@ -675,10 +675,10 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
 
             {/* Pricing in top right */}
-            <div className="absolute top-3 right-3 sm:top-4 sm:right-6 text-white text-right text-xs sm:text-sm">
+            {/* <div className="absolute top-3 right-3 sm:top-4 sm:right-6 text-white text-right text-xs sm:text-sm">
               <div className="line-through opacity-75">$69/month</div>
               <div className="text-base sm:text-lg font-bold">$49/month</div>
-            </div>
+            </div> */}
 
             {/* Preview button */}
             <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-6">
@@ -696,7 +696,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
             </h1>
 
             {/* 👉 wraps nicely on small screens */}
-            <div className="flex flex-wrap gap-x-6 gap-y-3 text-xs sm:text-sm text-gray-600 mb-6">
+            {/* <div className="flex flex-wrap gap-x-6 gap-y-3 text-xs sm:text-sm text-gray-600 mb-6">
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                 <span className="font-medium">4.9</span>
@@ -714,7 +714,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                 <Award className="w-4 h-4" />
                 <span>Beginner</span>
               </div>
-            </div>
+            </div> */}
 
             <p className="text-gray-600 mb-8 text-sm sm:text-base">
               {programs?.data?.description ||
@@ -812,7 +812,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                 </div>
 
                 {/* What's Included */}
-                {/* <div>
+                <div>
                   <h2 className="text-lg font-semibold mb-3">
                     What is Included
                   </h2>
@@ -836,7 +836,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                       </div>
                     ))}
                   </div>
-                </div> */}
+                </div>
               </div>
             )}
 
