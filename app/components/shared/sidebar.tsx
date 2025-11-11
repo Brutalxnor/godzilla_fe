@@ -859,6 +859,10 @@
 //     </>
 //   );
 // }
+
+
+
+
 "use client";
 
 import Link from "next/link";
@@ -873,12 +877,12 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { LogoutService } from "@/app/auth/services/logout.service";
 import useGetTheme from "@/app/Hooks/useGetTheme";
 import useGetUser from "@/app/Hooks/useGetUser";
-import ThemeToggle from "@/app/components/ThemeToggle"; // 🟢 ADDED
+import ThemeToggle from "@/app/components/ThemeToggle";
 import { useState, useEffect } from "react";
 
 type Item = { href: string; label: string; Icon: IconType };
 
-// 🔹 Top nav items (Profile moved to footer, not here)
+// 🔹 All possible nav items
 const items: Item[] = [
   { href: "/", label: "Home", Icon: AiOutlineHome },
   { href: "/community", label: "Community", Icon: FiUsers },
@@ -921,14 +925,27 @@ export default function Sidebar() {
       user?: {
         first_name?: string;
         second_name?: string;
+        user_type?: "athlete" | "coach" | string; // 👈 role here
       };
       email?: string;
+      user_type?: "athlete" | "coach" | string; // just in case it’s on root
     };
   };
 
   const typedUser = (userDB as SidebarUserDB | undefined)?.data;
   const user = typedUser?.user;
   const email = typedUser?.email ?? "";
+
+  // 👇 determine role from userDB
+  const userType =
+    user?.user_type ?? typedUser?.user_type ?? undefined; // "athlete" | "coach" | undefined
+
+  // 👇 final items shown in sidebar:
+  // if coach ➜ hide /trainers
+  const sidebarItems: Item[] =
+    userType === "coach"
+      ? items.filter((i) => i.href !== "/trainers")
+      : items;
 
   const displayName = (() => {
     const raw =
@@ -951,10 +968,12 @@ export default function Sidebar() {
   }, [pathname]);
 
   const mobilePrimaryHrefs = ["/", "/community", "/programs"];
-  const mobilePrimaryItems = items.filter((i) =>
+
+  // 👇 use sidebarItems instead of items so /trainers is also hidden on mobile
+  const mobilePrimaryItems = sidebarItems.filter((i) =>
     mobilePrimaryHrefs.includes(i.href)
   );
-  const mobileSecondaryItems = items.filter(
+  const mobileSecondaryItems = sidebarItems.filter(
     (i) => !mobilePrimaryHrefs.includes(i.href)
   );
 
@@ -990,7 +1009,7 @@ export default function Sidebar() {
 
           {/* Nav items */}
           <nav className="flex flex-1 flex-col gap-1 px-2">
-            {items.map(({ href, label, Icon }) => {
+            {sidebarItems.map(({ href, label, Icon }) => {
               const active = isActive(href);
               return (
                 <Link
@@ -1032,20 +1051,17 @@ export default function Sidebar() {
             })}
           </nav>
 
-          {/* ========== FOOTER: Theme toggle + user info + Profile + Logout ========== */}
+          {/* ===== footer: theme + profile + logout (unchanged) ===== */}
           <div className="mt-auto px-2 pb-3 pt-3 border-t border-gray-200 dark:border-zinc-700 flex flex-col gap-2">
-            {/* 🌓 Theme toggle (desktop) */}
             <div className="flex items-center justify-between px-1 mb-3">
               <ThemeToggle />
             </div>
 
-            {/* User info (desktop) */}
             {typedUser && (
               <div className="mb-0 flex px-1 items-center gap-3">
                 <div className="flex  h-10 w-10 items-center justify-center rounded-full bg-rose-500/10 text-rose-500 font-semibold">
                   {initialLetter}
                 </div>
-                {/* name + email only when expanded */}
                 <div className="hidden group-hover:block max-w-[160px]">
                   <p className="truncate text-sm font-semibold text-gray-800 dark:text-zinc-100">
                     {displayName}
@@ -1057,7 +1073,6 @@ export default function Sidebar() {
               </div>
             )}
 
-            {/* Profile (under name/email, above logout) */}
             <Link
               href="/profile"
               className={[
@@ -1089,7 +1104,6 @@ export default function Sidebar() {
               </div>
             </Link>
 
-            {/* Logout button at bottom */}
             <button
               onClick={onLogout}
               className="
@@ -1178,7 +1192,7 @@ export default function Sidebar() {
                   shadow-lg shadow-black/10 overflow-hidden
                 "
               >
-                {/* 🔹 USER INFO BLOCK IN MOBILE MORE MENU */}
+                {/* user + theme + secondary links etc. – unchanged, just using mobileSecondaryItems */}
                 {typedUser && (
                   <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-zinc-800">
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-rose-500/10 text-rose-500 text-sm font-semibold">
@@ -1195,12 +1209,10 @@ export default function Sidebar() {
                   </div>
                 )}
 
-                {/* 🌓 Theme toggle in mobile More menu */}
                 <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 dark:border-zinc-800">
                   <ThemeToggle />
                 </div>
 
-                {/* secondary nav items */}
                 {mobileSecondaryItems.map(({ href, label, Icon }) => (
                   <Link
                     key={href}
@@ -1215,7 +1227,6 @@ export default function Sidebar() {
                   </Link>
                 ))}
 
-                {/* Profile in mobile menu */}
                 <Link
                   href="/profile"
                   className={`
@@ -1231,10 +1242,8 @@ export default function Sidebar() {
                   <span>Profile</span>
                 </Link>
 
-                {/* Divider */}
                 <div className="h-px bg-gray-100 dark:bg-zinc-800 my-1" />
 
-                {/* Logout */}
                 <button
                   onClick={async (e) => {
                     e.preventDefault();

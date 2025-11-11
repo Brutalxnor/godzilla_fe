@@ -793,13 +793,14 @@ import { GetAllInterests } from "@/app/sign-up/Services/Interest.service";
 import { SignUoService } from "@/app/sign-up/Services/Signup.service";
 import { SignUpFormData } from "@/app/types/admin";
 import { InterestType } from "@/app/types/type";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { createClient } from "@supabase/supabase-js";
 import { supabase } from "@/lib/client";
 import Link from "next/link";
 import useGetTheme from "@/app/Hooks/useGetTheme";
+import { useRouter } from "next/navigation";
+
 
 export const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -809,6 +810,8 @@ export const SignupForm = () => {
   const [interest, setInterest] = useState<InterestType[]>([]);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter(); 
 
   const {
     register,
@@ -872,7 +875,6 @@ export const SignupForm = () => {
     padding: "16px 12px",
     border: `2px solid ${isSelected ? "#ef4444" : "#e5e7eb"}`,
     borderRadius: "12px",
-    // backgroundColor: isSelected ? "#fef2f2" : "#f9fafb",
     cursor: "pointer",
     transition: "all 0.2s ease",
     textAlign: "center" as const,
@@ -896,60 +898,82 @@ export const SignupForm = () => {
     setSelectedFitnessInterests(updatedInterests);
     setValue("interests", updatedInterests);
   };
-
   const onSubmit = async (data: SignUpFormData) => {
     try {
       setIsSubmitting(true);
-
+  
       let avatarUrl = "";
-
+  
       if (data.avatar_url instanceof File) {
         avatarUrl = await uploadToSupabase(data.avatar_url);
       }
-
+  
       const payload = {
         ...data,
-        avatar_url: avatarUrl, // 🔥 ده المهم
+        avatar_url: avatarUrl,
       };
-
-      const res = await fetch("https://godzilla-be.vercel.app/api/v1/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
+  
+      const res = await fetch(
+        "https://godzilla-be.vercel.app/api/v1/auth/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+  
       const result = await res.json();
-      console.log("✅ Registration success:", result);
+      console.log("✅ Registration response:", result);
+  
+      // 🔴 user already exists (409 Conflict)
+      if (res.status === 409) {
+        toast.error("User already exists. Please sign in instead.");
+        return;
+      }
+  
+      if (!res.ok) {
+        // other backend errors
+        toast.error(result?.message || "Something went wrong while signing up");
+        return;
+      }
+  
+      // ✅ success
+      toast.success("Account created successfully! Please sign in.");
+      router.push("/"); // or "/sign-in" if that's your route
     } catch (err) {
       console.error("❌ Registration error:", err);
+      toast.error("Unexpected error, please try again");
     } finally {
       setIsSubmitting(false);
     }
   };
+  
+  
 
   const userType = watch("user_type");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file");
-        return;
-      }
+    if (!file) return;
 
-      // Validate file size (e.g., max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB");
-        return;
-      }
-
-      setSelectedFile(file);
-
-      // Create preview URL
-      const objectUrl = URL.createObjectURL(file);
-      setPreviewUrl(objectUrl);
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
     }
+
+    // Validate file size (e.g., max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size should be less than 5MB");
+      return;
+    }
+
+    setSelectedFile(file);
+
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+    setPreviewImage(objectUrl);
+    setValue("avatar_url", file);
   };
 
   // Cleanup preview URL on unmount
@@ -969,14 +993,6 @@ export const SignupForm = () => {
     fetchGetAllInterests();
   }, []);
 
-  React.useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
-
   const removeSelectedImage = () => {
     setSelectedFile(null);
     if (previewUrl) {
@@ -985,20 +1001,25 @@ export const SignupForm = () => {
     }
     const fileInput = document.getElementById(
       "avatar-upload"
-    ) as HTMLInputElement;
+    ) as HTMLInputElement | null;
     if (fileInput) {
       fileInput.value = "";
     }
+    // Optionally clear form value as well:
+    // setValue("avatar_url", undefined as any);
   };
 
-  const {theme} = useGetTheme()
+  const { theme } = useGetTheme();
 
   return (
-    <div className={`min-h-screen  flex items-center justify-center px-4 py-8 ${theme === "dark" ? "bg-black": "bg-white"}`}>
+    <div
+      className={`min-h-screen  flex items-center justify-center px-4 py-8 ${
+        theme === "dark" ? "bg-black" : "bg-white"
+      }`}
+    >
       <div className="w-[60pc] bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden overflow-y-scroll">
         {/* Header */}
         <div className="text-center pt-8 pb-6 px-8 bg-white dark:bg-black">
-
           <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg transform hover:scale-105 transition-transform duration-300">
             <svg
               className="w-8 h-8 text-white"
@@ -1309,73 +1330,83 @@ export const SignupForm = () => {
             )}
           </div>
 
-          {/* Avatar Upload */}
+          {/* Avatar Upload – NEW STYLING + CLICK ANYWHERE */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Profile Picture
             </label>
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-red-300 transition-colors duration-200">
+
+            <div
+              className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-red-300 hover:bg-red-50/40 transition-all duration-200 cursor-pointer flex flex-col items-center justify-center gap-4 group"
+              onClick={() => fileInputRef.current?.click()}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }
+              }}
+            >
               <input
+                id="avatar-upload"
+                ref={fileInputRef}
                 type="file"
                 accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    setPreviewImage(URL.createObjectURL(file)); // عرض مؤقت
-                    setValue("avatar_url", file); // نحفظ الملف نفسه
-                  }
-                }}
+                className="hidden"
+                onChange={handleFileChange}
               />
-              <label htmlFor="avatar-upload" className="cursor-pointer">
-                {previewUrl ? (
-                  <div className="space-y-4">
-                    <div className="relative">
-                      <img
-                        src={previewUrl}
-                        alt="Preview"
-                        className="w-32 h-32 object-cover rounded-lg mx-auto shadow-md border-2 border-gray-200"
+
+              {previewUrl ? (
+                <div className="space-y-3">
+                  <div className="relative inline-block">
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      className="w-28 h-28 object-cover rounded-full mx-auto shadow-md border-2 border-white ring-2 ring-red-400/70"
+                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeSelectedImage();
+                      }}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold hover:bg-red-600 transition-colors shadow-sm"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <p className="text-sm text-green-600 font-medium">
+                    ✓ {selectedFile?.name || "Image selected"}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Click anywhere here to change your photo
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-1 group-hover:bg-red-100 transition-colors">
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      className="w-7 h-7 text-gray-400 group-hover:text-red-500 transition-colors"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                       />
-                      <button
-                        type="button"
-                        onClick={removeSelectedImage}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold hover:bg-red-600 transition-colors"
-                      >
-                        ×
-                      </button>
-                    </div>
-                    <p className="text-sm text-green-600 font-medium">
-                      ✓ {selectedFile?.name || "Image selected"}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Click to change or remove
-                    </p>
+                    </svg>
                   </div>
-                ) : (
-                  <div>
-                    <div className="mx-auto w-12 h-12 text-gray-400 mb-4">
-                      <svg
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        className="w-full h-full"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                        />
-                      </svg>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      Click to upload or drag and drop
-                    </p>
-                    <p className="text-xs text-gray-500 mt-2">
-                      PNG, JPG up to 2MB
-                    </p>
-                  </div>
-                )}
-              </label>
+                  <p className="text-sm text-gray-700 font-medium">
+                    Click to upload or drag & drop
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG up to 5MB • Square images look best
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
