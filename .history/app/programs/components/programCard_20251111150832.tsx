@@ -515,23 +515,14 @@ export default function ProgramCard({
 
       return {
         safeRating: Number.isFinite(r) ? r : 4.9,
-        safeRatingsCount:
-          typeof program.ratingsCount === "number" ? program.ratingsCount : 0,
+        safeRatingsCount: typeof program.ratingsCount === "number" ? program.ratingsCount : 0,
         safeWeeks: Number.isFinite(w) ? w : 12,
         safeLevel: (program.level as string) || "Beginner",
         safeCover: program.cover || "/placeholder.png",
       };
-    }, [
-      program.rating,
-      program.ratingsCount,
-      program.durationWeeks,
-      program.level,
-      program.cover,
-    ]);
+    }, [program.rating, program.ratingsCount, program.durationWeeks, program.level, program.cover]);
 
   const hasSubscribe = Boolean(onSubscribe);
-
-  console.log(program, "saklfhasjkhjksadjk");
 
   return (
     <article className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -595,14 +586,12 @@ export default function ProgramCard({
         </div>
 
         {program.blurb && (
-          <p className="mt-3 text-sm leading-6 text-gray-700">
-            {program.blurb}
-          </p>
+          <p className="mt-3 text-sm leading-6 text-gray-700">{blurb}</p>
         )}
 
-        {Array.isArray(program.tags) && program.tags.length > 0 && (
+        {Array.isArray(program.tags) && tags.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
-            {program.tags.map((t) => (
+            {tags.map((t) => (
               <span
                 key={t}
                 className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs text-gray-700"

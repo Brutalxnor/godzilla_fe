@@ -252,7 +252,7 @@ export default function CreatePostModal({
                 />
               ) : (
                 <div className="h-10 w-10 rounded-full bg-gray-200 grid place-items-center text-xs font-semibold text-gray-700">
-                  {displayName?.[0]?.toUpperCase() ?? "U"}
+                  {displayName?.name?.[0]?.toUpperCase() ?? "U"}
                 </div>
               )}
               <div>

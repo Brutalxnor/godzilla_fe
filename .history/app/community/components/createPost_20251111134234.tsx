@@ -252,11 +252,11 @@ export default function CreatePostModal({
                 />
               ) : (
                 <div className="h-10 w-10 rounded-full bg-gray-200 grid place-items-center text-xs font-semibold text-gray-700">
-                  {displayName?.[0]?.toUpperCase() ?? "U"}
+                  {user?.name?.[0]?.toUpperCase() ?? "U"}
                 </div>
               )}
               <div>
-                <div className="text-sm font-semibold">{displayName}</div>
+                <div className="text-sm font-semibold">{user?.name}</div>
                 <div className="text-xs text-gray-500">
                   {user?.subtitle ?? "Share with your community"}
                 </div>

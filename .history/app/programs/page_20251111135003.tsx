@@ -569,6 +569,8 @@
 // //   );
 // // }
 
+
+
 // // app/programs/page.tsx
 // "use client";
 
@@ -744,10 +746,12 @@
 //   };
 // }
 
+
 // // // ---------- UI constants ----------
 // // const CATS = ["All", "Strength", "Cardio", "Yoga", "Nutrition", "HIIT"] as const;
 
 // // ---------- UI constants ----------
+
 
 // export default function ProgramsPage() {
 //   const [tab, setTab] = useState<"browse" | "subs">("browse");
@@ -998,6 +1002,8 @@
 //     </div>
 //   );
 // }
+
+
 
 // "use client";
 
@@ -1283,12 +1289,12 @@
 
 //   useEffect(() => {
 //     if (isCoach || !userId || tab !== "subs") return;
-
+  
 //     (async () => {
 //       setLoadingSubs(true);
 //       try {
 //         const subs = await getSubscriptionsByAthleteId(userId);
-
+  
 //         const mapped: Program[] = subs.map((s) => ({
 //           // use program id if you have it, otherwise subscription id
 //           id: String(s.programs?.id ?? s.id),
@@ -1305,7 +1311,7 @@
 //           compareAtPrice: undefined,
 //           blurb: "",
 //         }));
-
+  
 //         setMySubscriptions(mapped);
 //       } catch (err) {
 //         console.error(err);
@@ -1315,6 +1321,9 @@
 //       }
 //     })();
 //   }, [isCoach, userId, tab]);
+  
+
+
 
 //   function handlePreview(p: Program) {
 //     console.log("Preview", p.id);
@@ -1322,21 +1331,21 @@
 
 //   async function handleSubscribe(p: Program) {
 //     if (!userId) return;
-
+  
 //     try {
 //       // 1) Call backend
 //       await createAthleteSubscription({
 //         athlete_id: userId,
 //         program_id: p.id,
 //       });
-
+  
 //       // 2) Re-fetch subscriptions
 //       const subs = await getSubscriptionsByAthleteId(userId);
-
+  
 //       const mapped = subs.reduce<Program[]>((acc, s) => {
 //         const programId = String(s.programs?.id ?? s.program_id);
 //         if (acc.some((pr) => pr.id === programId)) return acc;
-
+  
 //         acc.push({
 //           id: programId,
 //           title: s.programs?.title ?? "Untitled Program",
@@ -1354,15 +1363,17 @@
 //         });
 //         return acc;
 //       }, []);
-
+  
 //       setMySubscriptions(mapped);
-
+  
 //       toast.success("Subscribed successfully!");
 //     } catch (err) {
 //       console.error("Subscription error:", err);
 //       toast.error("Failed to subscribe. Please try again.");
 //     }
 //   }
+  
+  
 
 //   /* ---- create program (coach) ---- */
 //   async function handleCreateSubmit(data: CreateProgramPayload) {
@@ -1451,7 +1462,7 @@
 //   // ---- pick which list & loading to use based on role ----
 //   let activePrograms: Program[];
 //   let activeLoading: boolean;
-
+  
 //   if (isCoach) {
 //     activePrograms = tab === "mine" ? myPrograms : allPrograms;
 //     activeLoading = tab === "mine" ? loadingMine : loadingAll;
@@ -1464,6 +1475,7 @@
 //       activeLoading = loadingAll;
 //     }
 //   }
+  
 
 //   // when to show Subscribe on the card:
 //   const showSubscribe = isCoach ? tab === "all" : true;
@@ -1577,7 +1589,7 @@
 //                 />
 //               )
 //             )
-
+            
 //             )}
 //           </section>
 
@@ -1599,6 +1611,7 @@
 //     </div>
 //   );
 // }
+
 
 "use client";
 
@@ -1654,9 +1667,6 @@ export interface ApiProgram {
   pdfs?: string;
   coachName?: string;
   rating?: number;
-  coach: {
-    first_name: string;
-  };
   ratingsCount?: number;
 }
 
@@ -1668,6 +1678,7 @@ type ApiProgramExtras = {
     avatar_url?: string | null;
   } | null;
 };
+
 
 export interface CreateProgramBody {
   title: string;
@@ -1738,14 +1749,10 @@ function mapApiToProgramCard(p: ApiProgram): Program {
   if (p.minutes_per_session)
     features.push(`${p.minutes_per_session} min/session`);
 
-  console.log(p.coach?.first_name, "PPPPPPP");
-
   return {
     id: String(p.id ?? p._id ?? crypto.randomUUID()),
     title: p.title ?? "Untitled Program",
-    coach: {
-      first_name: coachFromUsers || p.coach?.first_name || "Coach",
-    },
+    coach: coachFromUsers || p.coachName || "Coach",
     cover: pExtra.cover_image_url ?? "/placeholder.png",
     rating: typeof p.rating === "number" ? p.rating : 4.9,
     ratingsCount: typeof p.ratingsCount === "number" ? p.ratingsCount : 0,
@@ -1765,13 +1772,14 @@ function mapApiToProgramCard(p: ApiProgram): Program {
 }
 
 /** map coach endpoint `ProgramFromAPI` to `Program` card type */
-function mapCoachProgramToCard(p: ProgramFromAPI, coachName: string): Program {
+function mapCoachProgramToCard(
+  p: ProgramFromAPI,
+  coachName: string
+): Program {
   return {
     id: String(p.id),
     title: p.title ?? "Untitled Program",
-    coach: {
-      first_name: coachName || "Coach",
-    },
+    coach: coachName || "Coach",
     cover: "/placeholder.png",
     rating: typeof p.rating === "number" ? p.rating : 4.9,
     ratingsCount: typeof p.subscribers === "number" ? p.subscribers : 0,
@@ -1804,55 +1812,50 @@ function toStringArray(v: unknown): string[] {
 /* small helper to build Program[] from subscriptions */
 /* small helper to build Program[] from subscriptions,
    reusing data (including cover) from allPrograms when possible */
-function mapSubsToPrograms(
-  subs: {
-    id: string;
-    programs?: {
-      id?: string | number;
-      title?: string;
-      cover_image_url?: string;
-    };
-    users?: { first_name?: string };
-    program_id?: string;
-  }[],
-  allPrograms: Program[]
-): Program[] {
-  return subs.map((s) => {
-    const programId = String(s.programs?.id ?? s.program_id ?? s.id);
+   function mapSubsToPrograms(
+    subs: {
+      id: string;
+      programs?: { id?: string | number; title?: string; cover_image_url?: string };
+      users?: { first_name?: string };
+      program_id?: string;
+    }[],
+    allPrograms: Program[]
+  ): Program[] {
+    return subs.map((s) => {
+      const programId = String(s.programs?.id ?? s.program_id ?? s.id);
+  
+      // 1) Prefer the fully mapped program from Browse (has correct cover, tags, etc.)
+      const fromAll = allPrograms.find((p) => p.id === programId);
+      if (fromAll) return fromAll;
+  
+      // 2) Fallback: build from subscription row (in case allPrograms is empty)
+      return {
+        id: programId,
+        title: s.programs?.title ?? "Untitled Program",
+        coach: s.users?.first_name ?? "Coach",
+        cover: s.programs?.cover_image_url ?? "/placeholder.png",
+        rating: 4.9,
+        ratingsCount: 0,
+        durationWeeks: 12,
+        level: "Beginner",
+        tags: [],
+        premium: false,
+        price: undefined,
+        compareAtPrice: undefined,
+        blurb: "",
+      };
+    });
+  }
+  
 
-    // 1) Prefer the fully mapped program from Browse (has correct cover, tags, etc.)
-    const fromAll = allPrograms.find((p) => p.id === programId);
-    if (fromAll) return fromAll;
-
-    // 2) Fallback: build from subscription row (in case allPrograms is empty)
-    return {
-      id: programId,
-      title: s.programs?.title ?? "Untitled Program",
-      coach: {
-        first_name: s.users?.first_name ?? "Coach",
-      },
-      cover: s.programs?.cover_image_url ?? "/placeholder.png",
-      rating: 4.9,
-      ratingsCount: 0,
-      durationWeeks: 12,
-      level: "Beginner",
-      tags: [],
-      premium: false,
-      price: undefined,
-      compareAtPrice: undefined,
-      blurb: "",
-    };
-  });
-}
-
-function extractSubscribedIds(
-  subs: {
-    id: string;
-    programs?: { id?: string | number };
-    program_id?: string;
-  }[]
-): string[] {
-  const ids = subs.map((s) => String(s.programs?.id ?? s.program_id ?? s.id));
+function extractSubscribedIds(subs: {
+  id: string;
+  programs?: { id?: string | number };
+  program_id?: string;
+}[]): string[] {
+  const ids = subs.map((s) =>
+    String(s.programs?.id ?? s.program_id ?? s.id)
+  );
   return Array.from(new Set(ids));
 }
 
@@ -1936,7 +1939,7 @@ export default function ProgramsPage() {
         setLoadingAll(false);
       }
     })();
-  }, [tab, isCoach]);
+  }, [tab, isCoach, loa]);
 
   /* ---- load MY programs (coach only) ---- */
   useEffect(() => {
@@ -1966,15 +1969,16 @@ export default function ProgramsPage() {
   /* ---- load MY subscriptions (athlete, My Subscriptions tab) ---- */
   useEffect(() => {
     if (isCoach || !userId || tab !== "subs") return;
-
+  
     (async () => {
       setLoadingSubs(true);
       try {
         const subs = await getSubscriptionsByAthleteId(userId);
-
+  
         const mapped = mapSubsToPrograms(subs, allPrograms);
         setMySubscriptions(mapped);
         setSubscribedProgramIds(extractSubscribedIds(subs));
+        
       } catch (err) {
         console.error(err);
         setMySubscriptions([]);
@@ -1983,6 +1987,7 @@ export default function ProgramsPage() {
       }
     })();
   }, [isCoach, userId, tab, allPrograms]); // 👈 add allPrograms dependency
+  
 
   function handlePreview(p: Program) {
     console.log("Preview", p.id);
@@ -2002,6 +2007,7 @@ export default function ProgramsPage() {
       const subs = await getSubscriptionsByAthleteId(userId);
       setMySubscriptions(mapSubsToPrograms(subs, allPrograms));
       setSubscribedProgramIds(extractSubscribedIds(subs));
+      
 
       toast.success("Subscribed successfully!");
     } catch (err) {

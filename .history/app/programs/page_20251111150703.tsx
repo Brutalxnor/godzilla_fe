@@ -1654,9 +1654,6 @@ export interface ApiProgram {
   pdfs?: string;
   coachName?: string;
   rating?: number;
-  coach: {
-    first_name: string;
-  };
   ratingsCount?: number;
 }
 
@@ -1738,13 +1735,11 @@ function mapApiToProgramCard(p: ApiProgram): Program {
   if (p.minutes_per_session)
     features.push(`${p.minutes_per_session} min/session`);
 
-  console.log(p.coach?.first_name, "PPPPPPP");
-
   return {
     id: String(p.id ?? p._id ?? crypto.randomUUID()),
     title: p.title ?? "Untitled Program",
     coach: {
-      first_name: coachFromUsers || p.coach?.first_name || "Coach",
+      first_name: coachFromUsers || p.coachName || "Coach",
     },
     cover: pExtra.cover_image_url ?? "/placeholder.png",
     rating: typeof p.rating === "number" ? p.rating : 4.9,
@@ -2216,13 +2211,14 @@ export default function ProgramsPage() {
               <div className="text-sm text-gray-500">No programs found.</div>
             ) : (
               activePrograms.map((p) => (
-                <ProgramCard
-                  key={p.id}
-                  program={p}
-                  onPreview={handlePreview}
-                  onSubscribe={showSubscribe ? handleSubscribe : undefined}
-                  isSubscribed={subscribedProgramIds.includes(p.id)}
-                />
+                // <ProgramCard
+                //   key={p.id}
+                //   program={p}
+                //   onPreview={handlePreview}
+                //   onSubscribe={showSubscribe ? handleSubscribe : undefined}
+                //   isSubscribed={subscribedProgramIds.includes(p.id)}
+                // />
+                <h1 key={p.id}>sadsa</h1>
               ))
             )}
           </section>

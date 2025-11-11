@@ -531,7 +531,7 @@ export default function ProgramCard({
 
   const hasSubscribe = Boolean(onSubscribe);
 
-  console.log(program, "saklfhasjkhjksadjk");
+  // console.log(program, "saklfhasjkhjksadjk");
 
   return (
     <article className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
