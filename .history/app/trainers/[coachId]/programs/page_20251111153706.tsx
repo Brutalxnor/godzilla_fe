@@ -24,6 +24,7 @@ export default function CoachProgramsPage() {
           data.map((p) => ({
             id: String(p.id),
             title: p.title,
+            coach: "Coach",
             cover: p.cover_image_url || "/placeholder.png",
             rating: p.rating || 4.8,
             ratingsCount: p.subscribers || 0,
@@ -31,6 +32,7 @@ export default function CoachProgramsPage() {
             level: "Intermediate",
             price: "$49",
             blurb: p.description || "",
+            
           }))
         );
       } catch (err) {
@@ -45,9 +47,7 @@ export default function CoachProgramsPage() {
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
-      <Suspense
-        fallback={<div className="p-6 text-gray-500">Loading sidebar...</div>}
-      >
+      <Suspense fallback={<div className="p-6 text-gray-500">Loading sidebar...</div>}>
         <Sidebar />
       </Suspense>
 
