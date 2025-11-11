@@ -1390,6 +1390,8 @@
 //     </div>
 //   );
 // }
+
+
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
@@ -1562,6 +1564,7 @@ async function fetchSubscriptionsForAthlete(
     return [];
   }
 }
+
 
 /* ===== helpers ===== */
 const toTitleCase = (s: string): string =>
@@ -1952,11 +1955,7 @@ export default function ProfilePage() {
   const { theme } = useGetTheme();
 
   return (
-    <div
-      className={`min-h-screen ${
-        theme === "dark" ? "bg-black" : "bg-white"
-      }`}
-    >
+    <div className="min-h-screen">
       <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
         <Sidebar />
       </Suspense>
