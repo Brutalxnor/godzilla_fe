@@ -6,7 +6,6 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
 import useGetUser from "@/app/Hooks/useGetUser";
 import { GetUserById } from "@/app/services/Auth.service";
-import axios from "axios";
 
 type ChatMessage = {
   id: number | string;
@@ -40,29 +39,83 @@ export default function ChatNotifications() {
   const channelsRef = useRef<RealtimeChannel[]>([]);
 
   useEffect(() => {
-    if (!userDB?.data?.user_id) return;
+    if (!userId) return;
 
-    const fetchSubscriptions = async () => {
+    const fetchPrograms = async () => {
       try {
-        const response = await axios.get(
-          `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
-        );
-        console.log("Fetched subscriptions:", response.data);
+        setIsLoading(true);
 
-      } catch (err) {
-        console.error("❌ Error fetching subscriptions:", err);
+        if (role === "coach") {
+          const list = await GetProgramsByCoachId(userId as string | number);
+
+          const mapped: DashboardProgram[] = Array.isArray(list)
+            ? list.filter(isProgramFromAPI).map((p) => ({
+                id: p.id,
+                title: p.title,
+                coachName: userDB?.data?.user.first_name ?? "Coach",
+              }))
+            : [];
+
+          setPrograms(mapped);
+        } else {
+          const response = await axios.get(
+            `https://godzilla-be.vercel.app/api/v1/subscripe/${userId}`
+          );
+
+          type Row = {
+            id?: string | number;
+            program_id?: string | number;
+            programs?: {
+              id?: string | number;
+              title?: string;
+              coach_id?: string | number;
+              cover_image_url?: string | null;
+              users?: { first_name?: string | null } | null;
+            } | null;
+            users?: { first_name?: string | null } | null;
+          };
+
+          const raw = response.data?.data as Row[] | undefined;
+
+          const mapped: DashboardProgram[] = Array.isArray(raw)
+            ? raw.map((row, idx) => ({
+                id: row.programs?.id ?? row.program_id ?? row.id ?? `${idx}`,
+                title: row.programs?.title ?? "Program",
+                coachName: row.programs?.users?.first_name ?? "Coach",
+              }))
+            : [];
+
+          setPrograms(mapped);
+        }
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          if (err.response?.status === 404) {
+            setPrograms([]);
+          } else {
+            console.error(
+              "❌ Axios error fetching programs:",
+              err.response?.data || err.message
+            );
+          }
+        } else if (err instanceof Error) {
+          console.error("❌ Error fetching programs:", err.message);
+        } else {
+          console.error("❌ Unknown error:", err);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
     // أول fetch فوري
-    void fetchSubscriptions();
+    void fetchPrograms();
 
-    // إعادة التنفيذ كل 20 ثانية
-    const interval = setInterval(fetchSubscriptions, 20000);
+    // ثم fetch كل 20 ثانية
+    const interval = setInterval(fetchPrograms, 20000);
 
-    // تنظيف الـ interval لما الـ component يتفصل
+    // cleanup لما الـ component يتعمله unmount
     return () => clearInterval(interval);
-  }, [userDB?.data?.user_id]);
+  }, [userId, role, userDB?.data?.user.first_name]);
 
   // Fetch users
   const fetchUsers = async () => {

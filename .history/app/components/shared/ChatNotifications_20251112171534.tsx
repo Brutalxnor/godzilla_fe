@@ -6,7 +6,6 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
 import useGetUser from "@/app/Hooks/useGetUser";
 import { GetUserById } from "@/app/services/Auth.service";
-import axios from "axios";
 
 type ChatMessage = {
   id: number | string;
@@ -38,31 +37,6 @@ export default function ChatNotifications() {
   const [sender_id, setSenderId] = useState<string>();
   const [conversations, setConversations] = useState<string[]>([]);
   const channelsRef = useRef<RealtimeChannel[]>([]);
-
-  useEffect(() => {
-    if (!userDB?.data?.user_id) return;
-
-    const fetchSubscriptions = async () => {
-      try {
-        const response = await axios.get(
-          `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
-        );
-        console.log("Fetched subscriptions:", response.data);
-
-      } catch (err) {
-        console.error("❌ Error fetching subscriptions:", err);
-      }
-    };
-
-    // أول fetch فوري
-    void fetchSubscriptions();
-
-    // إعادة التنفيذ كل 20 ثانية
-    const interval = setInterval(fetchSubscriptions, 20000);
-
-    // تنظيف الـ interval لما الـ component يتفصل
-    return () => clearInterval(interval);
-  }, [userDB?.data?.user_id]);
 
   // Fetch users
   const fetchUsers = async () => {
