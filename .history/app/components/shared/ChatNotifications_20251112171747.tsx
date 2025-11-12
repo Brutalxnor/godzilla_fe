@@ -48,7 +48,7 @@ export default function ChatNotifications() {
           `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
         );
         console.log("Fetched subscriptions:", response.data);
-
+        // تقدر هنا تعمل setState(response.data) مثلاً لو محتاج تحفظها
       } catch (err) {
         console.error("❌ Error fetching subscriptions:", err);
       }
@@ -62,7 +62,7 @@ export default function ChatNotifications() {
 
     // تنظيف الـ interval لما الـ component يتفصل
     return () => clearInterval(interval);
-  }, [userDB?.data?.user_id]);
+  }, [userId]);
 
   // Fetch users
   const fetchUsers = async () => {
