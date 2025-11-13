@@ -154,6 +154,14 @@ export default function Home() {
     }
   };
 
+  function extractTextFromHTML(html: string) {
+    if (!html) return "";
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  }
+  
+
   useEffect(() => {
     if (userDB?.data?.user_id) fetchUsers();
   }, [userDB?.data?.user_id]);
@@ -389,7 +397,8 @@ export default function Home() {
                       {notification.user.name}
                     </p>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
-                      {notification.message.content}
+                      {/* {notification.message.content} */}
+                      {extractTextFromHTML(notification.message.content)}
                     </p>
                   </div>
                 </div>
