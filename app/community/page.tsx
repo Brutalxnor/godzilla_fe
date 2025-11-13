@@ -192,12 +192,37 @@ const [sharePostId, setSharePostId] = useState<string | null>(null);
         setConversations(convIds);
       } catch (err) {
         console.error("Failed to fetch conversations", err);
-        toast.error("Failed to load conversations");
+        // toast.error("Failed to load conversations");
       }
     };
 
     fetchConversations();
   }, [userDB?.data?.user_id, userDB?.data.access_token]);
+
+  useEffect(() => {
+    if (openCreate) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+
+      // Apply lock to body
+      document.body.style.setProperty("--scroll-y", `${scrollY}px`);
+      document.body.classList.add("no-scroll");
+    } else {
+      // Restore scroll
+      const scrollY =
+        document.body.style.getPropertyValue("--scroll-y") || "0px";
+      document.body.classList.remove("no-scroll");
+
+      // Smooth snap back
+      window.scrollTo(0, parseInt(scrollY || "0") * -1);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove("no-scroll");
+      document.body.style.removeProperty("--scroll-y");
+    };
+  }, [openCreate]);
 
   // useEffect لإنشاء channels لكل conversation
   useEffect(() => {
