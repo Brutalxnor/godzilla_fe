@@ -1,0 +1,115 @@
+"use client";
+import Sidebar from "@/app/components/shared/sidebar";
+import useGetUser from "@/app/Hooks/useGetUser";
+import { GetUserById } from "@/app/services/Auth.service";
+import { User } from "@/app/types/admin";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+
+const Page = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const { userDB } = useGetUser();
+  const shellVars = useMemo(
+    () =>
+      ({
+        "--sb-w": "88px",
+        "--extra-left": "24px",
+      } as React.CSSProperties),
+    []
+  );
+
+  // Form setup
+  const { register, handleSubmit, reset } = useForm();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await GetUserById(userDB?.data.user_id as string);
+      setUser(data);
+      if (data?.data) {
+        reset({
+          name: data.data.name,
+          email: data.data.email,
+          location: data.data.location,
+          joined: data.data.joined,
+          goals: data.data.goals,
+          experience: data.data.experience,
+        });
+      }
+    };
+    fetchUser();
+  }, [userDB?.data.user_id, reset]);
+
+  // Form submit example (لا تغير)
+  const onSubmit = (formData) => {
+    console.log(formData);
+  };
+
+  return (
+    <div className="min-h-screen">
+      <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+        <Sidebar />
+      </Suspense>
+      <main
+        style={shellVars}
+        className="w-full lg:w-[calc(95vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))]"
+      >
+        <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 md:px-6 lg:px-0 py-4 sm:py-6 md:py-8">
+          <div className="mx-auto w-full max-w-6xl px-0 sm:px-4 md:px-6 lg:px-0 pb-24">
+            <header className="py-3 sm:py-4 flex items-center justify-between gap-3">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold">
+                Edit Profile
+              </h1>
+            </header>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-6 mt-8 p-6 shadow rounded bg-white max-w-xl mx-auto"
+            >
+              <div>
+                <label>Name</label>
+                <input type="text" {...register("name")} className="input" />
+              </div>
+              <div>
+                <label>Email</label>
+                <input type="email" {...register("email")} className="input" />
+              </div>
+              <div>
+                <label>Location</label>
+                <input
+                  type="text"
+                  {...register("location")}
+                  className="input"
+                />
+              </div>
+              <div>
+                <label>Joined</label>
+                <input
+                  type="text"
+                  {...register("joined")}
+                  className="input"
+                  disabled
+                />
+              </div>
+              <div>
+                <label>Goals</label>
+                <input type="text" {...register("goals")} className="input" />
+              </div>
+              <div>
+                <label>Experience</label>
+                <input
+                  type="text"
+                  {...register("experience")}
+                  className="input"
+                />
+              </div>
+              <button type="submit" className="button">
+                Save
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Page;

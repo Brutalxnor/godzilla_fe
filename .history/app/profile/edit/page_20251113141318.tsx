@@ -1,0 +1,211 @@
+"use client";
+import Sidebar from "@/app/components/shared/sidebar";
+import useGetUser from "@/app/Hooks/useGetUser";
+import { GetUserById, UpdateUser } from "@/app/services/Auth.service";
+import { User } from "@/app/types/type";
+import { supabase } from "@/lib/client";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+
+export const uploadAvatar = async (
+  file: File,
+  userId: string
+): Promise<string> => {
+  const fileExt = file.name.split(".").pop()?.toLowerCase();
+  const fileName = `${userId}-${Date.now()}.${fileExt}`;
+  const filePath = `${userId}/${fileName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("avatars") // ← YOUR BUCKET NAME
+    .upload(filePath, file, {
+      upsert: true,
+      contentType: file.type,
+    });
+
+  if (uploadError) throw uploadError;
+
+  // Get public URL
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("avatars").getPublicUrl(filePath);
+
+  return publicUrl;
+};
+
+const Page = () => {
+  const [user, setUser] = useState<{
+    data: User;
+  } | null>(null);
+  const { userDB } = useGetUser();
+
+  const shellVars = useMemo(
+    () =>
+      ({
+        "--sb-w": "88px",
+        "--extra-left": "24px",
+      } as React.CSSProperties),
+    []
+  );
+
+  const { register, handleSubmit, reset, setValue } = useForm();
+  const [preview, setPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await GetUserById(userDB?.data.user_id as string);
+      setUser(data);
+      if (data?.data) {
+        reset({
+          first_name: data.data.first_name,
+          last_name: data.data.second_name,
+          email: data.data.email,
+          location: data.data.location,
+          experience: data.data.experience,
+        });
+      }
+    };
+    fetchUser();
+  }, [userDB?.data.user_id, reset]);
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !userDB?.data.user_id) return;
+
+    // Preview
+    const reader = new FileReader();
+    reader.onloadend = () => setPreview(reader.result as string);
+    reader.readAsDataURL(file);
+
+    setUploading(true);
+    try {
+      const avatarUrl = await uploadAvatar(file, userDB.data.user_id);
+      setValue("avatar_url", avatarUrl); // inject into form
+      setPreview(avatarUrl);
+    } catch (err: any) {
+      alert("Upload failed: " + err.message);
+      setPreview(user?.data.avatar_url || null);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const onSubmit = async (formData: any) => {
+    await UpdateUser(formData, userDB?.data?.user_id as string);
+    toast.success("Updated successfully");
+  };
+
+  console.log(user);
+
+  return (
+    <div className="min-h-screen bg-[#fafafa]">
+      <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+        <Sidebar />
+      </Suspense>
+      <main
+        style={shellVars}
+        className="w-full lg:w-[calc(95vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))]"
+      >
+        <div className="mx-auto w-full max-w-5xl px-3 sm:px-4 md:px-6 lg:px-0 py-8">
+          <div className="bg-white rounded-xl shadow p-8 flex flex-col gap-6">
+            {/* Header */}
+
+            <header className="py-3 sm:py-4 flex items-center justify-between gap-3">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold">
+                Edit Profile
+              </h1>
+            </header>
+
+            {/* React Hook Form (Edit profile section) */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-8">
+              <div className="flex items-center gap-6 mb-10">
+                <div className="relative">
+                  <img
+                    src={
+                      preview || user?.data.avatar_url || "/default-avatar.png"
+                    }
+                    alt="Avatar"
+                    className="w-32 h-32 rounded-full object-cover border-4 border-pink-500 shadow-lg"
+                  />
+                  {uploading && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold">Uploading...</span>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="cursor-pointer px-6 py-3 bg-pink-600 text-white rounded-lg font-bold hover:bg-pink-700 transition">
+                    Change Avatar
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="text-sm text-gray-600">First Name</label>
+                  <input
+                    type="text"
+                    {...register("first_name")}
+                    defaultValue={user?.data.first_name}
+                    className="input w-full p-2 border rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm text-gray-600">Last Name</label>
+                  <input
+                    type="text"
+                    {...register("last_name")}
+                    defaultValue={user?.data.second_name}
+                    className="input w-full p-2 border rounded"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-600">Email</label>
+                  <input
+                    type="email"
+                    {...register("email")}
+                    className="input w-full p-2 border rounded"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-600">Location</label>
+                  <input
+                    type="text"
+                    {...register("location")}
+                    className="input w-full p-2 border rounded"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-600">Experience</label>
+                  <input
+                    type="text"
+                    {...register("experience")}
+                    defaultValue={user?.data.experience_level}
+                    className="input w-full p-2 border rounded"
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="px-6 py-2 rounded-lg bg-pink-500 text-white font-bold mt-4"
+              >
+                Save
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Page;
