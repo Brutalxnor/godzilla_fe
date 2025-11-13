@@ -8,7 +8,10 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 
-const uploadAvatar = async (file: File, userId: string): Promise<string> => {
+ const uploadAvatar = async (
+  file: File,
+  userId: string
+): Promise<string> => {
   const fileExt = file.name.split(".").pop()?.toLowerCase();
   const fileName = `${userId}-${Date.now()}.${fileExt}`;
   const filePath = `${userId}/${fileName}`;
