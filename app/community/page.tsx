@@ -13,7 +13,7 @@ import { supabase } from "@/lib/client";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
 import { GetUserById } from "../services/Auth.service";
-import { togglePostLike } from "./Service/posts.service";
+import { SharePostToUser, togglePostLike } from "./Service/posts.service";
 
 function Tag({ label, count }: { label: string; count?: number }) {
   return (
@@ -54,6 +54,8 @@ export default function CommunityPage() {
   const [openCreate, setOpenCreate] = useState(false);
   const [Posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+const [sharePostId, setSharePostId] = useState<string | null>(null);
 
   // NEW: submit handler for modal
   async function handleCreateSubmit(data: CreatePostType) {
@@ -246,6 +248,54 @@ export default function CommunityPage() {
       <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
         <Sidebar />
       </Suspense>
+      {shareModalOpen && (
+  <div
+    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+    onClick={() => setShareModalOpen(false)}
+  >
+    <div
+      className="bg-white rounded-xl p-4 w-full max-w-md"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h2 className="text-lg font-semibold mb-3">Share Post</h2>
+
+      <div className="space-y-2 max-h-80 overflow-y-auto">
+        {activeUsers.map((u) => (
+          <button
+            key={u.id}
+            onClick={async () => {
+              const res = await SharePostToUser(
+                sharePostId as string,
+                u.id
+              );
+
+              toast.success("Post shared!");
+              setShareModalOpen(false);
+
+              setPosts((prev) =>
+                prev.map((p) =>
+                  p.id === sharePostId
+                    ? { ...p, share_count: res.share_count }
+                    : p
+                )
+              );
+
+              
+            }}
+            className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
+          >
+            <img
+              src={u.avatar}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+            <span className="font-medium">{u.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
 
       <main
         style={shellVars}
@@ -570,16 +620,18 @@ export default function CommunityPage() {
                               </button>
 
                               <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  // handle share logic
-                                }}
-                                className="inline-flex items-center gap-1.5 hover:text-gray-700 transition-colors"
-                              >
-                                <span>↗</span>
-                                <span className="text-sm">{10}</span>
-                              </button>
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSharePostId(post.id);
+    setShareModalOpen(true);
+  }}
+  className="inline-flex items-center gap-1.5 hover:text-gray-700 transition-colors"
+>
+  <span>↗</span>
+  <span className="text-sm">{post.share_count}</span>
+</button>
+
                             </div>
 
                             {/*Comment Modal*/}
