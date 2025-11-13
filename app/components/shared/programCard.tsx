@@ -47,7 +47,6 @@ export default function ProgramCard({
   onContinue,
 }: ProgramCardProps) {
   return (
-    <Link href={"/programs"}>
       <div className="rounded-2xl border cursor-pointer border-gray-200 bg-white p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -66,12 +65,12 @@ export default function ProgramCard({
           <div className="text-xs text-gray-500">{expires}</div>
           <button
             onClick={onContinue}
-            className="inline-flex items-center gap-2 rounded-full bg-rose-500 text-white text-sm px-3 py-1.5 hover:bg-rose-500"
+            className="inline-flex items-center gap-2 rounded-full cursor-pointer bg-rose-500 text-white text-sm px-3 py-1.5 hover:bg-rose-500"
           >
             ▶ Continue
           </button>
         </div>
       </div>
-    </Link>
+   
   );
 }

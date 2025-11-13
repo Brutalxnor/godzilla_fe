@@ -30,6 +30,7 @@ export interface Post {
   image: string;
   location: string;
   tags: string[];
+  liked_by?: string[];
   user_id: string;
   users: User;
   watch: "public" | "friends";

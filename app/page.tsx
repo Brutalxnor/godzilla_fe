@@ -413,40 +413,43 @@ export default function Home() {
                   : "Your Subscribed Programs"}
               </h2>
               <section className="grid grid-cols-1 gap-4 mb-6">
-                {isLoading ? (
-                  <>
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="animate-pulse">
-                        <div className="bg-white rounded-lg shadow-sm p-4 space-y-3">
-                          <div className="h-4 bg-gray-200 rounded w-3/4" />
-                          <div className="h-3 bg-gray-200 rounded w-1/2" />
-                          <div className="h-2 bg-gray-200 rounded w-full" />
-                          <div className="flex gap-2">
-                            <div className="h-6 bg-gray-200 rounded w-20" />
-                            <div className="h-6 bg-gray-200 rounded w-24" />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                ) : programs.length > 0 ? (
-                  programs.slice(0, 3).map((el) => (
-                    <div key={el.id}>
-                      <ProgramCard
-                        title={el.title} // ✅ program name
-                        coach={el.coachName} // ✅ coach name
-                        percent={Math.round(Math.random() * 100)}
-                        badge={role === "coach" ? "Active" : "Subscribed"}
-                        badgeTone={role === "coach" ? "green" : "red"}
-                        expires={
-                          role === "coach"
-                            ? "Created by you"
-                            : "Expires in 7 days"
-                        }
-                      />
-                    </div>
-                  ))
-                ) : (
+              {isLoading ? (
+  <>
+    {[1, 2, 3].map((i) => (
+      <div key={i} className="animate-pulse">
+        <div className="bg-white rounded-lg shadow-sm p-4 space-y-3">
+          <div className="h-4 bg-gray-200 rounded w-3/4" />
+          <div className="h-3 bg-gray-200 rounded w-1/2" />
+          <div className="h-2 bg-gray-200 rounded w-full" />
+          <div className="flex gap-2">
+            <div className="h-6 bg-gray-200 rounded w-20" />
+            <div className="h-6 bg-gray-200 rounded w-24" />
+          </div>
+        </div>
+      </div>
+    ))}
+  </>
+) : programs.length > 0 ? (
+  programs.slice(0, 3).map((el) => (
+    <Link
+      key={el.id}
+      href={`/programs/${el.id}`} 
+      className="block"
+    >
+      <ProgramCard
+        title={el.title}
+        coach={el.coachName}
+        percent={Math.round(Math.random() * 100)}
+        badge={role === "coach" ? "Active" : "Subscribed"}
+        badgeTone={role === "coach" ? "green" : "red"}
+        expires={
+          role === "coach" ? "Created by you" : "Expires in 7 days"
+        }
+      />
+    </Link>
+  ))
+) : (
+
                   <div className="col-span-3 text-center py-8 text-gray-500">
                     <p className="text-lg">No programs found</p>
                     <p className="text-sm mt-2">
@@ -479,22 +482,18 @@ export default function Home() {
               <section className="rounded-2xl border border-gray-200 bg-gradient-to-r from-rose-500 to-red-400 text-white p-5 flex items-center justify-between gap-4 mb-6">
                 <div>
                   <div className="text-base font-semibold">
-                    Today&apos;s Workout
+                   Start a new Program?
                   </div>
-                  <div className="text-sm text-rose-100">
-                    Upper Body Strength
-                  </div>
-                  <div className="text-[12px] text-rose-100">
-                    45 minutes • Intermediate
-                  </div>
+                  <div className="text-sm mt-1">
+                    Dive into your personalized workout plan and achieve your
+                    fitness goals today!
+                    </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <button className="rounded-xl bg-white text-rose-500 font-medium px-4 py-2 hover:bg-rose-50">
+                  <button className="rounded-xl bg-white cursor-pointer text-rose-500 font-medium px-4 py-2 hover:bg-rose-50">
                     ▶ Start
                   </button>
-                  <button className="rounded-xl bg-white/20 text-white px-4 py-2 hover:bg-white/30">
-                    🗓
-                  </button>
+                
                 </div>
               </section>
 

@@ -5,6 +5,7 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import { CommentsProvider } from "./community/context/CommentsContext";
 import ChatNotifications from "./components/shared/ChatNotifications";
+import GlobalHttpInterceptor from "./GlobalHttpInterceptor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,9 +53,13 @@ export default function RootLayout({
           color: "var(--foreground)",
         }}
       >
+     
+       
+        <GlobalHttpInterceptor>
         <ChatNotifications />
         <ToastContainer />
         <CommentsProvider>{children}</CommentsProvider>
+        </GlobalHttpInterceptor>
       </body>
     </html>
   );
