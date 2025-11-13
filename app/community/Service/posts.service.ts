@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000/api/v1"; // adjust if needed
+const BASE_URL = "https://godzilla-be.vercel.app/api/v1"; // adjust if needed
 
 export async function togglePostLike(postId: string, userId: string) {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
