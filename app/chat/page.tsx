@@ -1824,7 +1824,8 @@ const Chat = () => {
                               {selectedUser?.name}
                             </p>
                           )}
-                          <p>{msg.content}</p>
+                          <div dangerouslySetInnerHTML={{ __html: msg.content }} />
+
                           <p
                             className={[
                               "mt-1 text-[10px] text-right",

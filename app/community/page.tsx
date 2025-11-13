@@ -13,6 +13,7 @@ import { supabase } from "@/lib/client";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
 import { GetUserById } from "../services/Auth.service";
+import { SharePostToUser, togglePostLike } from "./Service/posts.service";
 
 function Tag({ label, count }: { label: string; count?: number }) {
   return (
@@ -47,12 +48,14 @@ export default function CommunityPage() {
     "--extra-left": "24px",
   } as React.CSSProperties;
 
-  const [feedTab, setFeedTab] = useState<"trending" | "new">("trending");
+  const [feedTab, setFeedTab] = useState<"trending" >("trending");
 
   // NEW: modal open state
   const [openCreate, setOpenCreate] = useState(false);
   const [Posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+const [sharePostId, setSharePostId] = useState<string | null>(null);
 
   // NEW: submit handler for modal
   async function handleCreateSubmit(data: CreatePostType) {
@@ -238,11 +241,61 @@ export default function CommunityPage() {
     };
   }, [conversations, userDB?.data?.user_id, activeUsers]);
 
+  
+
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
       <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
         <Sidebar />
       </Suspense>
+      {shareModalOpen && (
+  <div
+    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+    onClick={() => setShareModalOpen(false)}
+  >
+    <div
+      className="bg-white rounded-xl p-4 w-full max-w-md"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h2 className="text-lg font-semibold mb-3">Share Post</h2>
+
+      <div className="space-y-2 max-h-80 overflow-y-auto">
+        {activeUsers.map((u) => (
+          <button
+            key={u.id}
+            onClick={async () => {
+              const res = await SharePostToUser(
+                sharePostId as string,
+                u.id
+              );
+
+              toast.success("Post shared!");
+              setShareModalOpen(false);
+
+              setPosts((prev) =>
+                prev.map((p) =>
+                  p.id === sharePostId
+                    ? { ...p, share_count: res.share_count }
+                    : p
+                )
+              );
+
+              
+            }}
+            className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
+          >
+            <img
+              src={u.avatar}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+            <span className="font-medium">{u.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
 
       <main
         style={shellVars}
@@ -254,7 +307,7 @@ export default function CommunityPage() {
             <h1 className="text-4xl font-bold">Community</h1>
 
             <button
-              className="rounded-xl bg-rose-500 text-white text-1xl px-10 py-3 hover:bg-rose-600"
+              className="rounded-xl bg-rose-500 cursor-pointer text-white text-1xl px-10 py-3 hover:bg-rose-600"
               onClick={() => setOpenCreate(true)}
             >
               + Post
@@ -277,16 +330,16 @@ export default function CommunityPage() {
           {/* Tabs */}
           <section className="mt-4  justify-center">
             {/* Segmented control */}
-            <div className="w-full max-w-md justify-center">
+            <div className="w-full  justify-center">
               <div
-                className="relative grid grid-cols-2 rounded-full bg-gray-100 p-1"
+                className="relative grid  rounded-full bg-gray-100 p-1"
                 role="tablist"
                 aria-label="Feed filter"
               >
                 {/* sliding white pill */}
                 <span
                   className={[
-                    "absolute inset-y-1 left-1 w-1/2 rounded-full bg-white shadow-sm",
+                    "absolute inset-y-1  w-full rounded-full bg-white shadow-sm",
                     "transition-transform duration-200 ease-out",
                     feedTab === "trending"
                       ? "translate-x-0"
@@ -301,16 +354,16 @@ export default function CommunityPage() {
                   aria-selected={feedTab === "trending"}
                   onClick={() => setFeedTab("trending")}
                   className={[
-                    "relative z-10 py-2 text-center text-sm font-semibold",
+                    "relative z-10 py-2 px-1.5 justify-center  font-semibold",
                     "transition-colors",
                     feedTab === "trending" ? "text-gray-900" : "text-gray-600",
                   ].join(" ")}
                 >
-                  Trending
+                  Explore new Feed
                 </button>
 
                 {/* New */}
-                <button
+                {/* <button
                   role="tab"
                   aria-selected={feedTab === "new"}
                   onClick={() => setFeedTab("new")}
@@ -321,7 +374,7 @@ export default function CommunityPage() {
                   ].join(" ")}
                 >
                   New
-                </button>
+                </button> */}
               </div>
             </div>
           </section>
@@ -381,6 +434,7 @@ export default function CommunityPage() {
               <>
                 {Array.isArray(Posts) && Posts.length > 0 ? (
                   Posts.map((post) => {
+
                     const handleAddComment = async (data: CommentFormData) => {
                       if (!data.comment?.trim()) return;
                       try {
@@ -395,6 +449,35 @@ export default function CommunityPage() {
                         console.error("Error adding comment:", error);
                       }
                     };
+                    const isLikedByMe = post.liked_by?.includes(
+                      userDB?.data?.user_id as string
+                    );
+                    
+                    const likesCount = post.liked_by?.length || 0;
+                    
+                    const handleToggleLike = async () => {
+                      if (!userDB?.data?.user_id) return;
+                    
+                      try {
+                        const res = await togglePostLike(post.id as string, userDB.data.user_id as string);
+                    
+                        // Update local state optimistically with backend response
+                        setPosts((prev) =>
+                          prev.map((p) =>
+                            p.id === post.id
+                              ? {
+                                  ...p,
+                                  liked_by: res.liked_by, // updated array from backend
+                                }
+                              : p
+                          )
+                        );
+                      } catch (error) {
+                        console.error("Error toggling like:", error);
+                        toast.error("Failed to like post");
+                      }
+                    };
+                    
                     return (
                       <Link
                         href={`/community/${post.id}`}
@@ -425,8 +508,8 @@ export default function CommunityPage() {
                           }}
                         /> */}
 
-                        <div key={post.id}>
-                          <article className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5">
+                        <div key={post.id} className="mb-4 sm:mb-6">
+                          <article className="rounded-2xl border border-gray-200  bg-white p-4 sm:p-5">
                             {/* Header */}
                             <div className="flex items-start justify-between">
                               <div className="flex items-center gap-3">
@@ -506,17 +589,21 @@ export default function CommunityPage() {
 
                             {/* Footer stats */}
                             <div className="mt-3 flex items-center gap-6 text-gray-500">
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  // handle like logic
-                                }}
-                                className="inline-flex items-center gap-1.5 hover:text-rose-600 transition-colors"
-                              >
-                                <span>❤️</span>
-                                <span className="text-sm">{20}</span>
-                              </button>
+                            <button
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleToggleLike();
+  }}
+  className={[
+    "inline-flex items-center gap-1.5 transition-colors",
+    isLikedByMe ? "text-rose-600" : "text-gray-500 hover:text-rose-600",
+  ].join(" ")}
+>
+  <span>{isLikedByMe ? "❤️" : "🤍"}</span>
+  <span className="text-sm">{likesCount}</span>
+</button>
+
 
                               <button
                                 onClick={(e) => {
@@ -533,22 +620,24 @@ export default function CommunityPage() {
                               </button>
 
                               <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  // handle share logic
-                                }}
-                                className="inline-flex items-center gap-1.5 hover:text-gray-700 transition-colors"
-                              >
-                                <span>↗</span>
-                                <span className="text-sm">{10}</span>
-                              </button>
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSharePostId(post.id);
+    setShareModalOpen(true);
+  }}
+  className="inline-flex items-center gap-1.5 hover:text-gray-700 transition-colors"
+>
+  <span>↗</span>
+  <span className="text-sm">{post.share_count}</span>
+</button>
+
                             </div>
 
                             {/*Comment Modal*/}
 
                             {openPostId === post.id && (
-                              <div className="fixed inset-0 bg-black/1 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                              <div className="fixed inset-0 bg-black/1 backdrop-blur-sm z-50 gap-2 flex items-center justify-center p-4">
                                 <div
                                   className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-hidden"
                                   onClick={(e) => {
