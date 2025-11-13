@@ -2242,41 +2242,6 @@ export default function ProgramsPage() {
             )}
           </section>
 
-          {totalPages > 1 && (
-            <div className="mt-8 flex justify-center items-center gap-4">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className={`px-5 py-2 rounded-lg font-medium transition-colors ${
-                  currentPage === 1
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                Previous
-              </button>
-
-              <span className="text-sm text-gray-600">
-                Page <strong>{currentPage}</strong> of{" "}
-                <strong>{totalPages}</strong>
-              </span>
-
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
-                disabled={currentPage === totalPages}
-                className={`px-5 py-2 rounded-lg font-medium transition-colors ${
-                  currentPage === totalPages
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                Next
-              </button>
-            </div>
-          )}
-
           <div className="pb-24 lg:pb-0" />
         </div>
       </main>

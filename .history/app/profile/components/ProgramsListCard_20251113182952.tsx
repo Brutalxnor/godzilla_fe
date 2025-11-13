@@ -31,7 +31,6 @@ export default function CoachProgramsList({
         ) : (
           items.map((p) => (
             <Link
-              href={`/programs/${p.id}`}
               key={String(p.id)}
               className="flex items-center justify-between rounded-xl border border-zinc-200 px-3 py-3"
             >
