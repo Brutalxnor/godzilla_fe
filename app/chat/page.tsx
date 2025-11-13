@@ -1307,13 +1307,15 @@ const Chat = () => {
           const key = selectedUser?.id || "";
           const list = prev[key] || [];
           if (list.some((m) => m.id === newMessage.id)) return prev;
-
+          console.log(newMessage, "slkdjasdj");
+          
           setSenderId(newMessage.sender_id);
 
           // هنا نعمل notification
           const sender = activeUsers.find((u) => u.id === newMessage.sender_id);
           if (sender) {
             setNotification({ user: sender, message: newMessage });
+
 
             // نخفي notification بعد 3 ثواني
             setTimeout(() => setNotification(null), 3000);
@@ -1383,6 +1385,7 @@ const Chat = () => {
       setLoadingUserId(null);
     }
   };
+  
 
   /* =========================
      Send message
@@ -1390,6 +1393,7 @@ const Chat = () => {
   const sendMessage = async () => {
     if (!selectedUser) return toast.error("Select a user first.");
     if (!message.trim()) return;
+    
 
     try {
       const token = userDB?.data?.access_token;
