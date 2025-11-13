@@ -38,7 +38,7 @@ export default function ChatNotifications() {
   const [conversations, setConversations] = useState<string[]>([]);
   const channelsRef = useRef<RealtimeChannel[]>([]);
 
-  log
+  log;
 
   // Fetch users
   const fetchUsers = async () => {
@@ -122,7 +122,7 @@ export default function ChatNotifications() {
         setConversations(convIds);
       } catch (err) {
         console.error("Failed to fetch conversations", err);
-        toast.error("Failed to load conversations");
+        // toast.error("Failed to load conversations");
       }
     };
 

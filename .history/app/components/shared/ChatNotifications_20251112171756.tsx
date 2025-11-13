@@ -48,7 +48,6 @@ export default function ChatNotifications() {
           `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
         );
         console.log("Fetched subscriptions:", response.data);
-
       } catch (err) {
         console.error("❌ Error fetching subscriptions:", err);
       }
@@ -146,7 +145,7 @@ export default function ChatNotifications() {
         setConversations(convIds);
       } catch (err) {
         console.error("Failed to fetch conversations", err);
-        toast.error("Failed to load conversations");
+        // toast.error("Failed to load conversations");
       }
     };
 
