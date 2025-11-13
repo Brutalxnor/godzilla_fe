@@ -1,6 +1,5 @@
 "use client";
 import { Star } from "lucide-react";
-import Link from "next/link";
 
 export type CoachProgramItem = {
   id: string | number;
@@ -31,7 +30,6 @@ export default function CoachProgramsList({
         ) : (
           items.map((p) => (
             <Link
-              href={`/programs/${p.id}`}
               key={String(p.id)}
               className="flex items-center justify-between rounded-xl border border-zinc-200 px-3 py-3"
             >
@@ -45,7 +43,7 @@ export default function CoachProgramsList({
                 <Star className="h-4 w-4 text-yellow-500" />
                 {p.rating.toFixed(1)}
               </div>
-            </Link>
+            </div>
           ))
         )}
       </div>

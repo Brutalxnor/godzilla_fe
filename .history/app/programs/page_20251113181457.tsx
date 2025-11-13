@@ -1884,9 +1884,6 @@ export default function ProgramsPage() {
   const [mySubscriptions, setMySubscriptions] = useState<Program[]>([]);
   const [loadingSubs, setLoadingSubs] = useState(false);
 
-  const ITEMS_PER_PAGE = 3;
-  const [currentPage, setCurrentPage] = useState(1);
-
   // list of program ids this athlete is subscribed to
   const [subscribedProgramIds, setSubscribedProgramIds] = useState<string[]>(
     []
@@ -2114,18 +2111,6 @@ export default function ProgramsPage() {
     }
   }
 
-  const displayedPrograms = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-    return activePrograms.slice(start, end);
-  }, [activePrograms, currentPage]);
-
-  const totalPages = Math.ceil(activePrograms.length / ITEMS_PER_PAGE);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [tab, activePrograms]);
-
   // when to show Subscribe on the card:
   // coach: only on "all" tab
   // athlete: show on both Browse and My Subscriptions (but disabled if subscribed)
@@ -2230,7 +2215,7 @@ export default function ProgramsPage() {
             ) : activePrograms.length === 0 ? (
               <div className="text-sm text-gray-500">No programs found.</div>
             ) : (
-              displayedPrograms.map((p) => (
+              activePrograms.map((p) => (
                 <ProgramCard
                   key={p.id}
                   program={p}
@@ -2241,41 +2226,6 @@ export default function ProgramsPage() {
               ))
             )}
           </section>
-
-          {totalPages > 1 && (
-            <div className="mt-8 flex justify-center items-center gap-4">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className={`px-5 py-2 rounded-lg font-medium transition-colors ${
-                  currentPage === 1
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                Previous
-              </button>
-
-              <span className="text-sm text-gray-600">
-                Page <strong>{currentPage}</strong> of{" "}
-                <strong>{totalPages}</strong>
-              </span>
-
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
-                disabled={currentPage === totalPages}
-                className={`px-5 py-2 rounded-lg font-medium transition-colors ${
-                  currentPage === totalPages
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                Next
-              </button>
-            </div>
-          )}
 
           <div className="pb-24 lg:pb-0" />
         </div>

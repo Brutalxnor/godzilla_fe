@@ -806,7 +806,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                 </div>
 
                 {/* What's Included */}
-                {/* <div>
+                <div>
                   <h2 className="text-lg font-semibold mb-3">
                     What is Included
                   </h2>
@@ -827,7 +827,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                       </div>
                     ))}
                   </div>
-                </div> */}
+                </div>
               </div>
             )}
 
