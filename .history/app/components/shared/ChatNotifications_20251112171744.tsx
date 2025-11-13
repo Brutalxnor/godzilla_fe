@@ -45,7 +45,8 @@ export default function ChatNotifications() {
     const fetchSubscriptions = async () => {
       try {
         const response = await axios.get(
-          `https://godzilla-be.vercel.app/api/v1/subscripe/${!userDB?.data?.user_id}`
+          `https://godzilla-be.vercel.app/api/v1/subscripe/${!userDB?.data
+            ?.user_id}`
         );
         console.log("Fetched subscriptions:", response.data);
         // تقدر هنا تعمل setState(response.data) مثلاً لو محتاج تحفظها
@@ -146,7 +147,7 @@ export default function ChatNotifications() {
         setConversations(convIds);
       } catch (err) {
         console.error("Failed to fetch conversations", err);
-        toast.error("Failed to load conversations");
+        // toast.error("Failed to load conversations");
       }
     };
 

@@ -433,7 +433,7 @@ export default function TrainersPage() {
         setConversations(convIds);
       } catch (err) {
         console.error("Failed to fetch conversations", err);
-        toast.error("Failed to load conversations");
+        // toast.error("Failed to load conversations");
       }
     };
 
@@ -488,10 +488,7 @@ export default function TrainersPage() {
     async function load() {
       setLoading(true);
       try {
-        const list = await fetchTrainers(
-          search,
-          category,
-        );
+        const list = await fetchTrainers(search, category);
         if (!cancelled) {
           setItems(list);
           setCurrentPage(1); // reset page on filter/search change

@@ -434,7 +434,7 @@ export default function TrainersPage() {
         setConversations(convIds);
       } catch (err) {
         console.error("Failed to fetch conversations", err);
-        toast.error("Failed to load conversations");
+        // toast.error("Failed to load conversations");
       }
     };
 
@@ -480,7 +480,7 @@ export default function TrainersPage() {
     };
   }, [conversations, userDB?.data?.user_id, activeUsers]);
 
-  log
+  log;
 
   // Fetch trainers (original logic)
   useEffect(() => {

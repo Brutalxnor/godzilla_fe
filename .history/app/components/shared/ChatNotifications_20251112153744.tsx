@@ -73,7 +73,7 @@ export default function ChatNotifications() {
           })
         )
         .filter((user) => user.id !== userDB?.data?.user_id)
-        .sort((a: {status: string}, b) => (a.status === "online" ? -1 : 1));
+        .sort((a: { status: string }, b) => (a.status === "online" ? -1 : 1));
 
       setActiveUsers(formattedUsers);
     } catch (err) {
@@ -118,7 +118,7 @@ export default function ChatNotifications() {
         setConversations(convIds);
       } catch (err) {
         console.error("Failed to fetch conversations", err);
-        toast.error("Failed to load conversations");
+        // toast.error("Failed to load conversations");
       }
     };
 
