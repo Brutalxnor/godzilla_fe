@@ -161,6 +161,7 @@ export default function Home() {
     return div.textContent || div.innerText || "";
   }
   
+  
 
   useEffect(() => {
     if (userDB?.data?.user_id) fetchUsers();
@@ -218,11 +219,14 @@ export default function Home() {
             setNotification({ user: sender, message: newMessage });
             setTimeout(() => setNotification(null), 3000);
           }
+          
 
           setChats((prev) => {
             const key = newMessage.sender_id;
             const list = prev[key] || [];
             if (list.some((m) => m.id === newMessage.id)) return prev;
+            console.log(newMessage, "ahjdgajs");
+            
             return { ...prev, [key]: [...list, newMessage] };
           });
         })
@@ -398,9 +402,12 @@ export default function Home() {
                     </p>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
                       {/* {notification.message.content} */}
-                      {extractTextFromHTML(notification.message.content)}
+                       {extractTextFromHTML(notification.message.content)}
+
                     </p>
+                    
                   </div>
+                  
                 </div>
               )}
 

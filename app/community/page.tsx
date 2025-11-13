@@ -456,18 +456,24 @@ export default function CommunityPage() {
                   Posts.map((post) => {
                     const handleAddComment = async (data: CommentFormData) => {
                       if (!data.comment?.trim()) return;
+                    
                       try {
                         await addComment(
                           post.id,
                           data.comment,
                           userDB?.data?.user_id as string
                         );
+                    
+                        // ✅ refetch posts so comment count updates
+                        await fetchGetPosts();
+                    
                         reset();
                         handleTriggerOpenCommentModal("0");
                       } catch (error) {
                         console.error("Error adding comment:", error);
                       }
                     };
+                    
                     const isLikedByMe = post.liked_by?.includes(
                       userDB?.data?.user_id as string
                     );

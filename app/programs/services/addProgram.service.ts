@@ -29,6 +29,7 @@ export interface CreateProgramType {
 }
 
 export type ProgramFromAPI = {
+  users: boolean;
   description: string;
   cover_image_url: string;
   id: string | number;
