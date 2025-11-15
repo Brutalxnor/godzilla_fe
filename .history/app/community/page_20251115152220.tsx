@@ -65,7 +65,6 @@ export default function CommunityPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [sharePostId, setSharePostId] = useState<string | null>(null);
-  const [newPosts, setNewPosts] = useState<Post[]>([]);
   const [newPostsCount, setNewPostsCount] = useState(0);
 
   // NEW: submit handler for modal
@@ -174,32 +173,25 @@ export default function CommunityPage() {
   let channel: RealtimeChannel;
   useEffect(() => {
     const handleChangeCommunity = async () => {
-      channel = await supabase
+      const channel = await supabase
         .channel("community-realTime")
         .on(
           "postgres_changes",
-          { event: "*", schema: "public", table: "posts" },
+          { event: "INSERT", schema: "public", table: "posts" },
           (payload) => {
-            console.log("New post:", payload.new);
-
-            // خزّن البوستات الجديدة
-            setNewPosts((prev: Post[]) => [payload.new as Post, ...prev]);
-
-            // زوّد العداد
-            setNewPostsCount((prev) => prev + 1);
+            // فقط عند INSERT
+            console.log("New post created:", payload.new);
+            setNewPostsCount((prev) => prev + 1); // عداد البوستات الجديدة
           }
         )
         .subscribe();
+
+      return () => {
+        channel.unsubscribe();
+      };
     };
 
     handleChangeCommunity();
-
-    // ✨ cleanup بدون Errors
-    return () => {
-      if (channel) {
-        channel.unsubscribe();
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -314,23 +306,16 @@ export default function CommunityPage() {
         <Sidebar />
       </Suspense>
       {newPostsCount > 0 && (
-        <div className="fixed top-3 left-1/2 -translate-x-1/2 z-50">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50">
           <button
-            onClick={() => {
-              setPosts((prev) => [...newPosts, ...prev]);
-              setNewPosts([]);
-              setNewPostsCount(0);
-
-              // scroll smooth
-              window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-              });
+            onClick={async () => {
+              await fetchGetPosts(); // تحديث الـ feed
+              setNewPostsCount(0); // إعادة تعيين العداد
             }}
-            className=" bg-[#ff1f57] text-white px-4 py-2 rounded-full shadow-md hover:bg-[#ff1f5794] transition"
+            className="bg-blue-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-600 transition"
           >
             {newPostsCount} New Post{newPostsCount > 1 ? "s" : ""} – Click to
-            view
+            refresh
           </button>
         </div>
       )}

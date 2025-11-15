@@ -65,7 +65,7 @@ export default function CommunityPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [sharePostId, setSharePostId] = useState<string | null>(null);
-  const [newPosts, setNewPosts] = useState<Post[]>([]);
+  const [newPosts, setNewPosts] = useState([]);
   const [newPostsCount, setNewPostsCount] = useState(0);
 
   // NEW: submit handler for modal
@@ -173,33 +173,19 @@ export default function CommunityPage() {
 
   let channel: RealtimeChannel;
   useEffect(() => {
-    const handleChangeCommunity = async () => {
-      channel = await supabase
-        .channel("community-realTime")
-        .on(
-          "postgres_changes",
-          { event: "*", schema: "public", table: "posts" },
-          (payload) => {
-            console.log("New post:", payload.new);
+    const channel = supabase
+      .channel("community-realTime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "posts" },
+        (payload) => {
+          setNewPosts((prev) => [payload.new, ...prev]);
+          setNewPostsCount((c) => c + 1);
+        }
+      )
+      .subscribe();
 
-            // خزّن البوستات الجديدة
-            setNewPosts((prev: Post[]) => [payload.new as Post, ...prev]);
-
-            // زوّد العداد
-            setNewPostsCount((prev) => prev + 1);
-          }
-        )
-        .subscribe();
-    };
-
-    handleChangeCommunity();
-
-    // ✨ cleanup بدون Errors
-    return () => {
-      if (channel) {
-        channel.unsubscribe();
-      }
-    };
+    return () => channel.unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -316,21 +302,14 @@ export default function CommunityPage() {
       {newPostsCount > 0 && (
         <div className="fixed top-3 left-1/2 -translate-x-1/2 z-50">
           <button
-            onClick={() => {
-              setPosts((prev) => [...newPosts, ...prev]);
-              setNewPosts([]);
+            onClick={async () => {
+              await fetchGetPosts();
               setNewPostsCount(0);
-
-              // scroll smooth
-              window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-              });
             }}
-            className=" bg-[#ff1f57] text-white px-4 py-2 rounded-full shadow-md hover:bg-[#ff1f5794] transition"
+            className="bg-blue-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-600 transition"
           >
             {newPostsCount} New Post{newPostsCount > 1 ? "s" : ""} – Click to
-            view
+            refresh
           </button>
         </div>
       )}
