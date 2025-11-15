@@ -515,20 +515,37 @@ export default function Home() {
 
               {/* Quick Actions */}
               <h2 className="text-lg font-semibold mb-3">Quick Actions</h2>
-              <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-24 lg:pb-0">
-                <button className="rounded-2xl border border-gray-200 bg-white p-5 text-center hover:bg-gray-50">
-                  <Link href={"/trainers"}>
-                    <div className="text-2xl mb-2" />
-                    <div className="font-medium">Browse Trainers</div>
-                  </Link>
-                </button>
-                <button className="rounded-2xl border border-gray-200 bg-white p-5 text-center hover:bg-gray-50">
-                  <Link href={"/programs"}>
-                    <div className="text-2xl mb-2" />
-                    <div className="font-medium">View Programs</div>
-                  </Link>
-                </button>
-              </section>
+
+<section
+  className={`grid gap-4 pb-24 lg:pb-0 ${
+    role === "coach"
+      ? "grid-cols-1" // FULL WIDTH for coaches
+      : "grid-cols-1 sm:grid-cols-2" // Two columns for athletes
+  }`}
+>
+  {/* Show Browse Trainers ONLY for athletes */}
+  {role !== "coach" && (
+    <button className="rounded-2xl border border-gray-200 bg-white p-5 text-center hover:bg-gray-50">
+      <Link href={"/trainers"}>
+        <div className="text-2xl mb-2" />
+        <div className="font-medium">Browse Trainers</div>
+      </Link>
+    </button>
+  )}
+
+  {/* View Programs — full width when coach */}
+  <button
+    className={`rounded-2xl border border-gray-200 bg-white p-5 text-center hover:bg-gray-50 ${
+      role === "coach" ? "w-full" : ""
+    }`}
+  >
+    <Link href={"/programs"}>
+      <div className="text-2xl mb-2" />
+      <div className="font-medium">View Programs</div>
+    </Link>
+  </button>
+</section>
+
             </div>
           </main>
         </div>

@@ -771,14 +771,16 @@ export default function CreateProgramModal({
 
   // Auto-generate slug from title
   useEffect(() => {
-    if (title && !slug) {
-      const generatedSlug = title
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w-]/g, '');
-      setSlug(generatedSlug);
-    }
-  }, [title, slug]);
+    const generatedSlug = title
+      .toLowerCase()
+      .trim()
+      .replace(/[\s_]+/g, "-")   // spaces → dashes
+      .replace(/[^a-z0-9-]/g, "") // remove special chars
+      .replace(/--+/g, "-");      // remove double dashes
+  
+    setSlug(generatedSlug);
+  }, [title]);
+  
 
   const coachInitials = useMemo(() => {
     if (coach.initials) return coach.initials;
