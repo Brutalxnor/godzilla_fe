@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState, useRef } from "react";
 import Sidebar from "../components/shared/sidebar";
-import CreatePostModal from "./components/createPost";
+import CreatePostModal, CreatePostType from "./components/createPost";
 import { GetAllPosts } from "../sign-up/Services/posts.service";
 import useGetUser from "../Hooks/useGetUser";
 import { Post } from "../types/type";
@@ -21,15 +21,6 @@ function Tag({ label, count }: { label: string; count?: number }) {
       #{label} {typeof count === "number" ? `(${count})` : ""}
     </button>
   );
-}
-
-interface CreatePostType {
-  bio: string;
-  image: string;
-  location: string;
-  tags: string[];
-  watch: string;
-  user_id: string;
 }
 
 interface CommentFormData {
