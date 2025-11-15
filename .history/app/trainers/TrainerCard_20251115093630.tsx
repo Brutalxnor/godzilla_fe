@@ -161,10 +161,8 @@
 import { Star, MapPin, CheckCircle2, UserRound } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // ✅ added
-import {
-  GetProgramsByCoachId,
-  ProgramFromAPI,
-} from "../programs/services/addProgram.service";
+import { Program } from "../types/type";
+import { GetProgramsByCoachId } from "../programs/services/addProgram.service";
 
 /** Public type you can import elsewhere */
 export type Trainer = {
@@ -220,17 +218,15 @@ export default function TrainerCard({
   const router = useRouter(); // ✅ added
   const t = trainer;
   const fullName = toTitleCase(`${t.first_name} ${t.second_name}`.trim());
-  const [programs, setPrograms] = useState<ProgramFromAPI[]>([]);
+  const [programs, setPrograms] = useState<Program[]>([]);
 
-  useEffect(() => {
-    const fetchGetProgramsByCoachId = async () => {
-      const data = await GetProgramsByCoachId(t.id);
-      setPrograms(data);
-    };
-    fetchGetProgramsByCoachId();
-  }, [t.id]);
+  // useEffect(() => {
+  //   const fetchGetProgramsByCoachId = async () => {
+  //     const data = await GetProgramsByCoachId(t)
+  //   }
+  // })
 
-  console.log(programs, "TTTTTTT");
+  // console.log(t, "TTTTTTT");
 
   return (
     <article className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -275,10 +271,10 @@ export default function TrainerCard({
             </div>
 
             <div className="mt-1 flex flex-wrap items-center gap-2 text-[13px] text-gray-600">
-              {/* <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-1">
                 <Star className="h-3.5 w-3.5 text-yellow-500" />
                 {t.rating.toFixed(1)} ({t.reviews_count})
-              </span> */}
+              </span>
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" />
                 {t.location}
@@ -301,7 +297,7 @@ export default function TrainerCard({
 
         {/* meta */}
         <div className="mt-3 flex items-center justify-between text-[13px] text-gray-600">
-          <span>{programs?.length} programs</span>
+          <span>{t.programs_count} programs</span>
           <span>{t.reviews_count} reviews</span>
         </div>
 

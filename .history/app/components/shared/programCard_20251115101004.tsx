@@ -10,7 +10,7 @@ export type ProgramCardProps = {
   percent: number;
   badge?: string;
   badgeTone?: BadgeTone;
-  expires?: string;
+  expires: string;
   onContinue?: () => void;
 };
 

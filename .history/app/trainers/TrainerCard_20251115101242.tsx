@@ -275,10 +275,10 @@ export default function TrainerCard({
             </div>
 
             <div className="mt-1 flex flex-wrap items-center gap-2 text-[13px] text-gray-600">
-              {/* <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-1">
                 <Star className="h-3.5 w-3.5 text-yellow-500" />
                 {t.rating.toFixed(1)} ({t.reviews_count})
-              </span> */}
+              </span>
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" />
                 {t.location}

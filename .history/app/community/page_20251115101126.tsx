@@ -330,7 +330,7 @@ export default function CommunityPage() {
               className="rounded-xl bg-rose-500 cursor-pointer text-white text-1xl px-10 py-3 hover:bg-rose-600"
               onClick={() => setOpenCreate(true)}
             >
-              + Post
+              <span className="font-bold text-3xl">+</span> Post
             </button>
           </div>
           <div className="mt-5 h-[2px] w-full bg-gray-200 rounded-full" />

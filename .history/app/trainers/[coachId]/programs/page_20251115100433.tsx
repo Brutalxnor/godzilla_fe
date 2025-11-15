@@ -146,12 +146,12 @@ export default function CoachProgramsPage() {
     loadPrograms();
   }, [coachId]);
 
-
+<<<<<<< Updated upstream
   // Pagination logic
   const totalPages = Math.ceil(programs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentPrograms = programs.slice(startIndex, startIndex + itemsPerPage);
-
+=======
   useEffect(() => {
     const fetchGetUserById = async () => {
       const data = await GetUserById(coachId as string);
@@ -161,6 +161,7 @@ export default function CoachProgramsPage() {
   }, [coachId]);
 
   // console.log(user);
+>>>>>>> Stashed changes
 
   return (
     <div className="min-h-screen bg-[#f7f7f7] dark:bg-black">
@@ -180,10 +181,14 @@ export default function CoachProgramsPage() {
           </Link>
         </div>
 
-
+<<<<<<< Updated upstream
+        {/* Page Title */}
+        <h1 className="text-3xl font-bold mt-4 mb-1">Programs by Coach</h1>
+=======
         <h1 className="text-3xl font-bold mt-4 mb-1">
           Programs by {user?.first_name + " " + user?.second_name}
         </h1>
+>>>>>>> Stashed changes
         <p className="text-gray-500 text-sm mb-8">
           Explore all available programs offered by this coach.
         </p>

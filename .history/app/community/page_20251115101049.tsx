@@ -14,6 +14,7 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
 import { GetUserById } from "../services/Auth.service";
 import { SharePostToUser, togglePostLike } from "./Service/posts.service";
+import { BiAddToQueue } from "react-icons/bi";
 
 function Tag({ label, count }: { label: string; count?: number }) {
   return (
@@ -330,7 +331,7 @@ export default function CommunityPage() {
               className="rounded-xl bg-rose-500 cursor-pointer text-white text-1xl px-10 py-3 hover:bg-rose-600"
               onClick={() => setOpenCreate(true)}
             >
-              + Post
+              <BiAddToQueue /> Post
             </button>
           </div>
           <div className="mt-5 h-[2px] w-full bg-gray-200 rounded-full" />

@@ -302,12 +302,12 @@ function SearchBar({
         placeholder="Search trainers or specialties..."
         className="w-full rounded-full bg-white pl-9 pr-10 py-2 text-sm border border-gray-200 outline-none hover:bg-gray-50"
       />
-      {/* <button
+      <button
         className="absolute right-1.5 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-3 py-1 text-xs text-gray-700 hover:bg-gray-50"
         title="Filters"
       >
-        <Filter className="h-3.5 w-3.5" /> Filter
-      </button> */}
+        {/* <Filter className="h-3.5 w-3.5" /> Filter */}
+      </button>
     </div>
   );
 }

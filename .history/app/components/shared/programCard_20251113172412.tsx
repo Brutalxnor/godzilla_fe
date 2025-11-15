@@ -10,7 +10,7 @@ export type ProgramCardProps = {
   percent: number;
   badge?: string;
   badgeTone?: BadgeTone;
-  expires?: string;
+  expires: string;
   onContinue?: () => void;
 };
 
@@ -47,29 +47,30 @@ export default function ProgramCard({
   onContinue,
 }: ProgramCardProps) {
   return (
-    <div className="rounded-2xl border cursor-pointer border-gray-200 bg-white p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="font-semibold">{title}</div>
-          <div className="text-xs text-gray-500">by {coach}</div>
+      <div className="rounded-2xl border cursor-pointer border-gray-200 bg-white p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="font-semibold">{title}</div>
+            <div className="text-xs text-gray-500">by {coach}</div>
+          </div>
+          {badge && badgeTone && <Badge tone={badgeTone}>{badge}</Badge>}
         </div>
-        {badge && badgeTone && <Badge tone={badgeTone}>{badge}</Badge>}
-      </div>
 
-      {/* <div className="mt-4">
+        {/* <div className="mt-4">
           <div className="text-xs text-gray-600 mb-1">Progress</div>
           <ProgressBar percent={percent} />
         </div> */}
 
-      <div className="mt-4 flex items-center justify-between">
-        <div className="text-xs text-gray-500">{expires}</div>
-        <button
-          onClick={onContinue}
-          className="inline-flex items-center gap-2 rounded-full cursor-pointer bg-rose-500 text-white text-sm px-3 py-1.5 hover:bg-rose-500"
-        >
-          Continue
-        </button>
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-xs text-gray-500">{expires}</div>
+          <button
+            onClick={onContinue}
+            className="inline-flex items-center gap-2 rounded-full cursor-pointer bg-rose-500 text-white text-sm px-3 py-1.5 hover:bg-rose-500"
+          >
+            ▶ Continue
+          </button>
+        </div>
       </div>
-    </div>
+   
   );
 }
