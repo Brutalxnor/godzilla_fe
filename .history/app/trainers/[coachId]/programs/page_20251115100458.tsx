@@ -184,6 +184,7 @@ export default function CoachProgramsPage() {
         <h1 className="text-3xl font-bold mt-4 mb-1">
           Programs by {user?.first_name + " " + user?.second_name}
         </h1>
+>>>>>>> Stashed changes
         <p className="text-gray-500 text-sm mb-8">
           Explore all available programs offered by this coach.
         </p>

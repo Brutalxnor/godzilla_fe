@@ -230,7 +230,7 @@ export default function TrainerCard({
     fetchGetProgramsByCoachId();
   }, [t.id]);
 
-  console.log(programs, "TTTTTTT");
+  // console.log(t, "TTTTTTT");
 
   return (
     <article className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -275,10 +275,10 @@ export default function TrainerCard({
             </div>
 
             <div className="mt-1 flex flex-wrap items-center gap-2 text-[13px] text-gray-600">
-              {/* <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-1">
                 <Star className="h-3.5 w-3.5 text-yellow-500" />
                 {t.rating.toFixed(1)} ({t.reviews_count})
-              </span> */}
+              </span>
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" />
                 {t.location}
@@ -301,7 +301,7 @@ export default function TrainerCard({
 
         {/* meta */}
         <div className="mt-3 flex items-center justify-between text-[13px] text-gray-600">
-          <span>{programs?.length} programs</span>
+          <span>{t.programs_count} programs</span>
           <span>{t.reviews_count} reviews</span>
         </div>
 

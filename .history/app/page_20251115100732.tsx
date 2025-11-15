@@ -452,11 +452,11 @@ export default function Home() {
                         percent={Math.round(Math.random() * 100)}
                         badge={role === "coach" ? "Active" : "Subscribed"}
                         badgeTone={role === "coach" ? "green" : "red"}
-                        // expires={
-                        //   role === "coach"
-                        //     ? "Created by you"
-                        //     : "Expires in 7 days"
-                        // }
+                        expires={
+                          role === "coach"
+                            ? "Created by you"
+                            : "Expires in 7 days"
+                        }
                       />
                     </Link>
                   ))

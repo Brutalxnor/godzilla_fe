@@ -330,7 +330,7 @@ export default function CommunityPage() {
               className="rounded-xl bg-rose-500 cursor-pointer text-white text-1xl px-10 py-3 hover:bg-rose-600"
               onClick={() => setOpenCreate(true)}
             >
-              + Post
+              <Add Post
             </button>
           </div>
           <div className="mt-5 h-[2px] w-full bg-gray-200 rounded-full" />
@@ -456,24 +456,24 @@ export default function CommunityPage() {
                   Posts.map((post) => {
                     const handleAddComment = async (data: CommentFormData) => {
                       if (!data.comment?.trim()) return;
-
+                    
                       try {
                         await addComment(
                           post.id,
                           data.comment,
                           userDB?.data?.user_id as string
                         );
-
+                    
                         // ✅ refetch posts so comment count updates
                         await fetchGetPosts();
-
+                    
                         reset();
                         handleTriggerOpenCommentModal("0");
                       } catch (error) {
                         console.error("Error adding comment:", error);
                       }
                     };
-
+                    
                     const isLikedByMe = post.liked_by?.includes(
                       userDB?.data?.user_id as string
                     );

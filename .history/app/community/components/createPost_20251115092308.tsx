@@ -263,9 +263,8 @@ export default function CreatePostModal({
               </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-5">
-  <div className="w-full lg:w-1/2 space-y-5">
-
+            <div className="flex gap-5">
+              <div className="w-1/2 space-y-5">
                 {/* Caption */}
                 <section className="rounded-2xl border border-gray-200 overflow-hidden">
                   <textarea
@@ -496,8 +495,7 @@ export default function CreatePostModal({
               </div>
 
               {/* Preview */}
-              <div className="w-full lg:w-1/2 rounded-2xl border h-fit border-gray-200">
-
+              <div className="w-1/2 rounded-2xl border h-fit border-gray-200">
                 <div className="px-4 py-3 border-b border-gray-200 text-sm font-medium">
                   Preview
                 </div>

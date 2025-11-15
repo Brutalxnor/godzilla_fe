@@ -452,11 +452,11 @@ export default function Home() {
                         percent={Math.round(Math.random() * 100)}
                         badge={role === "coach" ? "Active" : "Subscribed"}
                         badgeTone={role === "coach" ? "green" : "red"}
-                        // expires={
-                        //   role === "coach"
-                        //     ? "Created by you"
-                        //     : "Expires in 7 days"
-                        // }
+                        expires={
+                          role === "coach"
+                            ? "Created by you"
+                            : "Expires in 7 days"
+                        }
                       />
                     </Link>
                   ))
@@ -500,11 +500,11 @@ export default function Home() {
                     fitness goals today!
                   </div>
                 </div>
-                <Link href={"/programs"} className="flex items-center gap-3">
+                <div className="flex items-center gap-3">
                   <button className="rounded-xl bg-white cursor-pointer text-rose-500 font-medium px-4 py-2 hover:bg-rose-50">
                     Start
                   </button>
-                </Link>
+                </div>
               </section>
 
               {/* Quick Actions */}
