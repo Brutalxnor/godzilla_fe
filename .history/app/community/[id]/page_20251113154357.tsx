@@ -130,8 +130,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
 
   const { addComment } = useComments();
 
-
-  log
+  log;
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
@@ -205,7 +204,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
               <p className="text-xl leading-relaxed" dir="rtl">
                 {postData?.bio}
               </p>
-              <a className="text-blue-500">#Mohamed Osama</a>
+              {/* <a className="text-blue-500">#Mohamed Osama</a> */}
             </div>
 
             {/* Media */}

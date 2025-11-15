@@ -1426,6 +1426,8 @@ import {
   type AthleteSubscription,
 } from "@/app/services/subscription.service";
 import { Program } from "@/app/types/type";
+import { useShareModal } from "@/app/community/context/ShareModal.context";
+import ShareModal from "@/app/components/shared/ShareModal";
 
 /* ===== strict types ===== */
 type ProgramLite = { id: string | number; title: string };
@@ -1506,7 +1508,7 @@ type CoachVM = {
 const API_BASE =
   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
     | string
-    | undefined) ?? "http://127.0.0.1:4000/api/v1";
+    | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 /* this stays just for the user lookup */
 type UserFromAPI = {
@@ -1968,6 +1970,8 @@ export default function ProfilePage() {
   const showLoading = loading || (displayCoach && fetchingCoachPrograms);
   const { theme } = useGetTheme();
 
+  const { openShareModal, toggleShareModal } = useShareModal();
+
   return (
     <div className="min-h-screen">
       <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
@@ -2014,9 +2018,9 @@ export default function ProfilePage() {
                     </button>
                   ) : (
                     <>
-                      <div className="flex gap-4">
+                      <div className="flex gap-4 w-full flex-wrap sm:flex-nowrap">
                         <button
-                          className="w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 cursor-pointer py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                          className="flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base whitespace-nowrap"
                           onClick={() => {
                             window.location.href = "/";
                             window.localStorage.removeItem("token");
@@ -2025,11 +2029,19 @@ export default function ProfilePage() {
                         >
                           Logout
                         </button>
+
                         <button
                           onClick={() => router.push("/profile/edit")}
-                          className="w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 cursor-pointer py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                          className="flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base whitespace-nowrap"
                         >
                           Edit
+                        </button>
+
+                        <button
+                          onClick={toggleShareModal}
+                          className="flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base whitespace-nowrap"
+                        >
+                          Share profile
                         </button>
                       </div>
                     </>
@@ -2037,6 +2049,14 @@ export default function ProfilePage() {
                 </div>
               </div>
             </section>
+
+            {openShareModal && (
+              <ShareModal
+                message={`https://godzilla-fe.vercel.app/profile?user_id=${
+                  userIdParam ?? userDB?.data.user_id
+                }`}
+              />
+            )}
 
             {/* stats row */}
             <section className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
