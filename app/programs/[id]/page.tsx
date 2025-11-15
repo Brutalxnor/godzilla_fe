@@ -746,7 +746,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
               <Link
                 href={
                   programs?.data?.users?.id
-                    ? `/profile?user_id=${programs.data.users.id}`
+                    ? `/profile?user_id=${userDB?.data?.user?.username}`
                     : "#"
                 }
                 className="text-sm text-gray-600 hover:text-gray-800 font-medium self-start sm:self-auto"

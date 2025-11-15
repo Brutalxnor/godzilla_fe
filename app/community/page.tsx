@@ -1,11 +1,13 @@
+// app/community/page.tsx
 "use client";
 
 import { Suspense, useEffect, useState, useRef } from "react";
 import Sidebar from "../components/shared/sidebar";
-import CreatePostModal, { CreatePostType } from "./components/createPost";
+import CreatePostModal from "./components/createPost";
+import EditPostModal from "./components/editPost";
 import { GetAllPosts } from "../sign-up/Services/posts.service";
 import useGetUser from "../Hooks/useGetUser";
-import { Post } from "../types/type";
+import { Post, InterestType } from "../types/type";
 import { useComments } from "./context/CommentsContext";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -13,7 +15,12 @@ import { supabase } from "@/lib/client";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
 import { GetUserById } from "../services/Auth.service";
-import { SharePostToUser, togglePostLike } from "./Service/posts.service";
+import {
+  SharePostToUser,
+  togglePostLike,
+  UpdatePost,
+} from "./Service/posts.service";
+import { GetAllInterests } from "../sign-up/Services/Interest.service";
 
 function Tag({ label, count }: { label: string; count?: number }) {
   return (
@@ -21,6 +28,15 @@ function Tag({ label, count }: { label: string; count?: number }) {
       #{label} {typeof count === "number" ? `(${count})` : ""}
     </button>
   );
+}
+
+interface CreatePostType {
+  bio: string;
+  image: string;
+  location: string;
+  tags: string[];
+  watch: string;
+  user_id: string;
 }
 
 interface CommentFormData {
@@ -50,24 +66,33 @@ export default function CommunityPage() {
 
   const [feedTab, setFeedTab] = useState<"trending">("trending");
 
-  // NEW: modal open state
+  // Modal states
   const [openCreate, setOpenCreate] = useState(false);
-  const [Posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [postToEdit, setPostToEdit] = useState<Post | null>(null);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [sharePostId, setSharePostId] = useState<string | null>(null);
 
-  // NEW: submit handler for modal
-  async function handleCreateSubmit(data: CreatePostType) {
-    // TODO: call your API here
-    console.log("CreatePost payload:", data);
-    // optionally optimistically add to feed here
-  }
-  const { userDB } = useGetUser();
+  const [newPosts, setNewPosts] = useState<Post[]>([]);
+  const [newPostsCount, setNewPostsCount] = useState(0);
 
+  const [dropdownOpenId, setDropdownOpenId] = useState<string | null>(null);
+
+  const [Posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [interests, setInterests] = useState<InterestType[]>([]);
+
+
+  async function handleCreateSubmit(data: CreatePostType) {
+    console.log("CreatePost payload:", data);
+  }
+
+  const { userDB } = useGetUser();
   const { openPostId, addComment, handleTriggerOpenCommentModal } =
     useComments();
+  const { register, handleSubmit, reset } = useForm<CommentFormData>();
 
+  // Fetch posts
   const fetchGetPosts = async () => {
     setLoading(true);
     try {
@@ -80,15 +105,32 @@ export default function CommunityPage() {
     }
   };
 
+  // Fetch interests
+  const fetchInterests = async () => {
+    try {
+      const data = await GetAllInterests();
+      setInterests(data);
+    } catch (error) {
+      console.error("Error fetching interests:", error);
+    }
+  };
+
   useEffect(() => {
     fetchGetPosts();
+    fetchInterests();
   }, [userDB?.data?.user_id]);
 
-  console.log(Posts, "sadasdsada");
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (dropdownOpenId) {
+        setDropdownOpenId(null);
+      }
+    };
 
-  const { register, handleSubmit, reset } = useForm<CommentFormData>();
-
-  // console.log(Posts);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [dropdownOpenId]);
 
   // Notification logic states
   const [chats, setChats] = useState<{ [key: string]: ChatMessage[] }>({});
@@ -101,12 +143,10 @@ export default function CommunityPage() {
   } | null>(null);
 
   const [sender_id, setSenderId] = useState<string>();
-  const [conversations, setConversations] = useState<string[]>([]); // list من conversation IDs
-  const channelsRef = useRef<RealtimeChannel[]>([]); // لتخزين الـ channels عشان unsubscribe لاحقًا
+  const [conversations, setConversations] = useState<string[]>([]);
+  const channelsRef = useRef<RealtimeChannel[]>([]);
 
-  /* =========================
-     Load users
-     ========================= */
+  // Load users
   const fetchUsers = async () => {
     try {
       setLoadingUsers(true);
@@ -160,6 +200,41 @@ export default function CommunityPage() {
     }
   };
 
+  let channel: RealtimeChannel;
+
+  useEffect(() => {
+    const handleChangeCommunity = async () => {
+      channel = await supabase
+        .channel("community-realTime")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "posts" },
+          async (payload) => {
+            console.log("New post:", payload.new);
+
+            const post = payload.new;
+
+            if (post && typeof post === "object" && "user_id" in post) {
+              const userRes = await GetUserById(post.user_id as string);
+              const postWithUser = {
+                ...post,
+                users: userRes?.data,
+              };
+              setNewPosts((prev) => [postWithUser as Post, ...prev]);
+              setNewPostsCount((prev) => prev + 1);
+            }
+          }
+        )
+        .subscribe();
+    };
+
+    handleChangeCommunity();
+
+    return () => {
+      if (channel) channel.unsubscribe();
+    };
+  }, []);
+
   useEffect(() => {
     if (userDB?.data?.user_id) fetchUsers();
   }, [userDB?.data?.user_id]);
@@ -167,13 +242,12 @@ export default function CommunityPage() {
   useEffect(() => {
     const fetchUser = async () => {
       const data = await GetUserById(sender_id as string);
-      // setUser(data); // لاحظ: لم تستخدم الـ user في الكود، يمكن إزالته إذا غير ضروري
     };
 
     if (sender_id) fetchUser();
   }, [sender_id]);
 
-  // useEffect جديد لجلب الـ conversations
+
   useEffect(() => {
     if (!userDB?.data?.user_id) return;
 
@@ -188,11 +262,10 @@ export default function CommunityPage() {
         if (!res.ok) throw new Error("Failed to fetch conversations");
 
         const data = await res.json();
-        const convIds = data.data.map((conv: { id: string }) => conv.id); // افترض إن الـ API يرجع list من {id: string, ...}
+        const convIds = data.data.map((conv: { id: string }) => conv.id);
         setConversations(convIds);
       } catch (err) {
         console.error("Failed to fetch conversations", err);
-        //  // toast.error("Failed to load conversations");
       }
     };
 
@@ -201,34 +274,26 @@ export default function CommunityPage() {
 
   useEffect(() => {
     if (openCreate) {
-      // Save current scroll position
       const scrollY = window.scrollY;
-
-      // Apply lock to body
       document.body.style.setProperty("--scroll-y", `${scrollY}px`);
       document.body.classList.add("no-scroll");
     } else {
-      // Restore scroll
       const scrollY =
         document.body.style.getPropertyValue("--scroll-y") || "0px";
       document.body.classList.remove("no-scroll");
-
-      // Smooth snap back
       window.scrollTo(0, parseInt(scrollY || "0") * -1);
     }
 
-    // Cleanup on unmount
     return () => {
       document.body.classList.remove("no-scroll");
       document.body.style.removeProperty("--scroll-y");
     };
   }, [openCreate]);
 
-  // useEffect لإنشاء channels لكل conversation
+  // Subscribe to realtime channels
   useEffect(() => {
     if (conversations.length === 0 || !userDB?.data?.user_id) return;
 
-    // Unsubscribe من channels قديمة
     channelsRef.current.forEach((channel) => supabase.removeChannel(channel));
     channelsRef.current = [];
 
@@ -239,7 +304,6 @@ export default function CommunityPage() {
           const newMessage = payload.payload as ChatMessage;
           if (newMessage.sender_id === userDB?.data?.user_id) return;
 
-          // هنا نفس الكود: setSenderId, setNotification, إلخ
           setSenderId(newMessage.sender_id);
           const sender = activeUsers.find((u) => u.id === newMessage.sender_id);
           if (sender) {
@@ -247,9 +311,8 @@ export default function CommunityPage() {
             setTimeout(() => setNotification(null), 3000);
           }
 
-          // اختياري: حدث الـ chats إذا كنت عايز (لكن في الصفحة دي مش ضروري إلا لو عايز تخزن الرسائل)
           setChats((prev) => {
-            const key = newMessage.sender_id; // أو أي key مناسب
+            const key = newMessage.sender_id;
             const list = prev[key] || [];
             if (list.some((m) => m.id === newMessage.id)) return prev;
             return { ...prev, [key]: [...list, newMessage] };
@@ -266,11 +329,85 @@ export default function CommunityPage() {
     };
   }, [conversations, userDB?.data?.user_id, activeUsers]);
 
+  // Get display name
+  const typedUser = userDB?.data;
+  const users = typedUser?.user;
+  const email = typedUser?.email ?? "";
+  const displayName = (() => {
+    const raw =
+      `${users?.first_name ?? ""} ${users?.second_name ?? ""}`.trim() ||
+      (email ? email.split("@")[0] : "") ||
+      "User";
+    return raw
+      .split(/\s+/)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+      .join(" ");
+  })();
+
+  // Handle update post
+  const handleUpdatePost = async (data: CreatePostType) => {
+    if (!postToEdit) return;
+
+    try {
+      await UpdatePost(postToEdit.id, {
+        ...data,
+        user_id: userDB?.data?.user_id || "",
+      });
+
+      toast.success("Post updated successfully!");
+      await fetchGetPosts();
+      setEditModalOpen(false);
+      setPostToEdit(null);
+    } catch (error) {
+      console.error("Error updating post:", error);
+      toast.error("Failed to update post");
+    }
+  };
+
+  // Handle delete post
+  const handleDeletePost = async (postId: string) => {
+    if (!window.confirm("Are you sure you want to delete this post?")) {
+      return;
+    }
+
+    try {
+      // await handleDeletePost(postId);
+      toast.success("Post deleted successfully!");
+      await fetchGetPosts();
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      toast.error("Failed to delete post");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
       <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
         <Sidebar />
       </Suspense>
+
+      {newPostsCount > 0 && (
+        <div className="fixed top-3 left-1/2 -translate-x-1/2 z-50">
+          <button
+            onClick={() => {
+              setPosts((prev) => [...newPosts, ...prev]);
+              setNewPosts([]);
+              setNewPostsCount(0);
+
+              // scroll smooth
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              });
+            }}
+            className=" bg-[#ff1f57] text-white px-4 py-2 rounded-full shadow-md hover:bg-[#ff1f5794] transition"
+          >
+            {newPostsCount} New Post{newPostsCount > 1 ? "s" : ""} – Click to
+            view
+          </button>
+        </div>
+      )}
+
       {shareModalOpen && (
         <div
           className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
@@ -308,6 +445,7 @@ export default function CommunityPage() {
                   <img
                     src={u.avatar}
                     className="h-10 w-10 rounded-full object-cover"
+                    alt={u.name}
                   />
                   <span className="font-medium">{u.name}</span>
                 </button>
@@ -335,31 +473,17 @@ export default function CommunityPage() {
           </div>
           <div className="mt-5 h-[2px] w-full bg-gray-200 rounded-full" />
 
-          {/* Trending topics */}
-          <section className="mt-5 justify-between ">
-            {/* <h2 className="text-0xl font-bold text-gray-700 mb-5 ">
-              Trending Topics
-            </h2> */}
-            {/* <div className="flex flex-wrap gap-2">
-              <Tag label="StrengthTraining" count={234} />
-              <Tag label="Nutrition" count={156} />
-              <Tag label="MorningWorkout" count={89} />
-            </div> */}
-          </section>
-
           {/* Tabs */}
-          <section className="mt-4  justify-center">
-            {/* Segmented control */}
-            <div className="w-full  justify-center">
+          <section className="mt-4 justify-center">
+            <div className="w-full justify-center">
               <div
-                className="relative grid  rounded-full bg-gray-100 p-1"
+                className="relative grid rounded-full bg-gray-100 p-1"
                 role="tablist"
                 aria-label="Feed filter"
               >
-                {/* sliding white pill */}
                 <span
                   className={[
-                    "absolute inset-y-1  w-full rounded-full bg-white shadow-sm",
+                    "absolute inset-y-1 w-full rounded-full bg-white shadow-sm",
                     "transition-transform duration-200 ease-out",
                     feedTab === "trending"
                       ? "translate-x-0"
@@ -368,33 +492,18 @@ export default function CommunityPage() {
                   aria-hidden
                 />
 
-                {/* Trending */}
                 <button
                   role="tab"
                   aria-selected={feedTab === "trending"}
                   onClick={() => setFeedTab("trending")}
                   className={[
-                    "relative z-10 py-2 px-1.5 justify-center  font-semibold",
+                    "relative z-10 py-2 px-1.5 justify-center font-semibold",
                     "transition-colors",
                     feedTab === "trending" ? "text-gray-900" : "text-gray-600",
                   ].join(" ")}
                 >
                   Explore new Feed
                 </button>
-
-                {/* New */}
-                {/* <button
-                  role="tab"
-                  aria-selected={feedTab === "new"}
-                  onClick={() => setFeedTab("new")}
-                  className={[
-                    "relative z-10 py-2 text-center text-sm font-semibold",
-                    "transition-colors",
-                    feedTab === "new" ? "text-gray-900" : "text-gray-600",
-                  ].join(" ")}
-                >
-                  New
-                </button> */}
               </div>
             </div>
           </section>
@@ -423,7 +532,6 @@ export default function CommunityPage() {
                   <span>{notification.user.name?.[0] || "U"}</span>
                 )}
 
-                {/* Online Dot - اختياري */}
                 <span
                   className={`absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white dark:border-zinc-900 ${
                     notification.user.status === "online"
@@ -448,7 +556,6 @@ export default function CommunityPage() {
             {loading ? (
               <div className="flex justify-center items-center py-10">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-                {/* أو استخدم أي loader component عندك */}
               </div>
             ) : (
               <>
@@ -456,24 +563,22 @@ export default function CommunityPage() {
                   Posts.map((post) => {
                     const handleAddComment = async (data: CommentFormData) => {
                       if (!data.comment?.trim()) return;
-                    
+
                       try {
                         await addComment(
                           post.id,
                           data.comment,
                           userDB?.data?.user_id as string
                         );
-                    
-                        // ✅ refetch posts so comment count updates
+
                         await fetchGetPosts();
-                    
                         reset();
                         handleTriggerOpenCommentModal("0");
                       } catch (error) {
                         console.error("Error adding comment:", error);
                       }
                     };
-                    
+
                     const isLikedByMe = post.liked_by?.includes(
                       userDB?.data?.user_id as string
                     );
@@ -489,13 +594,12 @@ export default function CommunityPage() {
                           userDB.data.user_id as string
                         );
 
-                        // Update local state optimistically with backend response
                         setPosts((prev) =>
                           prev.map((p) =>
                             p.id === post.id
                               ? {
                                   ...p,
-                                  liked_by: res.liked_by, // updated array from backend
+                                  liked_by: res.liked_by,
                                 }
                               : p
                           )
@@ -512,53 +616,23 @@ export default function CommunityPage() {
                         key={post.id}
                         className="cursor-pointer"
                       >
-                        {/* <PostCard
-                          post={post}
-                          author={{
-                            name:
-                              post?.users?.first_name +
-                                " " +
-                                post?.users?.second_name || "",
-                            role: post?.users?.user_type || "Coach",
-                            avatar:
-                              post.users?.avatar_url ||
-                              "https://example.com/images/sunset.jpg",
-                          }}
-                          timeAgo={post.created_at}
-                          content={post.bio}
-                          image={
-                            post.image || "https://example.com/images/sunset.jpg"
-                          }
-                          stats={{
-                            likes: 145,
-                            comments: post?.comment_new?.length,
-                            shares: 8,
-                          }}
-                        /> */}
-
-                        <div key={post.id} className="mb-4 sm:mb-6">
-                          <article className="rounded-2xl border border-gray-200  bg-white p-4 sm:p-5">
+                        <div className="mb-4 sm:mb-6">
+                          <article className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5">
                             {/* Header */}
                             <div className="flex items-start justify-between">
                               <div className="flex items-center gap-3">
-                                {userDB?.data?.user ? (
+                                {post.users?.avatar_url ? (
                                   <img
-                                    src={
-                                      post.users?.avatar_url ||
-                                      "https://example.com/images/sunset.jpg"
-                                    }
-                                    alt={
-                                      userDB?.data?.user?.first_name ||
-                                      "https://example.com/images/sunset.jpg"
-                                    }
+                                    src={post.users?.avatar_url}
+                                    alt={post.users?.first_name}
                                     width={40}
                                     height={40}
                                     className="rounded-full"
                                   />
                                 ) : (
                                   <div className="h-10 w-10 rounded-full bg-gray-200 grid place-items-center text-xs font-semibold text-gray-700">
-                                    {userDB?.data?.user?.first_name
-                                      .split(" ")
+                                    {post.users?.first_name
+                                      ?.split(" ")
                                       .map((p) => p[0])
                                       .join("")
                                       .slice(0, 2)
@@ -571,9 +645,9 @@ export default function CommunityPage() {
                                     <span className="font-medium text-sm sm:text-[15px]">
                                       {`${post.users?.first_name} ${post.users?.second_name}`}
                                     </span>
-                                    {userDB?.data?.user?.user_type && (
+                                    {post.users?.user_type && (
                                       <span className="text-[11px] px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
-                                        {userDB?.data?.user?.user_type}
+                                        {post.users?.user_type}
                                       </span>
                                     )}
                                     <span className="text-[11px] text-rose-500">
@@ -586,13 +660,84 @@ export default function CommunityPage() {
                                 </div>
                               </div>
 
-                              <button
-                                type="button"
-                                className="text-gray-400 hover:text-gray-600"
-                                aria-label="More"
-                              >
-                                •••
-                              </button>
+                              {/* Three dots menu */}
+                              <div className="relative">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setDropdownOpenId(
+                                      dropdownOpenId === post.id
+                                        ? null
+                                        : post.id
+                                    );
+                                  }}
+                                  className="text-gray-400 hover:text-gray-600 p-2"
+                                  aria-label="More options"
+                                >
+                                  •••
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                {dropdownOpenId === post.id && (
+                                  <div
+                                    className="absolute right-0 top-10 z-50 w-48 rounded-xl bg-white shadow-lg border border-gray-200 py-2"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                    }}
+                                  >
+                                    {post.user_id === userDB?.data?.user_id && (
+                                      <>
+                                        <button
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setPostToEdit(post);
+                                            setEditModalOpen(true);
+                                            setDropdownOpenId(null);
+                                          }}
+                                          className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
+                                        >
+                                          <span>✏️</span>
+                                          Edit Post
+                                        </button>
+
+                                        <button
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setDropdownOpenId(null);
+                                            handleDeletePost(post.id);
+                                          }}
+                                          className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                        >
+                                          <span>🗑️</span>
+                                          Delete Post
+                                        </button>
+
+                                        <div className="h-px bg-gray-200 my-1" />
+                                      </>
+                                    )}
+
+                                    <button
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        alert(
+                                          "Report functionality coming soon"
+                                        );
+                                        setDropdownOpenId(null);
+                                      }}
+                                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
+                                    >
+                                      <span>🚩</span>
+                                      Report Post
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
                             </div>
 
                             {/* Body */}
@@ -603,10 +748,7 @@ export default function CommunityPage() {
                             {post.image && (
                               <div className="mt-3 overflow-hidden rounded-xl border border-gray-200">
                                 <img
-                                  src={
-                                    post.image ||
-                                    "https://example.com/images/sunset.jpg"
-                                  }
+                                  src={post.image}
                                   alt={"post image"}
                                   width={1200}
                                   height={800}
@@ -664,52 +806,7 @@ export default function CommunityPage() {
                               </button>
                             </div>
 
-                            {/*Comment Modal*/}
-
-                            {openPostId === post.id && (
-                              <div className="fixed inset-0 bg-black/1 backdrop-blur-sm z-50 gap-2 flex items-center justify-center p-4">
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    // handle like logic
-                                  }}
-                                  className="inline-flex items-center gap-1.5 hover:text-rose-600 transition-colors"
-                                >
-                                  <span>❤️</span>
-                                  <span className="text-sm">{20}</span>
-                                </button>
-
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    handleTriggerOpenCommentModal(post.id);
-                                  }}
-                                  className="inline-flex cursor-pointer items-center gap-1.5 hover:text-gray-700 transition-colors"
-                                >
-                                  <span>💬</span>
-                                  <span className="text-sm">
-                                    {post.comment_new?.length}
-                                  </span>
-                                </button>
-
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    // handle share logic
-                                  }}
-                                  className="inline-flex items-center gap-1.5 hover:text-gray-700 transition-colors"
-                                >
-                                  <span>↗</span>
-                                  <span className="text-sm">{10}</span>
-                                </button>
-                              </div>
-                            )}
-
-                            {/*Comment Modal*/}
-
+                            {/* Comment Modal */}
                             {openPostId === post.id && (
                               <div className="fixed inset-0 bg-black/1 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                                 <div
@@ -737,10 +834,6 @@ export default function CommunityPage() {
                                         <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z" />
                                       </svg>
                                     </button>
-
-                                    {/* <button className="text-blue-500 text-sm font-medium hover:underline">
-                                      Drafts
-                                    </button> */}
                                   </div>
 
                                   {/* Content */}
@@ -760,13 +853,6 @@ export default function CommunityPage() {
                                           <span className="font-bold text-sm">
                                             {post.users?.first_name}
                                           </span>
-                                          <svg
-                                            className="w-4 h-4 text-yellow-500"
-                                            viewBox="0 0 24 24"
-                                            fill="currentColor"
-                                          >
-                                            <path d="M8.5 12.5l2 2 5-5" />
-                                          </svg>
                                           <span className="text-gray-500 text-sm">
                                             @{post.location}
                                           </span>
@@ -786,11 +872,6 @@ export default function CommunityPage() {
                                       </div>
 
                                       <div className="flex gap-3">
-                                        {/* <img
-                                          src={ post.users?.avatar_url||"https://via.placeholder.com/40"}
-                                          alt="Your profile"
-                                          className="w-10 h-10 rounded-full"
-                                        /> */}
                                         <div className="flex-1">
                                           <textarea
                                             {...register("comment")}
@@ -836,6 +917,19 @@ export default function CommunityPage() {
           {/* bottom padding so content isn't hidden behind bottom nav on mobile */}
           <div className="pb-24 lg:pb-0" />
         </div>
+        {editModalOpen && postToEdit && (
+          <EditPostModal
+            open={editModalOpen}
+            onClose={() => {
+              setEditModalOpen(false);
+              setPostToEdit(null);
+            }}
+            post={postToEdit}
+            userName={displayName}
+            userId={userDB?.data?.user_id || ""}
+            onUpdate={handleUpdatePost}
+          />
+        )}
       </main>
 
       {/* ===== Create Post Modal (mounted at page root) ===== */}

@@ -1,11 +1,18 @@
-
-
 import axios from "axios";
-
 const BASE_URL = "https://godzilla-be.vercel.app/api/v1"; // adjust if needed
 
+interface CreatePostType {
+  bio: string;
+  image: string;
+  location: string;
+  tags: string[];
+  watch: string;
+  user_id: string;
+}
+
 export async function togglePostLike(postId: string, userId: string) {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const res = await axios.post(
     `${BASE_URL}/posts/like`,
@@ -28,24 +35,47 @@ export async function togglePostLike(postId: string, userId: string) {
   };
 }
 
-
 export async function SharePostToUser(postId: string, receiver_id: string) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-  
-    const res = await fetch(`https://godzilla-be.vercel.app/api/v1/posts/share`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user?.data?.access_token}`,
-      },
-      body: JSON.stringify({
-        postId,
-        sender_id: user.data.user_id,
-        receiver_id,
-      }),
-    });
-  
-    return res.json();
+  const res = await fetch(`https://godzilla-be.vercel.app/api/v1/posts/share`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user?.data?.access_token}`,
+    },
+    body: JSON.stringify({
+      postId,
+      sender_id: user.data.user_id,
+      receiver_id,
+    }),
+  });
+
+  return res.json();
+}
+
+export const UpdatePost = async (postId: string, postData: CreatePostType) => {
+  try {
+    const response = await fetch(
+      `https://godzilla-be.vercel.app/api/v1/posts/${postId}`,
+      {
+        method: "Patch",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Failed to update post");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Error updating post:", error);
+    throw error;
   }
-  
+};

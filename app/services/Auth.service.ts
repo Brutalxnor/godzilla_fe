@@ -13,6 +13,19 @@ export const GetUserById = async (id: string) => {
   }
 };
 
+export const GetUserByUsername = async (username: string) => {
+  try {
+    const res = await axios.get(
+      `https://godzilla-be.vercel.app/api/v1/auth/getuserbyusername/${username}`
+    );
+
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching athlete subscriptions:", err);
+    throw err;
+  }
+};
+
 export const UpdateUser = async (
   data: {
     first_name: string;

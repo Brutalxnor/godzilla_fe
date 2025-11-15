@@ -6,13 +6,12 @@
 // import { Filter, Search } from "lucide-react";
 // import TrainerCard, { Trainer } from "./TrainerCard";
 
-
 // /* ============================
 //    Config + fetching
 // ============================= */
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as string | undefined) ??
-//   "http://127.0.0.1:4000/api/v1";
+//   "https://godzilla-be.vercel.app/api/v1";
 
 // const CATEGORIES = ["All", "Strength", "Cardio", "Yoga", "Nutrition", "HIIT"];
 
@@ -224,7 +223,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
@@ -233,11 +231,13 @@ import { Filter, Search } from "lucide-react";
 import TrainerCard, { Trainer } from "./TrainerCard";
 import { getAllCoaches } from "../services/trainers.service";
 
-
 // const CATEGORIES = ["All", "Strength", "Cardio", "Yoga", "Nutrition", "HIIT"];
 
 // ===== fetch + filter logic =====
-async function fetchTrainers(query: string, category: string): Promise<Trainer[]> {
+async function fetchTrainers(
+  query: string,
+  category: string
+): Promise<Trainer[]> {
   try {
     const all = await getAllCoaches();
 
@@ -254,7 +254,9 @@ async function fetchTrainers(query: string, category: string): Promise<Trainer[]
         t.bio.toLowerCase().includes(q);
 
       const hitCat =
-        !cat || cat === "all" || t.tags.some((tg) => tg.toLowerCase().includes(cat));
+        !cat ||
+        cat === "all" ||
+        t.tags.some((tg) => tg.toLowerCase().includes(cat));
 
       return hitQ && hitCat;
     });

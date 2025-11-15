@@ -125,6 +125,175 @@ export default function GodzillaLandingPage(): JSX.Element {
     setActiveTestimonial(index);
   };
 
+  function extractTextFromHTML(html: string) {
+    if (!html) return "";
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  }
+
+  useEffect(() => {
+    if (userDB?.data?.user_id) fetchUsers();
+  }, [userDB?.data?.user_id]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await GetUserById(sender_id as string);
+    };
+
+    if (sender_id) fetchUser();
+  }, [sender_id]);
+
+  useEffect(() => {
+    if (!userDB?.data?.user_id) return;
+
+    const fetchConversations = async () => {
+      try {
+        const res = await fetch(
+          "https://godzilla-be.vercel.app/api/v1/chat/conversations",
+          {
+            headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
+          }
+        );
+        if (!res.ok) throw new Error("Failed to fetch conversations");
+
+        const data = await res.json();
+        const convIds = data.data.map((conv: { id: string }) => conv.id);
+        setConversations(convIds);
+      } catch (err) {
+        console.error("Failed to fetch conversations", err);
+        // toast.error("Failed to load conversations");
+      }
+    };
+
+    fetchConversations();
+  }, [userDB?.data?.user_id, userDB?.data.access_token]);
+
+  useEffect(() => {
+    if (conversations.length === 0 || !userDB?.data?.user_id) return;
+
+    channelsRef.current.forEach((channel) => supabase.removeChannel(channel));
+    channelsRef.current = [];
+
+    conversations.forEach((convId) => {
+      const channel = supabase
+        .channel(`chat-${convId}`)
+        .on("broadcast", { event: "new-message" }, (payload) => {
+          const newMessage = payload.payload as ChatMessage;
+          if (newMessage.sender_id === userDB?.data?.user_id) return;
+
+          setSenderId(newMessage.sender_id);
+          const sender = activeUsers.find((u) => u.id === newMessage.sender_id);
+          if (sender) {
+            setNotification({ user: sender, message: newMessage });
+            setTimeout(() => setNotification(null), 3000);
+          }
+
+          setChats((prev) => {
+            const key = newMessage.sender_id;
+            const list = prev[key] || [];
+            if (list.some((m) => m.id === newMessage.id)) return prev;
+            console.log(newMessage, "ahjdgajs");
+
+            return { ...prev, [key]: [...list, newMessage] };
+          });
+        })
+        .subscribe();
+
+      channelsRef.current.push(channel);
+    });
+
+    return () => {
+      channelsRef.current.forEach((channel) => supabase.removeChannel(channel));
+      channelsRef.current = [];
+    };
+  }, [conversations, userDB?.data?.user_id, activeUsers]);
+
+  const role =
+    (userDB?.data?.user?.user_type as string | undefined)?.toLowerCase() ??
+    "athlete";
+  const userId = userDB?.data?.user_id;
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchPrograms = async () => {
+      try {
+        setIsLoading(true);
+
+        if (role === "coach") {
+          // ---------- COACH: programs created by this coach ----------
+          const list = await GetProgramsByCoachId(userId as string | number);
+
+          const mapped: DashboardProgram[] = Array.isArray(list)
+            ? list.filter(isProgramFromAPI).map((p) => ({
+                id: p.id,
+                title: p.title,
+                coachName: userDB?.data?.user.first_name ?? "Coach",
+              }))
+            : [];
+
+          setPrograms(mapped);
+        } else {
+          // ---------- ATHLETE: programs this athlete is subscribed to ----------
+          // use same base URL you use in /programs page
+          const response = await axios.get(
+            `https://godzilla-be.vercel.app/api/v1/subscripe/${userId}`
+          );
+
+          type Row = {
+            id?: string | number;
+            program_id?: string | number;
+            programs?: {
+              id?: string | number;
+              title?: string;
+              coach_id?: string | number;
+              cover_image_url?: string | null;
+              users?: { first_name?: string | null } | null; // coach
+            } | null;
+            users?: { first_name?: string | null } | null; // athlete
+          };
+
+          const raw = response.data?.data as Row[] | undefined;
+
+          const mapped: DashboardProgram[] = Array.isArray(raw)
+            ? raw.map((row, idx) => ({
+                // prefer program id, fall back to program_id or subscription id
+                id: row.programs?.id ?? row.program_id ?? row.id ?? `${idx}`,
+                // REAL program title from programs
+                title: row.programs?.title ?? "Program",
+                // COACH name from programs.users.first_name
+                coachName: row.programs?.users?.first_name ?? "Coach",
+              }))
+            : [];
+
+          setPrograms(mapped);
+        }
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          // if backend returns 404 when no subs, just show empty state
+          if (err.response?.status === 404) {
+            setPrograms([]);
+          } else {
+            console.error(
+              "❌ Axios error fetching programs:",
+              err.response?.data || err.message
+            );
+          }
+        } else if (err instanceof Error) {
+          console.error("❌ Error fetching programs:", err.message);
+        } else {
+          console.error("❌ Unknown error:", err);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void fetchPrograms();
+  }, [userId, role, userDB?.data?.user.first_name]);
+
+
   return (
     <div className="min-h-screen bg-[#f4f6ff] text-slate-900">
       {/* ----------------------- HERO ----------------------- */}
