@@ -1529,17 +1529,18 @@ const Chat = () => {
 
                 {/* Desktop: pill with icon + text */}
                 <button
-                  onClick={fetchUsers}
-                  type="button"
-                  className="
-                    hidden sm:inline-flex items-center gap-2 rounded-full
-                    bg-rose-300 px-6 py-2 text-xs sm:text-sm font-medium
-                    text-white shadow-sm cursor-pointer hover:bg-rose-400 active:scale-95
-                    transition
-                  "
-                >
-                  <RefreshCcw className="h-4 w-4" />
-                </button>
+  onClick={fetchUsers}
+  type="button"
+  className="
+    hidden sm:inline-flex items-center gap-2 rounded-full
+    bg-rose-500 px-6 py-2 text-xs sm:text-sm font-medium
+    shadow-sm cursor-pointer hover:bg-rose-400 active:scale-95
+    transition text-white
+  "
+>
+  <RefreshCcw className="h-4 w-4 text-white dark:text-black" />
+</button>
+
               </div>
             )}
           </div>

@@ -580,11 +580,11 @@ export default function ProgramCard({
 
         {/* meta row */}
         <div className="mt-3 flex flex-wrap items-center gap-4 text-sm">
-          <div className="flex items-center gap-1 text-amber-500">
+          {/* <div className="flex items-center gap-1 text-amber-500">
             <FiStar className="shrink-0" />
             <span className="font-medium">{safeRating.toFixed(1)}</span>
             <span className="text-gray-500">({safeRatingsCount})</span>
-          </div>
+          </div> */}
 
           <div className="flex items-center gap-1 text-gray-600">
             <FiClock className="shrink-0" />
