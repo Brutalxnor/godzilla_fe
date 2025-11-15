@@ -855,6 +855,8 @@ export default function CommunityPage() {
               setPostToEdit(null);
             }}
             post={postToEdit}
+            userName={displayName}
+            userId={userDB?.data?.user_id || ""}
             onUpdate={handleUpdatePost}
           />
         )}

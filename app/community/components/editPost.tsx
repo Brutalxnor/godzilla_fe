@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { FiArrowLeft, FiUploadCloud, FiMapPin, FiHash } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 
-type EditPostType = {
+export type EditPostType = {
   bio: string;
   image: string;
   location: string;
   tags: string[];
   watch: string;
+  user_id: string;
 };
 
 type Post = {
