@@ -172,6 +172,7 @@ export default function CommunityPage() {
   };
 
   let channel: RealtimeChannel;
+
   useEffect(() => {
     const handleChangeCommunity = async () => {
       channel = await supabase
@@ -179,14 +180,20 @@ export default function CommunityPage() {
         .on(
           "postgres_changes",
           { event: "*", schema: "public", table: "posts" },
-          (payload) => {
+          async (payload) => {
             console.log("New post:", payload.new);
 
-            // خزّن البوستات الجديدة
-            setNewPosts((prev: Post[]) => [payload.new as Post, ...prev]);
+            const post = payload.new;
 
-            // زوّد العداد
-            setNewPostsCount((prev) => prev + 1);
+            if (post && typeof post === "object" && "user_id" in post) {
+              const userRes = await GetUserById(post.user_id as string);
+              const postWithUser = {
+                ...post,
+                users: userRes?.data,
+              };
+              setNewPosts((prev) => [postWithUser as Post, ...prev]);
+              setNewPostsCount((prev) => prev + 1);
+            }
           }
         )
         .subscribe();
@@ -194,11 +201,8 @@ export default function CommunityPage() {
 
     handleChangeCommunity();
 
-    // ✨ cleanup بدون Errors
     return () => {
-      if (channel) {
-        channel.unsubscribe();
-      }
+      if (channel) channel.unsubscribe();
     };
   }, []);
 
@@ -209,13 +213,11 @@ export default function CommunityPage() {
   useEffect(() => {
     const fetchUser = async () => {
       const data = await GetUserById(sender_id as string);
-      // setUser(data); // لاحظ: لم تستخدم الـ user في الكود، يمكن إزالته إذا غير ضروري
     };
 
     if (sender_id) fetchUser();
   }, [sender_id]);
 
-  // useEffect جديد لجلب الـ conversations
   useEffect(() => {
     if (!userDB?.data?.user_id) return;
 
