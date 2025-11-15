@@ -32,6 +32,7 @@ export interface User {
       second_name: string;
       user_type: string;
       message: string;
+      username: string;
     };
   };
 }
