@@ -1,4 +1,3 @@
-
 // "use client";
 
 // import { useEffect, useMemo, useState } from "react";
@@ -121,7 +120,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "http://127.0.0.1:4000/api/v1";
+//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 // type ProgramFromAPI = {
 //   id: string | number;
@@ -683,11 +682,9 @@ import ProfilePage from "./components/ProfilePage";
 
 export default function Profile() {
   return (
-   
-     <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
-      <ProfilePage/>
+    <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+      <ProfilePage />
       {/* kdjcklsajdl */}
-     </Suspense>
-   
+    </Suspense>
   );
 }

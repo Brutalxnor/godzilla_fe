@@ -120,7 +120,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "http://127.0.0.1:4000/api/v1";
+//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 // type ProgramFromAPI = {
 //   id: string | number;
@@ -788,7 +788,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "http://127.0.0.1:4000/api/v1";
+//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 // type ProgramFromAPI = {
 //   id: string | number;
@@ -1526,7 +1526,9 @@ type UserResp = { data?: UserFromAPI };
 async function getUserById(
   id: string | number
 ): Promise<UserFromAPI | undefined> {
-  const { data } = await axios.get<UserResp>(`${API_BASE}/auth/getusers/${id}`);
+  const { data } = await axios.get<UserResp>(
+    `https://godzilla-be.vercel.app/api/v1/auth/getuserbyusername/${id}`
+  );
   return data?.data;
 }
 
@@ -2053,7 +2055,7 @@ export default function ProfilePage() {
             {openShareModal && (
               <ShareModal
                 message={`https://godzilla-fe.vercel.app/profile?user_id=${
-                  userIdParam ?? userDB?.data.user_id
+                  userIdParam ?? userDB?.data.user.username
                 }`}
               />
             )}

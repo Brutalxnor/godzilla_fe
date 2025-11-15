@@ -120,7 +120,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "http://127.0.0.1:4000/api/v1";
+//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 // type ProgramFromAPI = {
 //   id: string | number;
@@ -788,7 +788,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "http://127.0.0.1:4000/api/v1";
+//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 // type ProgramFromAPI = {
 //   id: string | number;
@@ -1391,7 +1391,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
@@ -1502,7 +1501,7 @@ type CoachVM = {
 const API_BASE =
   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
     | string
-    | undefined) ?? "http://127.0.0.1:4000/api/v1";
+    | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 /* this stays just for the user lookup */
 type UserFromAPI = {
@@ -1564,7 +1563,6 @@ async function fetchSubscriptionsForAthlete(
     return [];
   }
 }
-
 
 /* ===== helpers ===== */
 const toTitleCase = (s: string): string =>
@@ -1684,10 +1682,7 @@ export default function ProfilePage() {
           setCoachVM({
             header,
             stats: {
-              subscribers: mapped.reduce(
-                (a, b) => a + (b.subscribers ?? 0),
-                0
-              ),
+              subscribers: mapped.reduce((a, b) => a + (b.subscribers ?? 0), 0),
               programs: mapped.length,
               rating:
                 mapped.length > 0

@@ -36,7 +36,7 @@ export const GetAllPosts = async () => {
 export const CreatePost = async (data: CreatePostType) => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/v1/posts/create-post",
+      "https://godzilla-be.vercel.app/api/v1/posts/create-post",
       data
     );
 
