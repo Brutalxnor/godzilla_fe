@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import { CommentsProvider } from "./community/context/CommentsContext";
 import ChatNotifications from "./components/shared/ChatNotifications";
 import GlobalHttpInterceptor from "./GlobalHttpInterceptor";
+import { ShareModalProvider } from "./community/context/ShareModal.context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,12 +54,12 @@ export default function RootLayout({
           color: "var(--foreground)",
         }}
       >
-     
-       
         <GlobalHttpInterceptor>
-        <ChatNotifications />
-        <ToastContainer />
-        <CommentsProvider>{children}</CommentsProvider>
+          <ChatNotifications />
+          <ToastContainer />
+          <CommentsProvider>
+            <ShareModalProvider>{children}</ShareModalProvider>
+          </CommentsProvider>
         </GlobalHttpInterceptor>
       </body>
     </html>

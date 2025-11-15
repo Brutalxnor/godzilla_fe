@@ -204,7 +204,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
               <p className="text-xl leading-relaxed" dir="rtl">
                 {postData?.bio}
               </p>
-              <a className="text-blue-500">#Mohamed Osama</a>
+              {/* <a className="text-blue-500">#Mohamed Osama</a> */}
             </div>
 
             {/* Media */}
@@ -320,7 +320,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
                           {/* User Info */}
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-bold hover:underline cursor-pointer">
-                              {comment?.usersData?.first_name||"User"}
+                              {comment?.usersData?.first_name || "User"}
                             </span>
 
                             {/* Verified Badge */}
