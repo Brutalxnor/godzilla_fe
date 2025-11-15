@@ -1,157 +1,128 @@
 "use client";
 
-import { FaBell } from "react-icons/fa";
-import { AiOutlineRise } from "react-icons/ai";
-import { FiUsers } from "react-icons/fi";
-import { TbTrophy } from "react-icons/tb";
-import { ReactNode, Suspense, useEffect, useRef, useState } from "react";
-import type React from "react";
-
-import ProgramCard from "./components/shared/programCard";
-import Sidebar from "./components/shared/sidebar";
-import useGetUser from "./Hooks/useGetUser";
-import LoginForm from "./auth/Components/LoginForm";
-import axios from "axios";
-import useGetTheme from "./Hooks/useGetTheme";
+import Image from "next/image";
 import Link from "next/link";
-
 import {
-  GetProgramsByCoachId,
-  ProgramFromAPI,
-} from "./programs/services/addProgram.service";
-import { supabase } from "@/lib/client";
-import { RealtimeChannel } from "@supabase/supabase-js";
-import { toast } from "react-toastify";
-import { GetUserById } from "./services/Auth.service";
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Dumbbell,
+  ShieldCheck,
+  Users,
+  Sparkles,
+  Quote,
+  CheckCircle2,
+  Menu,
+  X,
+} from "lucide-react";
+import { useState, type JSX, type ReactNode } from "react";
 
-/* ---------- types ---------- */
+/* ----------------------------- types ----------------------------- */
 
-function isProgramFromAPI(obj: unknown): obj is ProgramFromAPI {
-  if (!obj || typeof obj !== "object") return false;
-  const candidate = obj as { id?: unknown; title?: unknown };
-  return (
-    (typeof candidate.id === "string" || typeof candidate.id === "number") &&
-    typeof candidate.title === "string"
-  );
-}
-
-type DashboardProgram = {
-  id: string | number;
+type FeatureCard = {
+  id: number;
   title: string;
-  coachName: string;
+  description: string;
+  icon: ReactNode; // ⭐ UPDATED (no React. prefix, proper type)
 };
 
-type ChatMessage = {
-  id: number | string;
-  user: string;
-  avatar: string;
-  time: string;
-  content: string;
-  sender_id: string;
-  likes: number;
-  replies: number;
-  created_at: string;
-  conversation_id?: string;
+type Testimonial = {
+  id: number;
+  name: string;
+  role: string;
+  text: string;
+  avatarSrc: string;
 };
 
-type LiteUser = { id: string; name: string; status: string; avatar: string };
-
-function StatCard({
-  icon,
-  value,
-  label,
-}: {
-  icon: ReactNode;
-  value: string | number;
+type HighlightStat = {
+  id: number;
   label: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-gray-200 bg-white px-5 py-4 text-center">
-      <div className="mx-auto mb-2 grid h-10 w-10 place-items-center rounded-xl bg-rose-50 text-rose-600">
-        {icon}
-      </div>
-      <div className="text-xl font-semibold">{value}</div>
-      <div className="text-xs text-gray-500 mt-0.5">{label}</div>
-    </div>
-  );
-}
+  value: string;
+};
 
-export default function Home() {
-  const [programs, setPrograms] = useState<DashboardProgram[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+/* ----------------------------- data ----------------------------- */
 
-  const [chats, setChats] = useState<{ [key: string]: ChatMessage[] }>({});
-  const [activeUsers, setActiveUsers] = useState<LiteUser[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [error, setError] = useState("");
-  const [notification, setNotification] = useState<{
-    user: LiteUser;
-    message: ChatMessage;
-  } | null>(null);
+const featureCards: FeatureCard[] = [
+  {
+    id: 1,
+    title: "Share, Motivate, Inspire.",
+    description:
+      "Follow top coaches and athletes, share your workouts, and stay accountable with a supportive community.",
+    icon: <Users className="h-6 w-6" />,
+  },
+  {
+    id: 2,
+    title: "Professional Training",
+    description:
+      "Access structured programs tailored to your goals, from fat loss to muscle building and performance.",
+    icon: <Dumbbell className="h-6 w-6" />,
+  },
+  {
+    id: 3,
+    title: "Simple, Secure, Seamless",
+    description:
+      "Train, track, and pay all in one platform with secure payments and smooth user experience.",
+    icon: <ShieldCheck className="h-6 w-6" />,
+  },
+  {
+    id: 4,
+    title: "Train. Earn. Achieve.",
+    description:
+      "Turn your passion for fitness into a scalable income stream with online coaching and programs.",
+    icon: <Sparkles className="h-6 w-6" />,
+  },
+];
 
-  const [sender_id, setSenderId] = useState<string>();
-  const [conversations, setConversations] = useState<string[]>([]);
-  const channelsRef = useRef<RealtimeChannel[]>([]);
+const testimonials: Testimonial[] = [
+  {
+    id: 1,
+    name: "Ahmed K.",
+    role: "Online Athlete",
+    text: "Within just one week, I started seeing visible results and finally had structure in my training.",
+    avatarSrc: "/images/testimonials/athlete-1.png",
+  },
+  {
+    id: 2,
+    name: "Coach Lina",
+    role: "Online Coach",
+    text: "Godzilla helped me turn my offline clients into a global online business in months.",
+    avatarSrc: "/images/testimonials/coach-1.png",
+  },
+  {
+    id: 3,
+    name: "Omar R.",
+    role: "Hybrid Athlete",
+    text: "Tracking my progress and staying accountable became 10x easier with the app.",
+    avatarSrc: "/images/testimonials/athlete-2.png",
+  },
+];
 
-  const { userDB } = useGetUser();
-  const { theme } = useGetTheme();
+const highlightStats: HighlightStat[] = [
+  { id: 1, label: "COACHES", value: "100+" },
+  { id: 2, label: "ATHLETES", value: "5K+" },
+  { id: 3, label: "PROGRAMS", value: "250+" },
+];
 
-  const shellVars = {
-    "--sb-w": "88px",
-    "--extra-left": "24px",
-  } as React.CSSProperties;
+/* ----------------------------- page ----------------------------- */
 
-  const fetchUsers = async () => {
-    try {
-      setLoadingUsers(true);
-      setError("");
+export default function GodzillaLandingPage(): JSX.Element {
+  const [activeTestimonial, setActiveTestimonial] = useState<number>(0);
+  const [navOpen, setNavOpen] = useState(false); // ⭐ NEW: mobile nav state
 
-      const res = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/auth/getusers"
-      );
-      if (!res.ok) throw new Error("Failed to fetch users");
+  const currentTestimonial: Testimonial = testimonials[activeTestimonial];
 
-      const result = await res.json();
-      if (!result || !result.data) throw new Error("Invalid response format");
+  const goNext = (): void => {
+    setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+  };
 
-      const formattedUsers: LiteUser[] = result.data
-        .map(
-          (user: {
-            id: string;
-            first_name: string;
-            status: string;
-            avatar_url: string;
-          }) => ({
-            id: user.id,
-            name: user.first_name || "Unknown",
-            status: user.status || "online",
-            avatar:
-              user.avatar_url ||
-              user.first_name
-                ?.split(" ")
-                .map((n: string) => n[0])
-                .join("") ||
-              "U",
-          })
-        )
-        .filter(
-          (user: { id: string; first_name: string; status: string }) =>
-            user.id !== userDB?.data?.user_id
-        )
-        .sort((a: { status: string }, b: { status: string }) => {
-          if (a.status === "online") return -1;
-          if (a.status !== "online") return 1;
-          return 0;
-        });
+  const goPrev = (): void => {
+    setActiveTestimonial((prev) =>
+      prev === 0 ? testimonials.length - 1 : prev - 1
+    );
+  };
 
-      setActiveUsers(formattedUsers);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load users");
-      toast.error("Failed to load users");
-    } finally {
-      setLoadingUsers(false);
-    }
+  const setByIndex = (index: number): void => {
+    setActiveTestimonial(index);
   };
 
   function extractTextFromHTML(html: string) {
@@ -322,229 +293,549 @@ export default function Home() {
     void fetchPrograms();
   }, [userId, role, userDB?.data?.user.first_name]);
 
+
   return (
-    <>
-      {userDB ? (
-        <div
-          className={`min-h-screen ${
-            theme === "dark" ? "bg-black" : "bg-white"
-          }`}
-        >
-          <Suspense
-            fallback={<div className="p-6 text-gray-500">Loading...</div>}
-          >
-            <Sidebar />
-          </Suspense>
+    <div className="min-h-screen bg-[#f4f6ff] text-slate-900">
+      {/* ----------------------- HERO ----------------------- */}
+      {/* ----------------------- HERO ----------------------- */}
+      <header className="relative isolate overflow-hidden bg-black/70 min-h-[620px] md:h-[50vh]">
+        {/* background image */}
+        <div className="absolute inset-0 -z-10">
+          <img
+            src="landing.png"
+            alt="Athlete training"
+            className="h-full w-full object-cover object-[50%_70%]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/40 to-black/80" />
+        </div>
 
-          <main
-            style={shellVars}
-            className="w-full lg:w-[calc(95vw-var(--sb-w)-var(--extra-left))] lg:ml-[calc(var(--sb-w)+var(--extra-left))]"
-          >
-            <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-0 py-6 md:py-10">
-              {/* Header banner */}
-              <section className="relative rounded-2xl bg-gradient-to-r from-rose-500  to-red-400 text-white px-5 py-5 mb-6 shadow-sm">
-                <div className="text-xl md:text-2xl font-semibold">
-                  Good morning, {userDB?.data?.user.first_name}!
+        {/* TOP BAR WRAPPER */}
+        <div className="mx-auto w-full max-w-7xl px-4 pt-4 relative z-30">
+          {/* main nav pill */}
+          <nav className="flex items-center justify-between rounded-full border border-white/20 bg-white/5 px-4 py-3 backdrop-blur-md">
+            {/* logo */}
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-red-500 font-semibold">
+                GZ
+              </div>
+              <span className="hidden text-[18px] font-semibold text-white/80 sm:inline">
+                Godzilla
+              </span>
+            </div>
+
+            {/* desktop links */}
+            <div className="hidden items-center gap-6 text-sm text-white/75 lg:flex">
+              <Link href="#about" className="hover:text-white text-[18px] transition">
+                About
+              </Link>
+              <Link
+                href="#features"
+                className="hover:text-white text-[18px] transition"
+              >
+                Features
+              </Link>
+              <Link
+                href="#coaches"
+                className="hover:text-white text-[18px] transition"
+              >
+                Coaches
+              </Link>
+              <Link
+                href="/home"
+                className="hover:text-white text-[18px] transition"
+              >
+                home
+              </Link>
+              <Link
+                href="#app"
+                className="hover:text-white text-[18px] transition"
+              >
+                App
+              </Link>
+            </div>
+
+            {/* actions + burger */}
+            <div className="flex items-center gap-2">
+              {/* desktop CTA */}
+              <button className="hidden rounded-full border border-white/30 cursor-pointer text-[14px] bg-white/10 px-4 py-1.5 text-xs font-medium text-white shadow-sm backdrop-blur hover:bg-white/20 lg:inline-flex">
+                Download App
+              </button>
+
+              <button className="rounded-full bg-white px-4 py-1.5 cursor-pointer text-[14px] text-xs font-semibold text-red-500 shadow-sm hover:bg-slate-100">
+                Sign In
+              </button>
+
+              {/* burger for mobile / tablet */}
+              <button
+                type="button"
+                className="inline-flex items-center justify-center rounded-full bg-white/10 p-2 text-white lg:hidden"
+                aria-label="Toggle navigation"
+                onClick={() => setNavOpen((open) => !open)}
+              >
+                {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
+          </nav>
+        </div>
+
+        {/* MOBILE OVERLAY MENU */}
+        {navOpen && (
+          <div className="fixed inset-0 z-20 bg-black/70 lg:hidden">
+            <div className="mx-auto mt-20 w-full max-w-7xl px-4">
+              <div className="rounded-2xl border border-white/15 bg-black/90 px-6 py-5 text-white/90 backdrop-blur">
+                <div className="flex flex-col gap-3 text-[16px]">
+                  <Link
+                    href="#about"
+                    onClick={() => setNavOpen(false)}
+                    className="py-1 hover:text-white"
+                  >
+                    About
+                  </Link>
+                  <Link
+                    href="#features"
+                    onClick={() => setNavOpen(false)}
+                    className="py-1 hover:text-white"
+                  >
+                    Features
+                  </Link>
+                  <Link
+                    href="#coaches"
+                    onClick={() => setNavOpen(false)}
+                    className="py-1 hover:text-white"
+                  >
+                    Coaches
+                  </Link>
+                  <Link
+                    href="/home"
+                    onClick={() => setNavOpen(false)}
+                    className="py-1 hover:text-white"
+                  >
+                    home
+                  </Link>
+                  <Link
+                    href="#app"
+                    onClick={() => setNavOpen(false)}
+                    className="py-1 hover:text-white"
+                  >
+                    App
+                  </Link>
                 </div>
-                <div className="text-sm text-rose-100 mt-1">
-                  Ready to crush today&apos;s workout?
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* HERO CONTENT */}
+        <section className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-4 pt-16 pb-28 text-center">
+          <p className="mb-4 inline-flex items-center rounded-full bg-white/10 px-5 py-1 text-[11px] font-medium text-white/80 backdrop-blur">
+            New · All-in-one platform for coaches &amp; athletes
+          </p>
+
+          <h1 className="max-w-3xl text-3xl font-semibold leading-tight text-white sm:text-4xl lg:text-[40px]">
+            Unleash Your Fitness Journey with{" "}
+            <span className="text-red-400">Godzilla</span>
+          </h1>
+
+          <p className="mt-4 max-w-2xl text-sm text-white/80 sm:text-base">
+            A platform built to connect coaches and athletes and give everyone a
+            structured, motivating, and measurable fitness experience from day
+            one.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <button className="inline-flex items-center gap-2 cursor-pointer rounded-full bg-red-500 px-7 py-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-white shadow-lg shadow-red-500/40 hover:bg-red-600">
+              Start Free Trial
+              <ArrowRight className="h-4 w-4" />
+            </button>
+            <button className="rounded-full border cursor-pointer border-white/40 bg-black/30 px-6 py-2.5 text-xs font-semibold text-white backdrop-blur hover:bg-white/10">
+              Explore Programs
+            </button>
+          </div>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-10 text-[11px] text-white/80 sm:text-xs">
+            {highlightStats.map((stat) => (
+              <div key={stat.id} className="flex flex-col items-center">
+                <span className="text-sm font-semibold text-white">
+                  {stat.value}
+                </span>
+                <span className="tracking-[0.18em]">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      </header>
+
+
+      {/* ----------------------- "WHAT IS" SECTION ----------------------- */}
+      <section
+        id="about"
+        className="mx-auto flex max-w-7xl flex-col-reverse items-center gap-12 px-4 py-20 lg:flex-row lg:px-8"
+      >
+        {/* left text */}
+        <div className="flex-1 max-w-xl space-y-5">
+          <h2 className="text-[50px] font-semibold leading-[1.25] text-slate-900">
+            What is <span className="text-red-500">Godzilla?</span>
+          </h2>
+
+          <p className="text-[20px] leading-relaxed text-slate-600">
+            Godzilla is a next-generation fitness app that brings together
+            coaches and athletes in one dynamic platform. With Godzilla, you
+            can:
+          </p>
+
+          <ul className="mt-2 space-y-2 text-[20px] text-slate-700">
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="mt-[2px] h-4 w-4 flex-shrink-0 text-red-500" />
+              <span>Discover custom training programs for your goals.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="mt-[2px] h-4 w-4 flex-shrink-0 text-red-500" />
+              <span>Connect directly with certified coaches.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="mt-[2px] h-4 w-4 flex-shrink-0 text-red-500" />
+              <span>
+                Share your achievements with a supportive fitness community.
+              </span>
+            </li>
+          </ul>
+
+          <button
+            type="button"
+            className="mt-4 inline-flex items-center cursor-pointer gap-1 text-[14px] font-semibold text-red-500 hover:text-red-600"
+          >
+            <span>See how Godzilla transforms the way you train.</span>
+            <span aria-hidden>→</span>
+          </button>
+        </div>
+
+        {/* right image */}
+        <div className="flex flex-1 justify-center lg:justify-end">
+          <div className="relative">
+            <img
+              src="4ddde8a8ce300c8eddd6337703cbdbc242df8e3a.png"
+              alt="Athlete stretching"
+              className="h-auto w-full max-w-[490px] object-contain drop-shadow-[0_30px_60px_rgba(15,23,42,0.3)] "
+            />
+            <img
+              src="4ddde8a8ce300c8eddd6337703cbdbc242df8e3a.png"
+              alt=""
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-0 -translate-x-5 opacity-15 blur-[1px] "
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ----------------------- FEATURES GRID ----------------------- */}
+      <section id="features" className="bg-white py-20">
+        <div className="mx-auto max-w-6xl px-4 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-[44px] font-semibold leading-tight text-slate-900 sm:text-[26px]">
+              Everything You Need to Level Up — All in{" "}
+              <span className="text-red-500">One Place</span>
+            </h2>
+            <p className="mt-3 text-[34px] leading-relaxed text-slate-600 sm:text-[15px]">
+              Godzilla brings your entire fitness world together. Train,
+              connect, and grow inside one smart platform made for athletes and
+              coaches alike.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {featureCards.map((feature) => (
+              <div
+                key={feature.id}
+                className="flex h-full flex-col gap-3 rounded-[24px] bg-white px-7 py-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
+              >
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-500">
+                  {feature.icon}
                 </div>
-                <button
-                  type="button"
-                  aria-label="Notifications"
-                  className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition"
-                >
-                  <span className="relative">
-                    <FaBell />
-                    <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-yellow-300 ring-2 ring-rose-400" />
-                  </span>
-                </button>
-              </section>
+                <h3 className="text-[15px] font-semibold text-slate-900">
+                  {feature.title}
+                </h3>
+                <p className="text-[13px] leading-relaxed text-slate-600">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              {notification && (
-                <div
-                  className="
-      fixed top-4 right-4 z-50
-      flex items-center gap-3
-      bg-white dark:bg-zinc-900
-      border border-zinc-200 dark:border-zinc-700
-      rounded-xl shadow-lg p-3
-      animate-slide-in
-      min-w-[220px]
-    "
-                >
-                  <div className="relative h-10 w-10 rounded-full bg-rose-500 text-white text-sm font-semibold overflow-hidden grid place-items-center">
-                    {notification.user.avatar ? (
-                      <img
-                        src={notification.user.avatar}
-                        alt={notification.user.name || "User Avatar"}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <span>{notification.user.name?.[0] || "U"}</span>
-                    )}
+      <section className="relative w-full bg-[#F7F8FF] py-28 overflow-hidden">
+        {/* LEFT IMAGE — desktop */}
+        <div className="hidden lg:block absolute left-0 top-0">
+          <img
+            src="8f3cceb6c00884ff29ce68a33ade48666895e1ad.png"
+            className="
+        relative z-10 
+        w-[520px] 
+        -rotate-9 
+        drop-shadow-[0_20px_60px_rgba(0,0,0,0.35)]
+        object-contain
+      "
+          />
 
-                    {/* Online Dot - اختياري */}
-                    <span
-                      className={`absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white dark:border-zinc-900 ${
-                        notification.user.status === "online"
-                          ? "bg-emerald-500"
-                          : "bg-zinc-400"
-                      }`}
-                    ></span>
+          <img
+            src="8f3cceb6c00884ff29ce68a33ade48666895e1ad.png"
+            className="
+        absolute top-0 left-6
+        w-[520px]
+        -rotate-6 
+        opacity-20 
+        blur-[2px]
+      "
+            aria-hidden="true"
+          />
+        </div>
+
+        {/* RIGHT IMAGE — desktop */}
+        <div className="hidden lg:block absolute right-0 top-4">
+          <img
+            src="4744ceaa4dac2c594c0d1e586a750b81f8bdb6a1.png"
+            className="
+        relative z-10 
+        w-[560px] 
+        rotate-7
+        drop-shadow-[0_20px_60px_rgba(0,0,0,0.35)]
+        object-contain
+      "
+          />
+
+          <img
+            src="4744ceaa4dac2c594c0d1e586a750b81f8bdb6a1.png"
+            className="
+        absolute top-0 right-6
+        w-[560px]
+        rotate-6
+        opacity-20 
+        blur-[2px]
+      "
+            aria-hidden="true"
+          />
+        </div>
+
+        {/* CENTER CONTENT */}
+        <div className="relative mx-auto max-w-3xl px-6 text-center">
+          <h2 className="text-[48px] font-semibold leading-tight text-slate-900">
+            Build <span className="text-red-500">Your Body.</span> Own{" "}
+            <span className="text-red-500">Your Progress.</span>
+          </h2>
+
+          <p className="mt-6 text-[20px] text-slate-600 leading-relaxed">
+            Join an active fitness community, find your ideal coach, and start
+            following professional programs tailored to your goals.
+          </p>
+
+          <ul className="mt-6 space-y-3 text-[18px] text-slate-700">
+            <li>• Expert programs for every level.</li>
+            <li>• Direct connection with certified coaches.</li>
+            <li>• Track your achievements day by day.</li>
+          </ul>
+        </div>
+
+        {/* MOBILE IMAGES — side by side on mobile */}
+        <div className="mt-16 flex flex-row items-center justify-center gap-4 lg:hidden">
+          <img
+            src="8f3cceb6c00884ff29ce68a33ade48666895e1ad.png"
+            className="w-[45%] max-w-[180px] object-contain -rotate-6"
+          />
+
+          <img
+            src="4744ceaa4dac2c594c0d1e586a750b81f8bdb6a1.png"
+            className="w-[45%] max-w-[380px] object-contain rotate-6"
+          />
+        </div>
+      </section>
+
+      {/* ----------------------- PASSION INTO IMPACT ----------------------- */}
+      <section className="bg-white py-16">
+  <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 px-4 md:gap-16 lg:flex-row lg:items-center lg:px-0">
+    {/* TEXT */}
+    <div className="flex-1 space-y-4 text-center lg:text-left">
+      <h2 className="text-xs md:text-sm font-semibold uppercase tracking-[0.32em] text-red-500">
+        Turn Your Passion into Impact and Income
+      </h2>
+
+      <h3 className="text-2xl md:text-[32px] lg:text-[36px] font-semibold leading-snug text-slate-900">
+        Grow your coaching business with built-in tools for scale.
+      </h3>
+
+      <p className="text-sm md:text-base lg:text-lg leading-relaxed text-slate-600">
+        Godzilla makes it easy to package your knowledge into programs, onboard
+        new clients, and manage monthly subscriptions — all in one place.
+      </p>
+
+      <ul className="mt-4 space-y-2 text-sm md:text-[16px] leading-relaxed text-slate-700 text-center lg:text-center">
+        <li>• Offer 1:1, group, or self-paced programs.</li>
+        <li>• Collect payments securely and track subscriptions.</li>
+        <li>• Deliver updates, videos, and resources instantly.</li>
+      </ul>
+    </div>
+
+    {/* IMAGE */}
+    <div className="flex flex-1 justify-center lg:justify-end w-full">
+      <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-[480px]">
+        <img
+          src="179f6c24c41c3334a553f4e1898ef4352193bb56.png"
+          alt="Coaches on Godzilla"
+          className="w-full h-auto object-contain"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+
+      {/* ----------------------- TESTIMONIALS ----------------------- */}
+      <section id="testimonials" className="bg-[#f4f6ff] py-24">
+        <div className="mx-auto max-w-6xl px-4 lg:px-0">
+          <div className="relative overflow-hidden rounded-[32px] bg-white px-6 py-10 shadow-[0_32px_80px_rgba(15,23,42,0.12)] sm:px-10 sm:py-12">
+            <h2 className="mb-10 text-center text-[24px] font-semibold leading-tight text-slate-900 sm:text-[28px]">
+              What Our <span className="text-red-500">Clients Say</span> About Us
+            </h2>
+
+            <div className="relative flex items-stretch gap-6">
+              <button
+                aria-label="Previous testimonial"
+                className="hidden h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 sm:inline-flex"
+                onClick={goPrev}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+
+              <div className="flex w-full flex-1 flex-col gap-5 rounded-[24px] border border-slate-100 bg-[#f9fbff] px-6 py-6 text-left sm:px-10 sm:py-8">
+                <div className="flex items-center gap-4">
+                  <div className="relative h-14 w-14 overflow-hidden rounded-full border border-slate-200">
+                    <Image
+                      src={currentTestimonial.avatarSrc}
+                      alt={currentTestimonial.name}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                   <div className="flex flex-col">
-                    <p className="text-sm font-semibold">
-                      {notification.user.name}
-                    </p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
-                      {/* {notification.message.content} */}
-                      {extractTextFromHTML(notification.message.content)}
-                    </p>
+                    <span className="text-[15px] font-semibold text-slate-900">
+                      {currentTestimonial.name}
+                    </span>
+                    <span className="text-xs text-slate-500">
+                      {currentTestimonial.role}
+                    </span>
                   </div>
                 </div>
-              )}
 
-              {/* Stats */}
-              <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                <StatCard icon={<AiOutlineRise />} value="0" label="Workouts" />
-                <StatCard
-                  icon={<FiUsers />}
-                  value={programs.length}
-                  label={role === "coach" ? "Programs" : "Subscribed Programs"}
-                />
-                <StatCard icon={<TbTrophy />} value="0" label="Achievements" />
-              </section>
+                <div className="relative mt-2 rounded-2xl bg-white px-5 py-6 text-[14px] leading-relaxed text-slate-700 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+                  <span className="pointer-events-none absolute -top-5 left-4 text-3xl text-red-400">
+                    “
+                  </span>
+                  <p className="pl-4">{currentTestimonial.text}</p>
+                </div>
 
-              {/* Programs */}
-              <h2 className="text-lg font-semibold mb-3">
-                {role === "coach"
-                  ? "Your Programs"
-                  : "Your Subscribed Programs"}
-              </h2>
-              <section className="grid grid-cols-1 gap-4 mb-6">
-                {isLoading ? (
-                  <>
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="animate-pulse">
-                        <div className="bg-white rounded-lg shadow-sm p-4 space-y-3">
-                          <div className="h-4 bg-gray-200 rounded w-3/4" />
-                          <div className="h-3 bg-gray-200 rounded w-1/2" />
-                          <div className="h-2 bg-gray-200 rounded w-full" />
-                          <div className="flex gap-2">
-                            <div className="h-6 bg-gray-200 rounded w-20" />
-                            <div className="h-6 bg-gray-200 rounded w-24" />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                ) : programs.length > 0 ? (
-                  programs.slice(0, 3).map((el) => (
-                    <Link
-                      key={el.id}
-                      href={`/programs/${el.id}`}
-                      className="block"
-                    >
-                      <ProgramCard
-                        title={el.title}
-                        coach={el.coachName}
-                        percent={Math.round(Math.random() * 100)}
-                        badge={role === "coach" ? "Active" : "Subscribed"}
-                        badgeTone={role === "coach" ? "green" : "red"}
-                        // expires={
-                        //   role === "coach"
-                        //     ? "Created by you"
-                        //     : "Expires in 7 days"
-                        // }
-                      />
-                    </Link>
-                  ))
-                ) : (
-                  <div className="col-span-3 text-center py-8 text-gray-500">
-                    <p className="text-lg">No programs found</p>
-                    <p className="text-sm mt-2">
-                      {role === "coach"
-                        ? "Start creating your first program!"
-                        : "Browse programs and subscribe to start training."}
-                    </p>
-                  </div>
-                )}
-              </section>
-
-              {/* Recent Activity */}
-              {/* <h2 className="text-lg font-semibold mb-3">Recent Activity</h2>
-              <section className="rounded-2xl border border-gray-200 bg-white p-4 mb-6">
-                <ul className="space-y-3">
-                  {[
-                    "New workout added to Strength Foundation",
-                    "Sarah Wilson posted in Community",
-                    "Weekly check-in reminder",
-                  ].map((t) => (
-                    <li key={t} className="flex items-start gap-3">
-                      <span className="mt-2 h-2 w-2 rounded-full bg-rose-500" />
-                      <span className="text-sm text-gray-800">{t}</span>
-                    </li>
+                <div className="mt-2 flex justify-center gap-2">
+                  {testimonials.map((testimonial, index) => (
+                    <button
+                      key={testimonial.id}
+                      type="button"
+                      aria-label={`Jump to testimonial ${index + 1}`}
+                      onClick={(): void => setByIndex(index)}
+                      className={`h-2.5 rounded-full transition-all ${
+                        index === activeTestimonial
+                          ? "w-6 bg-red-500"
+                          : "w-2.5 bg-slate-300"
+                      }`}
+                    />
                   ))}
-                </ul>
-              </section> */}
-
-              {/* Today’s Workout banner */}
-              <section className="rounded-2xl border border-gray-200 bg-gradient-to-r from-rose-500 to-red-400 text-white p-5 flex items-center justify-between gap-4 mb-6">
-                <div>
-                  <div className="text-base font-semibold">
-                    Start a new Program?
-                  </div>
-                  <div className="text-sm mt-1">
-                    Dive into your personalized workout plan and achieve your
-                    fitness goals today!
-                  </div>
                 </div>
-                <Link href={"/programs"} className="flex items-center gap-3">
-                  <button className="rounded-xl bg-white cursor-pointer text-rose-500 font-medium px-4 py-2 hover:bg-rose-50">
-                    Start
-                  </button>
-                </Link>
-              </section>
+              </div>
 
-              {/* Quick Actions */}
-              <h2 className="text-lg font-semibold mb-3">Quick Actions</h2>
-
-              <section
-                className={`grid gap-4 pb-24 lg:pb-0 ${
-                  role === "coach"
-                    ? "grid-cols-1" // FULL WIDTH for coaches
-                    : "grid-cols-1 sm:grid-cols-2" // Two columns for athletes
-                }`}
+              <button
+                aria-label="Next testimonial"
+                className="hidden h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 sm:inline-flex"
+                onClick={goNext}
               >
-                {/* Show Browse Trainers ONLY for athletes */}
-                {role !== "coach" && (
-                  <button className="rounded-2xl border border-gray-200 bg-white p-5 text-center hover:bg-gray-50">
-                    <Link href={"/trainers"}>
-                      <div className="text-2xl mb-2" />
-                      <div className="font-medium">Browse Trainers</div>
-                    </Link>
-                  </button>
-                )}
-
-                {/* View Programs — full width when coach */}
-                <button
-                  className={`rounded-2xl border border-gray-200 bg-white p-5 text-center hover:bg-gray-50 ${
-                    role === "coach" ? "w-full" : ""
-                  }`}
-                >
-                  <Link href={"/programs"}>
-                    <div className="text-2xl mb-2" />
-                    <div className="font-medium">View Programs</div>
-                  </Link>
-                </button>
-              </section>
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
-          </main>
+          </div>
         </div>
-      ) : (
-        <LoginForm />
-      )}
-    </>
+      </section>
+
+      {/* --------------------- GLIMPSE INSIDE GODZILLA ---------------------- */}
+      <section id="app" className="bg-[#f7f8fc] py-16 lg:py-24">
+  <div className="mx-auto flex max-w-7xl flex-col items-start gap-12 px-4 lg:flex-row lg:items-center lg:gap-20 lg:px-0">
+    {/* -------- LEFT TEXT -------- */}
+    <div className="flex-1 space-y-6 text-center lg:text-left">
+      <h2 className="text-[18px] font-semibold tracking-wide text-red-500">
+        A Glimpse Inside Godzilla
+      </h2>
+
+      {/* smaller on mobile, same 42px on web (lg) */}
+      <h3 className="text-3xl sm:text-[36px] lg:text-[42px] font-bold leading-[1.2] text-slate-900 lg:max-w-xl">
+        Track every rep, message, and milestone — right in your pocket.
+      </h3>
+
+      <p className="text-base sm:text-[18px] leading-relaxed text-slate-600 max-w-lg mx-auto lg:mx-0">
+        From workout logs to progress photos and coach messages, the Godzilla
+        app keeps everything organized and ready whenever you are. No
+        spreadsheets, no lost chats, no guesswork.
+      </p>
+
+      <div className="flex justify-center lg:justify-start">
+        <button className="mt-4 inline-flex items-center gap-3 rounded-[14px] bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-[16px] font-semibold text-white shadow-xl hover:opacity-95 transition">
+          Download App Now
+          <ArrowRight className="h-5 w-5" />
+        </button>
+      </div>
+    </div>
+
+    {/* -------- RIGHT PHONES -------- */}
+    {/* same look on web, fixed overflow + spacing on mobile */}
+    <div className="mt-8 flex flex-1 items-center justify-center relative lg:mt-0">
+      <img
+        src="mobleft.png"
+        alt="Godzilla app screen"
+        className="
+          w-[230px] sm:w-[300px] lg:w-[480px]
+          rotate-[-10deg]
+          drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
+          relative
+          z-10
+          -mr-4 sm:mr-5 lg:-mr-50
+        "
+      />
+
+      <img
+        src="mobright.png"
+        alt="Godzilla app screen"
+        className="
+          w-[230px] sm:w-[300px] lg:w-[480px]
+          rotate-[8deg]
+          drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
+          relative
+          -ml-4 sm:-ml-10 lg:-ml-40
+        "
+      />
+    </div>
+  </div>
+</section>
+
+
+      {/* ----------------------------- FOOTER ------------------------------ */}
+      <footer className="border-t border-red-200 bg-[#f7f8fc] py-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 text-[14px] text-slate-500 sm:flex-row">
+          <div className="flex gap-6">
+            <button className="hover:text-slate-700 transition">
+              Terms &amp; Conditions
+            </button>
+            <button className="hover:text-slate-700 transition">Privacy</button>
+          </div>
+
+          <p className="whitespace-nowrap">
+            © {new Date().getFullYear()} Godzilla. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
   );
 }
