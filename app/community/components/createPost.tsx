@@ -12,7 +12,7 @@ import { v4 } from "uuid";
 
 type Visibility = "public" | "followers";
 
-export interface CreatePostType {
+ interface CreatePostType {
   bio: string;
   image: string;
   location: string;
