@@ -3,7 +3,7 @@
 
 import { Suspense, useEffect, useState, useRef } from "react";
 import Sidebar from "../components/shared/sidebar";
-import CreatePostModal, { CreatePostType } from "./components/createPost";
+import CreatePostModal from "./components/createPost";
 import EditPostModal from "./components/editPost";
 import { GetAllPosts } from "../sign-up/Services/posts.service";
 import useGetUser from "../Hooks/useGetUser";

@@ -1,7 +1,14 @@
 import axios from "axios";
-import { CreatePostType } from "../components/createPost";
-
 const BASE_URL = "https://godzilla-be.vercel.app/api/v1"; // adjust if needed
+
+interface CreatePostType {
+  bio: string;
+  image: string;
+  location: string;
+  tags: string[];
+  watch: string;
+  user_id: string;
+}
 
 export async function togglePostLike(postId: string, userId: string) {
   const token =
