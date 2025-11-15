@@ -23,15 +23,6 @@ function Tag({ label, count }: { label: string; count?: number }) {
   );
 }
 
-interface CreatePostType {
-  bio: string;
-  image: string;
-  location: string;
-  tags: string[];
-  watch: string;
-  user_id: string;
-}
-
 interface CommentFormData {
   comment: string;
 }
