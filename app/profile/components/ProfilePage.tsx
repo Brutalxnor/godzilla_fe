@@ -3109,10 +3109,10 @@ export default function ProfilePage() {
           <div className="mx-auto w-full max-w-6xl px-0 sm:px-4 md:px-6 lg:px-0 pb-24">
             {/* header */}
             <header className="py-3 sm:py-4 flex items-center justify-between gap-3">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold">
+              <h1 className="text-2xl sm:text-3xl  md:text-4xl font-semibold">
                 Profile
               </h1>
-              <div className="flex gap-2 sm:gap-3 w-full sm:w-auto justify-end">
+              <div className="flex gap-2  sm:gap-3 w-full sm:w-auto justify-end">
                 <ThemeToggle />
               </div>
             </header>
@@ -3144,7 +3144,7 @@ export default function ProfilePage() {
                     <>
                       <div className="flex gap-4 w-full flex-wrap sm:flex-nowrap">
                         <button
-                          className="flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base whitespace-nowrap"
+                          className="flex items-center cursor-pointer justify-center w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base whitespace-nowrap"
                           onClick={() => {
                             window.location.href = "/";
                             window.localStorage.removeItem("token");
@@ -3156,14 +3156,14 @@ export default function ProfilePage() {
 
                         <button
                           onClick={() => router.push("/profile/edit")}
-                          className="flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base whitespace-nowrap"
+                          className="flex items-center justify-center cursor-pointer w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base whitespace-nowrap"
                         >
                           Edit
                         </button>
 
                         <button
                           onClick={toggleShareModal}
-                          className="flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base whitespace-nowrap"
+                          className="flex items-center justify-center cursor-pointer w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base whitespace-nowrap"
                         >
                           Share profile
                         </button>
@@ -3247,7 +3247,7 @@ export default function ProfilePage() {
               <div className="flex gap-1 sm:gap-2 rounded-full bg-zinc-100 p-1 text-xs sm:text-sm">
                 <button
                   onClick={() => setTab("infos")}
-                  className={`flex-1 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 ${
+                  className={`flex-1 rounded-full px-3 cursor-pointer sm:px-4 py-1.5 sm:py-2 ${
                     tab === "infos"
                       ? "bg-white shadow text-zinc-900"
                       : "text-zinc-600"
@@ -3257,7 +3257,7 @@ export default function ProfilePage() {
                 </button>
                 <button
                   onClick={() => setTab("profile")}
-                  className={`flex-1 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 ${
+                  className={`flex-1 rounded-full px-3 cursor-pointer sm:px-4 py-1.5 sm:py-2 ${
                     tab === "profile"
                       ? "bg-white shadow text-zinc-900"
                       : "text-zinc-600"

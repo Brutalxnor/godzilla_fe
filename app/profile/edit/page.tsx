@@ -162,12 +162,25 @@ const Page = () => {
               theme === "dark" ? "bg-zinc-800" : "bg-white"
             }`}
           >
-            <header className="py-3 sm:py-4 flex items-center justify-between gap-3">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold">
-                Edit Profile
-              </h1>
-            </header>
+           <header className="py-3 sm:py-4 flex items-center justify-between gap-3">
+  <div className="flex items-center gap-4">
 
+    {/* Back Button (same style as Save Changes) */}
+    <button
+      onClick={() => window.location.href = "/profile"}
+      className="px-5 py-2.5 rounded-xl cursor-pointer bg-rose-500 hover:bg-rose-600 
+        text-white font-semibold shadow-lg transition-all active:scale-95"
+    >
+      ← Back
+    </button>
+
+    <h1 className="text-2xl sm:text-3xl cursor-pointer md:text-4xl font-semibold">
+      Edit Profile
+    </h1>
+  </div>
+</header>
+
+{/* 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-8">
               <div className="flex items-center gap-6 mb-10">
                 <div className="relative">
@@ -257,7 +270,121 @@ const Page = () => {
                   Save
                 </button>
               )}
-            </form>
+            </form> */}
+            <form
+  onSubmit={handleSubmit(onSubmit)}
+  className="space-y-10 mt-10"
+>
+  {/* ================== AVATAR SECTION ================== */}
+  <div className="flex flex-col sm:flex-row items-center gap-8">
+    {/* Avatar Preview */}
+    <div className="relative">
+      <img
+        src={preview || user?.data.avatar_url || "/default-avatar.png"}
+        alt="Avatar"
+        className="w-32 h-32 rounded-full object-cover border-4 shadow-xl
+          border-rose-500"
+      />
+      {uploading && (
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center">
+          <span className="text-white font-semibold tracking-wide">
+            Uploading...
+          </span>
+        </div>
+      )}
+    </div>
+
+    {/* Upload Button */}
+    <div>
+      <label
+        className="cursor-pointer px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-semibold shadow-md transition-all active:scale-95"
+      >
+        Change Avatar
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleAvatarChange}
+          className="hidden"
+        />
+      </label>
+    </div>
+  </div>
+
+  {/* ================== INPUT GRID ================== */}
+  <div
+    className={`grid grid-cols-1 sm:grid-cols-2 gap-8 py-6 px-4 rounded-2xl shadow
+      ${theme === "dark" ? "bg-zinc-800" : "bg-zinc-50"}`}
+  >
+    {[
+      "first_name",
+      "last_name",
+      "email",
+      "location",
+      "experience_level",
+    ].map((field) => (
+      <div key={field} className="flex flex-col gap-1">
+        <label
+          className={`text-sm font-medium ${
+            theme === "dark" ? "text-zinc-300" : "text-zinc-600"
+          }`}
+        >
+          {field
+            .replace("_", " ")
+            .replace(/\b\w/g, (c) => c.toUpperCase())}
+        </label>
+
+        <input
+          type={field === "email" ? "email" : "text"}
+          {...register(field as keyof ProfileFormValues)}
+          className={`
+            w-full px-4 py-3 rounded-xl border text-sm transition-all outline-none
+            focus:ring-2 focus:ring-rose-400
+            ${theme === "dark"
+              ? "bg-zinc-700 border-zinc-600 text-white placeholder:text-zinc-400"
+              : "bg-white border-zinc-300 text-zinc-900 placeholder:text-zinc-400"
+            }
+          `}
+          placeholder={`Enter ${field.replace("_", " ")}`}
+        />
+      </div>
+    ))}
+  </div>
+
+  {/* ================== SAVE BUTTON ================== */}
+  {saving ? (
+    <div className="flex items-center gap-3 text-rose-500 font-semibold">
+      <svg
+        className="animate-spin h-5 w-5 text-rose-500"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+      Saving Changes...
+    </div>
+  ) : (
+    <button
+      type="submit"
+      className="px-8 py-3 rounded-xl cursor-pointer bg-rose-500 hover:bg-rose-600 text-white font-bold shadow-lg transition-all active:scale-95"
+    >
+      Save Changes
+    </button>
+  )}
+</form>
+
           </div>
         </div>
       </main>
