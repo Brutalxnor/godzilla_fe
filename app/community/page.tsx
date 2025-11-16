@@ -82,7 +82,6 @@ export default function CommunityPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [interests, setInterests] = useState<InterestType[]>([]);
 
-
   async function handleCreateSubmit(data: CreatePostType) {
     console.log("CreatePost payload:", data);
   }
@@ -246,7 +245,6 @@ export default function CommunityPage() {
 
     if (sender_id) fetchUser();
   }, [sender_id]);
-
 
   useEffect(() => {
     if (!userDB?.data?.user_id) return;
@@ -824,7 +822,7 @@ export default function CommunityPage() {
                                         e.stopPropagation();
                                         handleTriggerOpenCommentModal("0");
                                       }}
-                                      className="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center transition"
+                                      className="w-9 h-9 rounded-full hover:bg-gray-100 hover:text-gray-900 flex items-center justify-center transition"
                                     >
                                       <svg
                                         className="w-5 h-5"
@@ -842,7 +840,7 @@ export default function CommunityPage() {
                                     <div className="p-4 flex gap-3">
                                       <img
                                         src={
-                                          post.users?.avatar_url ||
+                                          userDB?.data.user?.avatar_url ||
                                           "https://via.placeholder.com/40"
                                         }
                                         alt="User"
@@ -851,14 +849,14 @@ export default function CommunityPage() {
                                       <div className="flex-1">
                                         <div className="flex items-center gap-1 mb-1">
                                           <span className="font-bold text-sm">
-                                            {post.users?.first_name}
+                                            {userDB?.data.user?.first_name}
                                           </span>
                                           <span className="text-gray-500 text-sm">
-                                            @{post.location}
+                                            @{userDB?.data.user?.location}
                                           </span>
                                         </div>
-                                        <p className="text-sm text-right leading-relaxed">
-                                          {post?.bio}
+                                        <p className="text-xs text-gray-500 text-left leading-relaxed -mt-2">
+                                          @{userDB?.data.user.username}
                                         </p>
                                       </div>
                                     </div>
@@ -893,7 +891,7 @@ export default function CommunityPage() {
                                           e.stopPropagation();
                                           handleSubmit(handleAddComment)(e);
                                         }}
-                                        className="bg-blue-500  hover:bg-blue-600 text-white font-bold px-6 py-2 rounded-full transition"
+                                        className="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-2 rounded-full transition"
                                       >
                                         Reply
                                       </button>
