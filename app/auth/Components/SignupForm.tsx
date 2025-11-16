@@ -939,7 +939,7 @@ export const SignupForm = () => {
   
       // ✅ success
       toast.success("Account created successfully! Please sign in.");
-      router.push("/"); // or "/sign-in" if that's your route
+      router.push("/login"); // or "/sign-in" if that's your route
     } catch (err) {
       console.error("❌ Registration error:", err);
       toast.error("Unexpected error, please try again");
@@ -1616,7 +1616,7 @@ export const SignupForm = () => {
           </button>
 
           {/* Sign In Link */}
-          <Link href={"/"} className="text-center pt-4">
+          <Link href={"/login"} className="text-center pt-4">
             <p className="text-gray-600 text-sm">
               Already have an account?
               <span className="text-red-500 font-medium hover:text-red-600 cursor-pointer ml-1 transition-colors hover:underline">
