@@ -125,175 +125,6 @@ export default function GodzillaLandingPage(): JSX.Element {
     setActiveTestimonial(index);
   };
 
-  function extractTextFromHTML(html: string) {
-    if (!html) return "";
-    const div = document.createElement("div");
-    div.innerHTML = html;
-    return div.textContent || div.innerText || "";
-  }
-
-  useEffect(() => {
-    if (userDB?.data?.user_id) fetchUsers();
-  }, [userDB?.data?.user_id]);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const data = await GetUserById(sender_id as string);
-    };
-
-    if (sender_id) fetchUser();
-  }, [sender_id]);
-
-  useEffect(() => {
-    if (!userDB?.data?.user_id) return;
-
-    const fetchConversations = async () => {
-      try {
-        const res = await fetch(
-          "https://godzilla-be.vercel.app/api/v1/chat/conversations",
-          {
-            headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
-          }
-        );
-        if (!res.ok) throw new Error("Failed to fetch conversations");
-
-        const data = await res.json();
-        const convIds = data.data.map((conv: { id: string }) => conv.id);
-        setConversations(convIds);
-      } catch (err) {
-        console.error("Failed to fetch conversations", err);
-        // toast.error("Failed to load conversations");
-      }
-    };
-
-    fetchConversations();
-  }, [userDB?.data?.user_id, userDB?.data.access_token]);
-
-  useEffect(() => {
-    if (conversations.length === 0 || !userDB?.data?.user_id) return;
-
-    channelsRef.current.forEach((channel) => supabase.removeChannel(channel));
-    channelsRef.current = [];
-
-    conversations.forEach((convId) => {
-      const channel = supabase
-        .channel(`chat-${convId}`)
-        .on("broadcast", { event: "new-message" }, (payload) => {
-          const newMessage = payload.payload as ChatMessage;
-          if (newMessage.sender_id === userDB?.data?.user_id) return;
-
-          setSenderId(newMessage.sender_id);
-          const sender = activeUsers.find((u) => u.id === newMessage.sender_id);
-          if (sender) {
-            setNotification({ user: sender, message: newMessage });
-            setTimeout(() => setNotification(null), 3000);
-          }
-
-          setChats((prev) => {
-            const key = newMessage.sender_id;
-            const list = prev[key] || [];
-            if (list.some((m) => m.id === newMessage.id)) return prev;
-            console.log(newMessage, "ahjdgajs");
-
-            return { ...prev, [key]: [...list, newMessage] };
-          });
-        })
-        .subscribe();
-
-      channelsRef.current.push(channel);
-    });
-
-    return () => {
-      channelsRef.current.forEach((channel) => supabase.removeChannel(channel));
-      channelsRef.current = [];
-    };
-  }, [conversations, userDB?.data?.user_id, activeUsers]);
-
-  const role =
-    (userDB?.data?.user?.user_type as string | undefined)?.toLowerCase() ??
-    "athlete";
-  const userId = userDB?.data?.user_id;
-
-  useEffect(() => {
-    if (!userId) return;
-
-    const fetchPrograms = async () => {
-      try {
-        setIsLoading(true);
-
-        if (role === "coach") {
-          // ---------- COACH: programs created by this coach ----------
-          const list = await GetProgramsByCoachId(userId as string | number);
-
-          const mapped: DashboardProgram[] = Array.isArray(list)
-            ? list.filter(isProgramFromAPI).map((p) => ({
-                id: p.id,
-                title: p.title,
-                coachName: userDB?.data?.user.first_name ?? "Coach",
-              }))
-            : [];
-
-          setPrograms(mapped);
-        } else {
-          // ---------- ATHLETE: programs this athlete is subscribed to ----------
-          // use same base URL you use in /programs page
-          const response = await axios.get(
-            `https://godzilla-be.vercel.app/api/v1/subscripe/${userId}`
-          );
-
-          type Row = {
-            id?: string | number;
-            program_id?: string | number;
-            programs?: {
-              id?: string | number;
-              title?: string;
-              coach_id?: string | number;
-              cover_image_url?: string | null;
-              users?: { first_name?: string | null } | null; // coach
-            } | null;
-            users?: { first_name?: string | null } | null; // athlete
-          };
-
-          const raw = response.data?.data as Row[] | undefined;
-
-          const mapped: DashboardProgram[] = Array.isArray(raw)
-            ? raw.map((row, idx) => ({
-                // prefer program id, fall back to program_id or subscription id
-                id: row.programs?.id ?? row.program_id ?? row.id ?? `${idx}`,
-                // REAL program title from programs
-                title: row.programs?.title ?? "Program",
-                // COACH name from programs.users.first_name
-                coachName: row.programs?.users?.first_name ?? "Coach",
-              }))
-            : [];
-
-          setPrograms(mapped);
-        }
-      } catch (err: unknown) {
-        if (axios.isAxiosError(err)) {
-          // if backend returns 404 when no subs, just show empty state
-          if (err.response?.status === 404) {
-            setPrograms([]);
-          } else {
-            console.error(
-              "❌ Axios error fetching programs:",
-              err.response?.data || err.message
-            );
-          }
-        } else if (err instanceof Error) {
-          console.error("❌ Error fetching programs:", err.message);
-        } else {
-          console.error("❌ Unknown error:", err);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    void fetchPrograms();
-  }, [userId, role, userDB?.data?.user.first_name]);
-
-
   return (
     <div className="min-h-screen bg-[#f4f6ff] text-slate-900">
       {/* ----------------------- HERO ----------------------- */}
@@ -325,7 +156,10 @@ export default function GodzillaLandingPage(): JSX.Element {
 
             {/* desktop links */}
             <div className="hidden items-center gap-6 text-sm text-white/75 lg:flex">
-              <Link href="#about" className="hover:text-white text-[18px] transition">
+              <Link
+                href="#about"
+                className="hover:text-white text-[18px] transition"
+              >
                 About
               </Link>
               <Link
@@ -372,7 +206,11 @@ export default function GodzillaLandingPage(): JSX.Element {
                 aria-label="Toggle navigation"
                 onClick={() => setNavOpen((open) => !open)}
               >
-                {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {navOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </button>
             </div>
           </nav>
@@ -464,8 +302,6 @@ export default function GodzillaLandingPage(): JSX.Element {
           </div>
         </section>
       </header>
-
-
       {/* ----------------------- "WHAT IS" SECTION ----------------------- */}
       <section
         id="about"
@@ -526,7 +362,6 @@ export default function GodzillaLandingPage(): JSX.Element {
           </div>
         </div>
       </section>
-
       {/* ----------------------- FEATURES GRID ----------------------- */}
       <section id="features" className="bg-white py-20">
         <div className="mx-auto max-w-6xl px-4 lg:px-8">
@@ -562,7 +397,6 @@ export default function GodzillaLandingPage(): JSX.Element {
           </div>
         </div>
       </section>
-
       <section className="relative w-full bg-[#F7F8FF] py-28 overflow-hidden">
         {/* LEFT IMAGE — desktop */}
         <div className="hidden lg:block absolute left-0 top-0">
@@ -648,52 +482,51 @@ export default function GodzillaLandingPage(): JSX.Element {
           />
         </div>
       </section>
-
       {/* ----------------------- PASSION INTO IMPACT ----------------------- */}
       <section className="bg-white py-16">
-  <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 px-4 md:gap-16 lg:flex-row lg:items-center lg:px-0">
-    {/* TEXT */}
-    <div className="flex-1 space-y-4 text-center lg:text-left">
-      <h2 className="text-xs md:text-sm font-semibold uppercase tracking-[0.32em] text-red-500">
-        Turn Your Passion into Impact and Income
-      </h2>
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 px-4 md:gap-16 lg:flex-row lg:items-center lg:px-0">
+          {/* TEXT */}
+          <div className="flex-1 space-y-4 text-center lg:text-left">
+            <h2 className="text-xs md:text-sm font-semibold uppercase tracking-[0.32em] text-red-500">
+              Turn Your Passion into Impact and Income
+            </h2>
 
-      <h3 className="text-2xl md:text-[32px] lg:text-[36px] font-semibold leading-snug text-slate-900">
-        Grow your coaching business with built-in tools for scale.
-      </h3>
+            <h3 className="text-2xl md:text-[32px] lg:text-[36px] font-semibold leading-snug text-slate-900">
+              Grow your coaching business with built-in tools for scale.
+            </h3>
 
-      <p className="text-sm md:text-base lg:text-lg leading-relaxed text-slate-600">
-        Godzilla makes it easy to package your knowledge into programs, onboard
-        new clients, and manage monthly subscriptions — all in one place.
-      </p>
+            <p className="text-sm md:text-base lg:text-lg leading-relaxed text-slate-600">
+              Godzilla makes it easy to package your knowledge into programs,
+              onboard new clients, and manage monthly subscriptions — all in one
+              place.
+            </p>
 
-      <ul className="mt-4 space-y-2 text-sm md:text-[16px] leading-relaxed text-slate-700 text-center lg:text-center">
-        <li>• Offer 1:1, group, or self-paced programs.</li>
-        <li>• Collect payments securely and track subscriptions.</li>
-        <li>• Deliver updates, videos, and resources instantly.</li>
-      </ul>
-    </div>
+            <ul className="mt-4 space-y-2 text-sm md:text-[16px] leading-relaxed text-slate-700 text-center lg:text-center">
+              <li>• Offer 1:1, group, or self-paced programs.</li>
+              <li>• Collect payments securely and track subscriptions.</li>
+              <li>• Deliver updates, videos, and resources instantly.</li>
+            </ul>
+          </div>
 
-    {/* IMAGE */}
-    <div className="flex flex-1 justify-center lg:justify-end w-full">
-      <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-[480px]">
-        <img
-          src="179f6c24c41c3334a553f4e1898ef4352193bb56.png"
-          alt="Coaches on Godzilla"
-          className="w-full h-auto object-contain"
-        />
-      </div>
-    </div>
-  </div>
-</section>
-
-
+          {/* IMAGE */}
+          <div className="flex flex-1 justify-center lg:justify-end w-full">
+            <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-[480px]">
+              <img
+                src="179f6c24c41c3334a553f4e1898ef4352193bb56.png"
+                alt="Coaches on Godzilla"
+                className="w-full h-auto object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
       {/* ----------------------- TESTIMONIALS ----------------------- */}
       <section id="testimonials" className="bg-[#f4f6ff] py-24">
         <div className="mx-auto max-w-6xl px-4 lg:px-0">
           <div className="relative overflow-hidden rounded-[32px] bg-white px-6 py-10 shadow-[0_32px_80px_rgba(15,23,42,0.12)] sm:px-10 sm:py-12">
             <h2 className="mb-10 text-center text-[24px] font-semibold leading-tight text-slate-900 sm:text-[28px]">
-              What Our <span className="text-red-500">Clients Say</span> About Us
+              What Our <span className="text-red-500">Clients Say</span> About
+              Us
             </h2>
 
             <div className="relative flex items-stretch gap-6">
@@ -760,42 +593,41 @@ export default function GodzillaLandingPage(): JSX.Element {
           </div>
         </div>
       </section>
-
       {/* --------------------- GLIMPSE INSIDE GODZILLA ---------------------- */}
       <section id="app" className="bg-[#f7f8fc] py-16 lg:py-24">
-  <div className="mx-auto flex max-w-7xl flex-col items-start gap-12 px-4 lg:flex-row lg:items-center lg:gap-20 lg:px-0">
-    {/* -------- LEFT TEXT -------- */}
-    <div className="flex-1 space-y-6 text-center lg:text-left">
-      <h2 className="text-[18px] font-semibold tracking-wide text-red-500">
-        A Glimpse Inside Godzilla
-      </h2>
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-12 px-4 lg:flex-row lg:items-center lg:gap-20 lg:px-0">
+          {/* -------- LEFT TEXT -------- */}
+          <div className="flex-1 space-y-6 text-center lg:text-left">
+            <h2 className="text-[18px] font-semibold tracking-wide text-red-500">
+              A Glimpse Inside Godzilla
+            </h2>
 
-      {/* smaller on mobile, same 42px on web (lg) */}
-      <h3 className="text-3xl sm:text-[36px] lg:text-[42px] font-bold leading-[1.2] text-slate-900 lg:max-w-xl">
-        Track every rep, message, and milestone — right in your pocket.
-      </h3>
+            {/* smaller on mobile, same 42px on web (lg) */}
+            <h3 className="text-3xl sm:text-[36px] lg:text-[42px] font-bold leading-[1.2] text-slate-900 lg:max-w-xl">
+              Track every rep, message, and milestone — right in your pocket.
+            </h3>
 
-      <p className="text-base sm:text-[18px] leading-relaxed text-slate-600 max-w-lg mx-auto lg:mx-0">
-        From workout logs to progress photos and coach messages, the Godzilla
-        app keeps everything organized and ready whenever you are. No
-        spreadsheets, no lost chats, no guesswork.
-      </p>
+            <p className="text-base sm:text-[18px] leading-relaxed text-slate-600 max-w-lg mx-auto lg:mx-0">
+              From workout logs to progress photos and coach messages, the
+              Godzilla app keeps everything organized and ready whenever you
+              are. No spreadsheets, no lost chats, no guesswork.
+            </p>
 
-      <div className="flex justify-center lg:justify-start">
-        <button className="mt-4 inline-flex items-center gap-3 rounded-[14px] bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-[16px] font-semibold text-white shadow-xl hover:opacity-95 transition">
-          Download App Now
-          <ArrowRight className="h-5 w-5" />
-        </button>
-      </div>
-    </div>
+            <div className="flex justify-center lg:justify-start">
+              <button className="mt-4 inline-flex items-center gap-3 rounded-[14px] bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-[16px] font-semibold text-white shadow-xl hover:opacity-95 transition">
+                Download App Now
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
 
-    {/* -------- RIGHT PHONES -------- */}
-    {/* same look on web, fixed overflow + spacing on mobile */}
-    <div className="mt-8 flex flex-1 items-center justify-center relative lg:mt-0">
-      <img
-        src="mobleft.png"
-        alt="Godzilla app screen"
-        className="
+          {/* -------- RIGHT PHONES -------- */}
+          {/* same look on web, fixed overflow + spacing on mobile */}
+          <div className="mt-8 flex flex-1 items-center justify-center relative lg:mt-0">
+            <img
+              src="mobleft.png"
+              alt="Godzilla app screen"
+              className="
           w-[230px] sm:w-[300px] lg:w-[480px]
           rotate-[-10deg]
           drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
@@ -803,24 +635,22 @@ export default function GodzillaLandingPage(): JSX.Element {
           z-10
           -mr-4 sm:mr-5 lg:-mr-50
         "
-      />
+            />
 
-      <img
-        src="mobright.png"
-        alt="Godzilla app screen"
-        className="
+            <img
+              src="mobright.png"
+              alt="Godzilla app screen"
+              className="
           w-[230px] sm:w-[300px] lg:w-[480px]
           rotate-[8deg]
           drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
           relative
           -ml-4 sm:-ml-10 lg:-ml-40
         "
-      />
-    </div>
-  </div>
-</section>
-
-
+            />
+          </div>
+        </div>
+      </section>
       {/* ----------------------------- FOOTER ------------------------------ */}
       <footer className="border-t border-red-200 bg-[#f7f8fc] py-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 text-[14px] text-slate-500 sm:flex-row">
@@ -836,6 +666,7 @@ export default function GodzillaLandingPage(): JSX.Element {
           </p>
         </div>
       </footer>
+         
     </div>
   );
 }
