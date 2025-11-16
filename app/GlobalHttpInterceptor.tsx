@@ -41,6 +41,8 @@ export default function GlobalHttpInterceptor({ children }: Props) {
         window.location.href = "/login";
       }
 
+      //
+
       return response;
     };
 
