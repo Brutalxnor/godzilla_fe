@@ -11,7 +11,7 @@
 // ============================= */
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as string | undefined) ??
-//   "http://127.0.0.1:4000/api/v1";
+//   "https://godzilla-be.vercel.app/api/v1";
 
 // const CATEGORIES = ["All", "Strength", "Cardio", "Yoga", "Nutrition", "HIIT"];
 
@@ -488,10 +488,7 @@ export default function TrainersPage() {
     async function load() {
       setLoading(true);
       try {
-        const list = await fetchTrainers(
-          search,
-          category,
-        );
+        const list = await fetchTrainers(search, category);
         if (!cancelled) {
           setItems(list);
           setCurrentPage(1); // reset page on filter/search change

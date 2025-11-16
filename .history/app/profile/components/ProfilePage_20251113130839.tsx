@@ -120,7 +120,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "http://127.0.0.1:4000/api/v1";
+//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 // type ProgramFromAPI = {
 //   id: string | number;
@@ -788,7 +788,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "http://127.0.0.1:4000/api/v1";
+//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 // type ProgramFromAPI = {
 //   id: string | number;
@@ -1506,7 +1506,7 @@ type CoachVM = {
 const API_BASE =
   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
     | string
-    | undefined) ?? "http://127.0.0.1:4000/api/v1";
+    | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 /* this stays just for the user lookup */
 type UserFromAPI = {
@@ -2025,7 +2025,10 @@ export default function ProfilePage() {
                         >
                           Logout
                         </button>
-                        <button onClick={() => router} className="w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 cursor-pointer py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                        <button
+                          onClick={() => router}
+                          className="w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-400 text-white font-semibold px-5 sm:px-6 cursor-pointer py-2.5 sm:py-3 rounded-lg hover:from-rose-600 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                        >
                           Edit
                         </button>
                       </div>

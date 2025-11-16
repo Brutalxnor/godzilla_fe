@@ -120,7 +120,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "http://127.0.0.1:4000/api/v1";
+//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 // type ProgramFromAPI = {
 //   id: string | number;
@@ -788,7 +788,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "http://127.0.0.1:4000/api/v1";
+//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 // type ProgramFromAPI = {
 //   id: string | number;
@@ -1502,7 +1502,7 @@ type CoachVM = {
 const API_BASE =
   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
     | string
-    | undefined) ?? "http://127.0.0.1:4000/api/v1";
+    | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
 
 /* this stays just for the user lookup */
 type UserFromAPI = {
@@ -1645,9 +1645,11 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchGetSubscripeProgram = async () => {
-      const data = await getSubscriptionsByAthleteId(userDB?.data.user_id as string);
-      setsu
-    }; 
+      const data = await getSubscriptionsByAthleteId(
+        userDB?.data.user_id as string
+      );
+      setsu;
+    };
   }, [userDB?.data.user_id]);
 
   /* ===== when viewing another user's profile via ?user_id= ===== */

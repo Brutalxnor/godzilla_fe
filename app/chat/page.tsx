@@ -1308,14 +1308,13 @@ const Chat = () => {
           const list = prev[key] || [];
           if (list.some((m) => m.id === newMessage.id)) return prev;
           console.log(newMessage, "slkdjasdj");
-          
+
           setSenderId(newMessage.sender_id);
 
           // هنا نعمل notification
           const sender = activeUsers.find((u) => u.id === newMessage.sender_id);
           if (sender) {
             setNotification({ user: sender, message: newMessage });
-
 
             // نخفي notification بعد 3 ثواني
             setTimeout(() => setNotification(null), 3000);
@@ -1385,7 +1384,15 @@ const Chat = () => {
       setLoadingUserId(null);
     }
   };
-  
+
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
+  }, [currentMessages]);
 
   /* =========================
      Send message
@@ -1393,7 +1400,6 @@ const Chat = () => {
   const sendMessage = async () => {
     if (!selectedUser) return toast.error("Select a user first.");
     if (!message.trim()) return;
-    
 
     try {
       const token = userDB?.data?.access_token;
@@ -1529,18 +1535,17 @@ const Chat = () => {
 
                 {/* Desktop: pill with icon + text */}
                 <button
-  onClick={fetchUsers}
-  type="button"
-  className="
+                  onClick={fetchUsers}
+                  type="button"
+                  className="
     hidden sm:inline-flex items-center gap-2 rounded-full
     bg-rose-500 px-6 py-2 text-xs sm:text-sm font-medium
     shadow-sm cursor-pointer hover:bg-rose-400 active:scale-95
     transition text-white
   "
->
-  <RefreshCcw className="h-4 w-4 text-white dark:text-black" />
-</button>
-
+                >
+                  <RefreshCcw className="h-4 w-4 text-white dark:text-black" />
+                </button>
               </div>
             )}
           </div>
@@ -1680,25 +1685,25 @@ const Chat = () => {
           {view === "chat" && (
             <section
               className="
-                w-full
-                rounded-2xl border border-zinc-200 dark:border-zinc-800
-                bg-white dark:bg-zinc-900 shadow-sm
-                flex flex-col
-                overflow-hidden
-                pb-20 lg:pb-0   /* 🔹 lift content above mobile bottom bar */
-              "
+      w-full
+      rounded-2xl border border-zinc-200 dark:border-zinc-800
+      bg-white dark:bg-zinc-900 shadow-sm
+      flex flex-col
+      overflow-hidden
+      pb-20 lg:pb-0
+    "
             >
               {notification && (
                 <div
                   className="
-      fixed top-4 right-4 z-50
-      flex items-center gap-3
-      bg-white dark:bg-zinc-900
-      border border-zinc-200 dark:border-zinc-700
-      rounded-xl shadow-lg p-3
-      animate-slide-in
-      min-w-[220px]
-    "
+          fixed top-4 right-4 z-50
+          flex items-center gap-3
+          bg-white dark:bg-zinc-900
+          border border-zinc-200 dark:border-zinc-700
+          rounded-xl shadow-lg p-3
+          animate-slide-in
+          min-w-[220px]
+        "
                 >
                   <div className="relative h-10 w-10 rounded-full bg-rose-500 text-white text-sm font-semibold overflow-hidden grid place-items-center">
                     {notification.user.avatar ? (
@@ -1711,7 +1716,6 @@ const Chat = () => {
                       <span>{notification.user.name?.[0] || "U"}</span>
                     )}
 
-                    {/* Online Dot - اختياري */}
                     <span
                       className={`absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white dark:border-zinc-900 ${
                         notification.user.status === "online"
@@ -1730,7 +1734,7 @@ const Chat = () => {
                   </div>
                 </div>
               )}
-              {/* Hidden file input for media selection */}
+
               <input
                 ref={fileInputRef}
                 type="file"
@@ -1738,17 +1742,12 @@ const Chat = () => {
                 onChange={handleFileChange}
               />
 
-              {/* Header (fixed inside) */}
+              {/* Header */}
               <div className="flex items-center gap-3 px-3 sm:px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
                 <button
                   onClick={goBackToList}
                   type="button"
-                  className="
-                    inline-flex items-center justify-center
-                    rounded-full p-1.5
-                    hover:bg-zinc-100 dark:hover:bg-zinc-800
-                    mr-1
-                  "
+                  className="inline-flex items-center justify-center rounded-full p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 mr-1"
                   aria-label="Back to chats"
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -1796,78 +1795,64 @@ const Chat = () => {
                 )}
               </div>
 
-              {/* Messages (scrolls) */}
-              <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4 pb-4 sm:pb-6">
-                {!selectedUser ? (
-                  <div className="text-zinc-400 text-center py-10 text-sm">
-                    Select a chat from the list
-                  </div>
-                ) : currentMessages.length === 0 ? (
-                  <div className="text-zinc-500 text-center py-10 text-sm">
-                    No messages yet. Say hi 👋
-                  </div>
-                ) : (
-                  currentMessages.map((msg) => {
-                    const mine = msg.sender_id === userDB?.data?.user_id;
-                    return (
+              {/* Messages */}
+              <div
+                ref={messagesContainerRef}
+                className="flex-1 overflow-y-auto px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4 pb-4 sm:pb-6"
+              >
+                {currentMessages.map((msg) => {
+                  const mine = msg.sender_id === userDB?.data?.user_id;
+                  return (
+                    <div
+                      key={msg.id}
+                      className={`flex ${
+                        mine ? "justify-end" : "justify-start"
+                      }`}
+                    >
                       <div
-                        key={msg.id}
-                        className={`flex ${
-                          mine ? "justify-end" : "justify-start"
-                        }`}
+                        className={[
+                          "max-w-[85%] sm:max-w-[75%] md:max-w-[60%] px-3 py-2.5 rounded-2xl text-sm leading-relaxed break-words",
+                          mine
+                            ? "bg-emerald-500 text-white rounded-br-none"
+                            : "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 rounded-bl-none",
+                        ].join(" ")}
                       >
+                        {!mine && (
+                          <p className="mb-0.5 text-[11px] font-medium text-zinc-700 dark:text-zinc-300">
+                            {selectedUser?.name}
+                          </p>
+                        )}
                         <div
+                          dangerouslySetInnerHTML={{ __html: msg.content }}
+                        />
+                        <p
                           className={[
-                            "max-w-[85%] sm:max-w-[75%] md:max-w-[60%] px-3 py-2.5 rounded-2xl text-sm leading-relaxed break-words",
+                            "mt-1 text-[10px] text-right",
                             mine
-                              ? "bg-emerald-500 text-white rounded-br-none"
-                              : "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 rounded-bl-none",
+                              ? "text-emerald-100"
+                              : "text-zinc-500 dark:text-zinc-400",
                           ].join(" ")}
                         >
-                          {!mine && (
-                            <p className="mb-0.5 text-[11px] font-medium text-zinc-700 dark:text-zinc-300">
-                              {selectedUser?.name}
-                            </p>
-                          )}
-                          <div dangerouslySetInnerHTML={{ __html: msg.content }} />
-
-                          <p
-                            className={[
-                              "mt-1 text-[10px] text-right",
-                              mine
-                                ? "text-emerald-100"
-                                : "text-zinc-500 dark:text-zinc-400",
-                            ].join(" ")}
-                          >
-                            {msg.created_at
-                              ? new Date(msg.created_at).toLocaleTimeString(
-                                  "en-US",
-                                  {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  }
-                                )
-                              : msg.time || ""}
-                          </p>
-                        </div>
+                          {msg.created_at
+                            ? new Date(msg.created_at).toLocaleTimeString(
+                                "en-US",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )
+                            : msg.time || ""}
+                        </p>
                       </div>
-                    );
-                  })
-                )}
+                    </div>
+                  );
+                })}
               </div>
 
-              {/* Composer (fixed inside) */}
+              {/* Composer */}
               {selectedUser && (
                 <div className="border-t border-zinc-200 dark:border-zinc-800 px-3 sm:px-4 py-3 sm:py-3.5 shrink-0">
                   <div className="flex items-center gap-2 sm:gap-3 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 sm:px-3 py-1.5">
-                    {/* <button
-                      type="button"
-                      className="p-1.5 sm:p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                      aria-label="Attach"
-                      onClick={handleFileClick}
-                    >
-                      <Paperclip className="h-5 w-5 text-zinc-500" />
-                    </button> */}
                     <input
                       className="flex-1 bg-transparent px-1 text-sm outline-none"
                       placeholder={`Message ${selectedUser.name}…`}
@@ -1875,7 +1860,6 @@ const Chat = () => {
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                     />
-                    {/* Emoji picker wrapper */}
                     <div className="relative">
                       <button
                         type="button"
@@ -1885,25 +1869,13 @@ const Chat = () => {
                       >
                         <Smile className="h-5 w-5 text-zinc-500" />
                       </button>
-
                       {showEmojiPicker && (
-                        <div
-                          className="
-        absolute bottom-10 right-0 z-20
-        w-52 rounded-2xl border border-zinc-200 dark:border-zinc-700
-        bg-white dark:bg-zinc-900 shadow-lg p-2
-        grid grid-cols-8 gap-1
-      "
-                        >
+                        <div className="absolute bottom-10 right-0 z-20 w-52 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-lg p-2 grid grid-cols-8 gap-1">
                           {EMOJIS.map((e) => (
                             <button
                               key={e}
                               type="button"
-                              className="
-            text-xl leading-none
-            rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800
-            flex items-center justify-center
-          "
+                              className="text-xl leading-none rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center"
                               onClick={() => handleEmojiSelect(e)}
                             >
                               {e}
@@ -1912,16 +1884,10 @@ const Chat = () => {
                         </div>
                       )}
                     </div>
-
                     <button
                       type="button"
                       onClick={sendMessage}
-                      className="
-                        inline-flex items-center gap-1.5 sm:gap-2
-                        rounded-full bg-emerald-500 px-3 sm:px-4 py-1.5 sm:py-2
-                        text-xs sm:text-sm font-medium text-white
-                        hover:bg-emerald-600 active:scale-95 transition
-                      "
+                      className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-emerald-500 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white hover:bg-emerald-600 active:scale-95 transition"
                     >
                       <Send className="h-4 w-4" />
                       <span className="hidden sm:inline">Send</span>

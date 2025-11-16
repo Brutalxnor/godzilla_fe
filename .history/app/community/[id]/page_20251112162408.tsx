@@ -187,7 +187,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
               <p className="text-xl leading-relaxed" dir="rtl">
                 {postData?.bio}
               </p>
-              <a className="text-blue-500">#Mohamed Osama</a>
+              {/* <a className="text-blue-500">#Mohamed Osama</a> */}
             </div>
 
             {/* Media */}

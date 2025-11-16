@@ -1207,7 +1207,11 @@ export default function GodzillaLandingPage(): JSX.Element {
                 aria-label="Toggle navigation"
                 onClick={() => setNavOpen((open) => !open)}
               >
-                {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {navOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </button>
             </div>
           </nav>
@@ -1381,7 +1385,6 @@ export default function GodzillaLandingPage(): JSX.Element {
           </div>
         </div>
       </section>
-
       {/* ----------------------- FEATURES GRID ----------------------- */}
       <section id="features" className="bg-white py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-4 lg:px-8">
@@ -1418,8 +1421,10 @@ export default function GodzillaLandingPage(): JSX.Element {
         </div>
       </section>
 
+
       {/* ----------------------- MID IMAGES STRIP ----------------------- */}
       <section className="relative w-full bg-[#F7F8FF] py-20 sm:py-28 overflow-hidden">
+
         {/* LEFT IMAGE — desktop */}
         <div className="hidden lg:block absolute left-0 top-0">
           <img
@@ -1504,7 +1509,6 @@ export default function GodzillaLandingPage(): JSX.Element {
           />
         </div>
       </section>
-
       {/* ----------------------- PASSION INTO IMPACT ----------------------- */}
       <section className="bg-white py-16">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 px-4 md:gap-16 lg:flex-row lg:items-center lg:px-0">
@@ -1517,6 +1521,7 @@ export default function GodzillaLandingPage(): JSX.Element {
             <h3 className="text-2xl md:text-[32px] lg:text-[36px] font-semibold leading-snug text-slate-900">
               Grow your coaching business with built-in tools for scale.
             </h3>
+
 
             <p className="text-sm md:text-base lg:text-lg leading-relaxed text-slate-600">
               Godzilla makes it easy to package your knowledge into programs,
@@ -1544,9 +1549,30 @@ export default function GodzillaLandingPage(): JSX.Element {
         </div>
       </section>
 
+
+            <ul className="mt-4 space-y-2 text-sm md:text-[16px] leading-relaxed text-slate-700 text-center lg:text-center">
+              <li>• Offer 1:1, group, or self-paced programs.</li>
+              <li>• Collect payments securely and track subscriptions.</li>
+              <li>• Deliver updates, videos, and resources instantly.</li>
+            </ul>
+          </div>
+
+          {/* IMAGE */}
+          <div className="flex flex-1 justify-center lg:justify-end w-full">
+            <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-[480px]">
+              <img
+                src="179f6c24c41c3334a553f4e1898ef4352193bb56.png"
+                alt="Coaches on Godzilla"
+                className="w-full h-auto object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
       {/* ----------------------- TESTIMONIALS ----------------------- */}
       <section id="coaches" className="bg-[#f4f6ff] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 lg:px-0">
+
           <div
             className="relative overflow-hidden rounded-[40px] bg-white px-4 py-10 sm:px-10 sm:py-14 shadow-[0_32px_80px_rgba(15,23,42,0.12)]"
             onMouseEnter={() => setIsHovered(true)}
@@ -1570,6 +1596,7 @@ export default function GodzillaLandingPage(): JSX.Element {
             {/* title */}
             <h2 className="relative z-10 mb-10 text-center text-2xl sm:text-[32px] font-semibold leading-tight text-slate-900">
               What Our <span className="text-red-500">Clients Say</span> About Us
+
             </h2>
 
             {/* slider area */}
@@ -1703,15 +1730,15 @@ export default function GodzillaLandingPage(): JSX.Element {
           </div>
         </div>
       </section>
-
       {/* --------------------- GLIMPSE INSIDE GODZILLA ---------------------- */}
       <section id="app" className="bg-[#f7f8fc] py-16 lg:py-24">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-12 px-4 lg:flex-row lg:items-center lg:gap-20 lg:px-0">
-          {/* LEFT TEXT */}
+
           <div className="flex-1 space-y-6 text-center lg:text-left">
             <h2 className="text-[18px] font-semibold tracking-wide text-red-500">
               A Glimpse Inside Godzilla
             </h2>
+
 
             <h3 className="text-3xl sm:text-[36px] lg:text-[42px] font-bold leading-[1.2] text-slate-900 lg:max-w-xl">
               Track every rep, message, and milestone — right in your pocket.
@@ -1725,18 +1752,20 @@ export default function GodzillaLandingPage(): JSX.Element {
 
             <div className="flex justify-center lg:justify-start">
               <button className="mt-4 inline-flex cursor-pointer items-center gap-3 rounded-[14px] bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-[16px] font-semibold text-white shadow-xl hover:opacity-95 transition">
+
                 Download App Now
                 <ArrowRight className="h-5 w-5" />
               </button>
             </div>
           </div>
 
-          {/* RIGHT PHONES */}
+
           <div className="mt-8 flex flex-1 items-center justify-center relative lg:mt-0">
             <img
               src="mobleft.png"
               alt="Godzilla app screen"
               className="
+
                 w-[230px] sm:w-[300px] lg:w-[480px]
                 rotate-[-10deg]
                 drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
@@ -1744,18 +1773,21 @@ export default function GodzillaLandingPage(): JSX.Element {
                 z-10
                 -mr-4 sm:mr-10 lg:-mr-50
               "
+
             />
 
             <img
               src="mobright.png"
               alt="Godzilla app screen"
               className="
+
                 w-[230px] sm:w-[300px] lg:w-[480px]
                 rotate-[8deg]
                 drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
                 relative
              -ml-4 sm:-ml-1 lg:-ml-30
               "
+
             />
           </div>
         </div>
@@ -1776,6 +1808,7 @@ export default function GodzillaLandingPage(): JSX.Element {
           </p>
         </div>
       </footer>
+         
     </div>
   );
 }

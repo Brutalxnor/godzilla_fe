@@ -12,7 +12,7 @@ import { v4 } from "uuid";
 
 type Visibility = "public" | "followers";
 
-export interface CreatePostType {
+ interface CreatePostType {
   bio: string;
   image: string;
   location: string;
@@ -151,7 +151,7 @@ export default function CreatePostModal({
         image: data.image,
         location: data.location?.trim() || "",
         tags: data.tags || [],
-        watch: data.watch,
+        watch: "public",
         user_id: userDB?.data?.user_id || data.user_id,
       };
 
@@ -452,7 +452,7 @@ export default function CreatePostModal({
                 </section>
 
                 {/* Visibility */}
-                <section className="rounded-2xl border border-gray-200">
+                {/* <section className="rounded-2xl border border-gray-200">
                   <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-200">
                     <span className="text-sm font-medium">
                       Who can see this?
@@ -492,7 +492,7 @@ export default function CreatePostModal({
                       </div>
                     </label>
                   </div>
-                </section>
+                </section> */}
               </div>
 
               {/* Preview */}
