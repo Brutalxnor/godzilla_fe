@@ -10,6 +10,30 @@
   --chip: #f4f4f5; /* subtle surfaces */
 }
 
+/* Page-wide light backgrounds you’re using */
+html[data-theme="dark"] .bg-\[\#f7f7f7\],
+html[data-theme="dark"] .bg-\[\#f4f6ff\],
+html[data-theme="dark"] .bg-\[\#F7F8FF\] {
+  background-color: #0a0a0a !important;
+}
+/* Godzilla landing pastel backgrounds */
+html[data-theme="dark"] .bg-\[\#f4f6ff\],
+html[data-theme="dark"] .bg-\[\#f7f8fc\],
+html[data-theme="dark"] .bg-\[\#F7F8FF\] {
+  background-color: #0a0a0a !important;
+}
+.testimonial-fade {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.testimonial-fade.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
 /* === Dark tokens (activate via <html data-theme="dark">) === */
 html[data-theme="dark"] {
   --background: #0a0a0a;
@@ -21,6 +45,11 @@ html[data-theme="dark"] {
 
   /* tell browsers we’re dark (affects form controls, etc.) */
   color-scheme: dark;
+}
+
+
+html {
+  scroll-behavior: smooth;
 }
 
 /* Optional inline theme alias (works fine without Tailwind config) */

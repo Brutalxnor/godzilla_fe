@@ -164,6 +164,7 @@ import { useState } from "react";
 import { LoginService } from "@/app/auth/services/login.service";
 import { toast } from "react-toastify";
 import useGetTheme from "@/app/Hooks/useGetTheme";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [showPw, setShowPw] = useState(false);
@@ -171,7 +172,8 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
+  
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -179,16 +181,12 @@ export default function LoginForm() {
 
     try {
       const res = await LoginService({ email, password });
-      if ("error" in res) {
-        console.log("error :", res);
-        toast.error(res.error as string);
-      } else {
         console.log("Login success:", res);
         toast.success("Login Successfully!");
         setTimeout(() => {
-          window.location.reload();
+          router.push('/community');
         }, 1500);
-      }
+      
     } catch (err) {
       console.error("Unexpected error:", err);
       setError("Unexpected error");
@@ -326,7 +324,7 @@ export default function LoginForm() {
                     setShowPw((s) => !s);
                 }}
               >
-                {showPw ? "Hide" : "👁️"}
+                {showPw ? "Hide" : "Show"}
               </span>
             </div>
           </div>
