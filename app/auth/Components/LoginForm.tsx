@@ -164,6 +164,7 @@ import { useState } from "react";
 import { LoginService } from "@/app/auth/services/login.service";
 import { toast } from "react-toastify";
 import useGetTheme from "@/app/Hooks/useGetTheme";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [showPw, setShowPw] = useState(false);
@@ -171,7 +172,8 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
+  
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -186,7 +188,7 @@ export default function LoginForm() {
         console.log("Login success:", res);
         toast.success("Login Successfully!");
         setTimeout(() => {
-          window.location.reload();
+          router.push('/community');
         }, 1500);
       }
     } catch (err) {
