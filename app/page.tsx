@@ -1553,7 +1553,7 @@ export default function GodzillaLandingPage(): JSX.Element {
             onMouseLeave={() => setIsHovered(false)}
           >
             {/* decorative red bars */}
-            <div className="pointer-events-none absolute inset-x-0 top-10 flex justify-center">
+            {/* <div className="pointer-events-none absolute inset-x-0 top-10 flex px-5">
               <div className="flex gap-[3px] text-red-300">
                 {Array.from({ length: 15 }).map((_, i) => (
                   <span
@@ -1565,7 +1565,7 @@ export default function GodzillaLandingPage(): JSX.Element {
                   />
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* title */}
             <h2 className="relative z-10 mb-10 text-center text-2xl sm:text-[32px] font-semibold leading-tight text-slate-900">

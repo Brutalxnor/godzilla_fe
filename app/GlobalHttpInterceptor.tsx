@@ -38,7 +38,7 @@ export default function GlobalHttpInterceptor({ children }: Props) {
         } catch {
           // ignore
         }
-        window.location.href = "/";
+        window.location.href = "/login";
       }
 
       return response;
@@ -55,7 +55,7 @@ export default function GlobalHttpInterceptor({ children }: Props) {
           } catch {
             // ignore
           }
-          window.location.href = "/";
+          window.location.href = "/login";
         }
         return Promise.reject(err);
       }

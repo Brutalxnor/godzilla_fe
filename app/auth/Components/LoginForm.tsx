@@ -181,12 +181,17 @@ export default function LoginForm() {
 
     try {
       const res = await LoginService({ email, password });
+      if ("error" in res) {
+        console.log("error :", res);
+        toast.error("res.error as string");
+
+      } else {
         console.log("Login success:", res);
         toast.success("Login Successfully!");
         setTimeout(() => {
           router.push('/community');
         }, 1500);
-      
+      }
     } catch (err) {
       console.error("Unexpected error:", err);
       setError("Unexpected error");

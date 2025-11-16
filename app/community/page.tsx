@@ -642,9 +642,15 @@ export default function CommunityPage() {
 
                                 <div>
                                   <div className="flex items-center gap-2">
-                                    <span className="font-medium text-sm sm:text-[15px]">
-                                      {`${post.users?.first_name} ${post.users?.second_name}`}
-                                    </span>
+                                  <span className="font-medium text-sm sm:text-[15px]">
+                                    {`${post.users?.first_name || ""} ${post.users?.second_name || ""}`
+                                      .trim()
+                                      .slice(0, 15)}
+                                    {`${post.users?.first_name || ""} ${post.users?.second_name || ""}`.length > 15
+                                      ? "..."
+                                      : ""}
+                                  </span>
+
                                     {post.users?.user_type && (
                                       <span className="text-[11px] px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
                                         {post.users?.user_type}
