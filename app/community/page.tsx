@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { GetUserById } from "../services/Auth.service";
 import {
   SharePostToUser,
+  toggleCommentLike,
   togglePostLike,
   UpdatePost,
 } from "./Service/posts.service";
@@ -82,7 +83,6 @@ export default function CommunityPage() {
   const [Posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [interests, setInterests] = useState<InterestType[]>([]);
-  const [commentLoveColor, setCommentLoveColor] = useState(false);
   async function handleCreateSubmit(data: CreatePostType) {
     console.log("CreatePost payload:", data);
   }
@@ -379,6 +379,44 @@ export default function CommunityPage() {
     }
   };
 
+  const handleToggleCommentLike = async (
+    created_at: string,
+    user_id: string,
+    post_id: string
+  ) => {
+    if (!userDB?.data?.user_id) return;
+
+    try {
+      const res = await toggleCommentLike(
+        created_at,
+        userDB.data.user_id,
+        post_id
+      );
+
+      // Update the posts state to reflect the new like count
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === post_id
+            ? {
+                ...p,
+                comment_new: p.comment_new?.map((c: any) =>
+                  c.created_at === created_at
+                    ? {
+                        ...c,
+                        liked_by: res.liked_by,
+                        like_count: res.likeCount,
+                      }
+                    : c
+                ),
+              }
+            : p
+        )
+      );
+    } catch (error) {
+      console.error("Error toggling comment like:", error);
+      toast.error("Failed to like comment");
+    }
+  };
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
       <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
@@ -872,21 +910,31 @@ export default function CommunityPage() {
 
                                               <button
                                                 className="flex items-center gap-1 text-xs transition"
-                                                onClick={() =>
-                                                  setCommentLoveColor(
-                                                    (prev) => !prev
-                                                  )
-                                                }
+                                                onClick={(e) => {
+                                                  e.preventDefault();
+                                                  e.stopPropagation();
+                                                  handleToggleCommentLike(
+                                                    comment.created_at,
+                                                    comment.user_id,
+                                                    post.id
+                                                  );
+                                                }}
                                               >
                                                 <svg
                                                   className="w-4 h-4"
                                                   fill={
-                                                    commentLoveColor
+                                                    comment.liked_by?.includes(
+                                                      userDB?.data
+                                                        ?.user_id as string
+                                                    )
                                                       ? "red"
                                                       : "none"
                                                   }
                                                   stroke={
-                                                    commentLoveColor
+                                                    comment.liked_by?.includes(
+                                                      userDB?.data
+                                                        ?.user_id as string
+                                                    )
                                                       ? "red"
                                                       : "currentColor"
                                                   }
@@ -902,12 +950,17 @@ export default function CommunityPage() {
 
                                                 <span
                                                   className={
-                                                    commentLoveColor
+                                                    comment.liked_by?.includes(
+                                                      userDB?.data
+                                                        ?.user_id as string
+                                                    )
                                                       ? "text-red-500"
                                                       : "text-gray-500"
                                                   }
                                                 >
-                                                  0
+                                                  {comment.like_count ||
+                                                    comment.liked_by?.length ||
+                                                    0}
                                                 </span>
                                               </button>
 

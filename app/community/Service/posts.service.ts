@@ -79,3 +79,36 @@ export const UpdatePost = async (postId: string, postData: CreatePostType) => {
     throw error;
   }
 };
+
+export const toggleCommentLike = async (
+  created_at: string,
+  userId: string,
+  postId: string
+) => {
+  try {
+    const response = await fetch(
+      `https://godzilla-be.vercel.app/api/v1/posts/toggleLike`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          post_id: postId,
+          created_at,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to toggle comment like");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error toggling comment like:", error);
+    throw error;
+  }
+};
