@@ -163,14 +163,15 @@ import { LoginService } from "@/app/auth/services/login.service";
 import { toast } from "react-toastify";
 import useGetTheme from "@/app/Hooks/useGetTheme";
 import { useRouter } from "next/navigation";
+import { FaArrowRight } from "react-icons/fa6";
 
 import {
   signInWithPopup,
   GoogleAuthProvider,
   getAuth,
   onAuthStateChanged,
-} from "firebase/auth";
-import { initializeApp } from "firebase/app";
+} from "@firebase/auth";
+import { initializeApp } from "@firebase/app";
 
 export default function LoginForm() {
   const [showPw, setShowPw] = useState(false);
@@ -384,10 +385,10 @@ export default function LoginForm() {
 
           <button
             type="submit"
-            className="mt-2 w-full rounded-xl bg-rose-400 text-white font-medium py-3 hover:bg-rose-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
+            className="mt-2 w-full rounded-xl bg-rose-400 text-white font-medium py-3 cursor-pointer hover:bg-rose-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
           >
             <span>{loading ? "Signing in..." : "Sign In"}</span>
-            <span className="text-xl leading-none">Right Arrow</span>
+            <span className="text-xl leading-none"><FaArrowRight /></span>
           </button>
         </form>
 

@@ -5018,18 +5018,7 @@ export default function ProfilePage() {
                 >
                   Your Info
                 </button>
-                <button
-                  onClick={() => setTab("profile")}
-                  className={`flex-1 rounded-full px-3 cursor-pointer sm:px-4 py-1.5 sm:py-2 ${
-                    tab === "profile"
-
-                      ? "bg-white shadow text-zinc-900"
-                      : "text-zinc-600"
-                  }`}
-                >
-
-                  Your Info
-                </button>
+              
                 <button
                   onClick={() => setTab("profile")}
                   className={`flex-1 rounded-full px-3 cursor-pointer sm:px-4 py-1.5 sm:py-2 ${
