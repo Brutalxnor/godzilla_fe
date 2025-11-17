@@ -227,15 +227,12 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
 
             {/* Media */}
             {postData?.image && (
-              <div className="relative">
+              <div className="relative  w-full">
                 <img
                   src={postData?.image}
                   alt="Post content"
-                  className="w-full h-96 object-cover"
+                  className="w-full object-contain"
                 />
-                <div className="absolute bottom-2 left-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm">
-                  0:30
-                </div>
               </div>
             )}
 

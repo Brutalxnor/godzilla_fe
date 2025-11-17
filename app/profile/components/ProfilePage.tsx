@@ -1391,7 +1391,6 @@
 // //     </div>
 // //   );
 // // }
-=======
 // "use client";
 
 // import { useEffect, useMemo, useState } from "react";
@@ -2869,7 +2868,8 @@ import {
   Flame,
   Users as UsersIcon,
   DollarSign,
-  Star, // just to make TS happy in case of name clashes
+  Star,
+  Users, // just to make TS happy in case of name clashes
 } from "lucide-react";
 
 import {

@@ -34,12 +34,13 @@ export const UpdateUser = async (
     location: string;
     experience: string;
     avatar_url: string;
+    username: string;
   },
   id: string
 ) => {
   try {
     const res = await axios.put(
-      `https://godzilla-be.vercel.app/api/v1/auth/updateuser/${id}`,
+      `http://localhost:4000/api/v1/auth/updateuser/${id}`,
       data,
       {
         headers: {

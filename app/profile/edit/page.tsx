@@ -33,6 +33,7 @@ type ProfileFormValues = {
   location: string;
   experience_level: string;
   avatar_url?: string | null;
+  username: string;
 };
 
 const getErrorMessage = (error: unknown): string => {
@@ -76,6 +77,7 @@ const Page = () => {
           email: data.data.email ?? "",
           location: data.data.location ?? "",
           experience_level: data.data.experience_level ?? "",
+          username: data.data.username ?? userDB?.data?.user.username ?? "",
         });
       }
     };
@@ -113,6 +115,7 @@ const Page = () => {
           location: profilePayload.location ?? "",
           experience: profilePayload.experience_level ?? "",
           avatar_url: avatar_url ?? userDB?.data?.user?.avatar_url ?? "",
+          username: userDB?.data?.user?.username ?? profilePayload.username,
         },
         userDB?.data?.user_id as string
       );
@@ -205,6 +208,7 @@ const Page = () => {
                   "email",
                   "location",
                   "experience_level",
+                  "username",
                 ].map((field) => (
                   <div key={field}>
                     <label className="text-sm text-gray-400">
