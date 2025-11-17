@@ -325,7 +325,7 @@ export default function Home() {
 
   return (
     <>
-      {userDB ? (
+      
         <div
           className={`min-h-screen ${
             theme === "dark" ? "bg-black" : "bg-white"
@@ -547,9 +547,7 @@ export default function Home() {
             </div>
           </main>
         </div>
-      ) : (
-        <LoginForm />
-      )}
+      
     </>
   );
 }
