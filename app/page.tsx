@@ -1241,11 +1241,11 @@ export default function GodzillaLandingPage(): JSX.Element {
                     Coaches
                   </Link>
                   <Link
-                    href="/home"
+                    href="/community"
                     onClick={() => setNavOpen(false)}
                     className="py-1 hover:text-white"
                   >
-                    home
+                    Community
                   </Link>
                   <Link
                     href="#app"
