@@ -961,7 +961,9 @@ export default function Sidebar() {
     setMobileMenuOpen(false);
   }, [pathname]);
 
+
   const mobilePrimaryHrefs = [ "/community", "/programs" , "/chat"]; // Home, Community, Programs, Chat
+
 
   // 👇 use sidebarItems instead of items so /trainers is also hidden on mobile
   const mobilePrimaryItems = sidebarItems.filter((i) =>

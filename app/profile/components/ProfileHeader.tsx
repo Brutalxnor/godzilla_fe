@@ -87,6 +87,7 @@
 import React, { useMemo } from "react";
 import { Mail, MapPin, CalendarDays } from "lucide-react";
 import ThemeToggle from "@/app/components/ThemeToggle";
+import useGetUser from "@/app/Hooks/useGetUser";
 
 export type ProfileCore = {
   id: string | number;
@@ -112,6 +113,7 @@ export default function ProfileHeader({ data }: { data: ProfileCore }) {
   }, [data.name]);
 
   console.log(data);
+  const { userDB } = useGetUser();
 
   return (
     <div className="flex items-start gap-4">
@@ -136,6 +138,10 @@ export default function ProfileHeader({ data }: { data: ProfileCore }) {
             <h2 className="text-lg font-semibold text-[var(--foreground)]">
               {data.name}
             </h2>
+
+            <h1 className="text-sm font-semibold text-[gray]">
+              userName: {userDB?.data.user.username || ""}
+            </h1>
 
             <div className="mt-1 flex flex-col gap-1 text-sm text-[var(--muted)]">
               <InfoRow icon={<Mail className="h-4 w-4" />} text={data.email} />

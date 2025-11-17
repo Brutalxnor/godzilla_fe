@@ -21,6 +21,7 @@ export interface User {
   date_of_birth: string;
   email_verified: boolean;
   experience_level: string;
+  username: string;
 }
 
 export interface Post {

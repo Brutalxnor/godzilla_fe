@@ -227,15 +227,12 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
 
             {/* Media */}
             {postData?.image && (
-              <div className="relative">
+              <div className="relative  w-full">
                 <img
                   src={postData?.image}
                   alt="Post content"
-                  className="w-full h-96 object-cover"
+                  className="w-full object-contain"
                 />
-                <div className="absolute bottom-2 left-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm">
-                  0:30
-                </div>
               </div>
             )}
 
@@ -378,7 +375,10 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
               {/* Add Comment */}
               <div className="flex gap-3 p-4 border-b border-gray-200">
                 <img
-                  src="https://via.placeholder.com/40"
+                  src={
+                    userDB?.data.user.avatar_url ||
+                    "https://example.com/avatar.jpg"
+                  }
                   alt="Your avatar"
                   className="w-10 h-10 rounded-full"
                 />
@@ -401,7 +401,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
                         window.location.reload();
                       }}
                       disabled={!newComment.trim()}
-                      className="bg-blue-500 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-red-500 text-white px-6 py-2 rounded-full font-bold hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Comment
                     </button>

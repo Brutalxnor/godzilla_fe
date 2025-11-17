@@ -156,52 +156,120 @@
 //     </main>
 //   );
 // }
-
-
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LoginService } from "@/app/auth/services/login.service";
 import { toast } from "react-toastify";
 import useGetTheme from "@/app/Hooks/useGetTheme";
 import { useRouter } from "next/navigation";
 
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  getAuth,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { initializeApp } from "firebase/app";
+
 export default function LoginForm() {
   const [showPw, setShowPw] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  
+
+
+  const { theme } = useGetTheme();
+
+  // Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyD2KSTvxrumY6n29OZx_3D4861PfzyQnEI",
+    authDomain: "godzilla-95bf1.firebaseapp.com",
+    projectId: "godzilla-95bf1",
+    storageBucket: "godzilla-95bf1.firebasestorage.app",
+    messagingSenderId: "529422424716",
+    appId: "1:529422424716:web:911f1b61f015c4463a79a9",
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const googleProvider = new GoogleAuthProvider();
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // toast.success("Login Successfullysdfsdfd!");
+
+        await fetch("http://localhost:4000/api/v1/auth/login-with-google", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: user.email,
+            name: user.displayName,
+            photoURL: user.photoURL,
+            password: "Gz!@435&Hk90",
+          }),
+        }).then((res) => {
+          return res.json();
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth]);
+
+  // Email/Password Login
+  // Email/Password Login
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
     setLoading(true);
 
     try {
       const res = await LoginService({ email, password });
       if ("error" in res) {
+
         console.log("error :", res);
         toast.error("res.error as string");
+
 
       } else {
         console.log("Login success:", res);
         toast.success("Login Successfully!");
         setTimeout(() => {
+
           router.push('/community');
+
         }, 1500);
       }
     } catch (err) {
-      console.error("Unexpected error:", err);
-      setError("Unexpected error");
       toast.error("Unexpected error occurred");
     } finally {
       setLoading(false);
     }
   }
 
-  const { theme } = useGetTheme();
+  // Google Sign-In with Popup
+  const handleLoginWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      // onAuthStateChanged will catch the user → toast shown
+    } catch (err: unknown) {
+      console.error("Google login error:", err);
+      // if (err.code === "auth/popup-blocked") {
+      //   toast.error("Popup blocked. Please allow popups and try again.");
+      // } else if (err.code === "auth/cancelled-popup-request") {
+      //   // User closed popup
+      // } else {
+      //   toast.error("Google sign-in failed. Try again.");
+      // }
+    }
+  };
 
   return (
     <main
@@ -216,7 +284,6 @@ export default function LoginForm() {
             : "bg-white shadow-sm border border-gray-200"
         }`}
       >
-        {/* Logo */}
         <div className="w-12 h-12 mx-auto rounded-full bg-rose-500 flex items-center justify-center">
           <svg
             width="22"
@@ -229,7 +296,6 @@ export default function LoginForm() {
           </svg>
         </div>
 
-        {/* Heading */}
         <h1
           className={`text-center text-2xl sm:text-3xl font-semibold mt-4 sm:mt-5 ${
             theme === "dark" ? "text-white" : "text-gray-900"
@@ -245,7 +311,6 @@ export default function LoginForm() {
           Transform your fitness journey
         </p>
 
-        {/* Banner image */}
         <div
           className={`mt-6 overflow-hidden rounded-xl border ${
             theme === "dark" ? "border-[#27272a]" : "border-gray-200"
@@ -261,16 +326,7 @@ export default function LoginForm() {
           />
         </div>
 
-        {/* Error */}
-        {error && (
-          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 text-center">
-            {error}
-          </div>
-        )}
-
-        {/* Form */}
         <form onSubmit={handleSubmit} className="mt-10 space-y-10">
-          {/* Email */}
           <div>
             <label
               className={`block text-sm font-medium ${
@@ -294,7 +350,6 @@ export default function LoginForm() {
             />
           </div>
 
-          {/* Password */}
           <div>
             <label
               className={`block text-sm font-medium ${
@@ -319,39 +374,54 @@ export default function LoginForm() {
               />
               <span
                 className="absolute inset-y-0 right-3 flex items-center text-gray-400 text-base sm:text-lg select-none cursor-pointer"
-                role="button"
-                tabIndex={0}
-                aria-label={showPw ? "Hide password" : "Show password"}
-                aria-pressed={showPw}
-                onClick={() => setShowPw((s) => !s)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ")
-                    setShowPw((s) => !s);
-                }}
+                onClick={() => setShowPw(!showPw)}
               >
                 {showPw ? "Hide" : "Show"}
+
               </span>
             </div>
           </div>
 
-          {/* Sign in button */}
           <button
             type="submit"
-            disabled={loading}
             className="mt-2 w-full rounded-xl bg-rose-400 text-white font-medium py-3 hover:bg-rose-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
           >
             <span>{loading ? "Signing in..." : "Sign In"}</span>
-            <span className="text-xl leading-none">→</span>
+            <span className="text-xl leading-none">Right Arrow</span>
           </button>
         </form>
 
-        {/* Footer link */}
+        <button
+          onClick={handleLoginWithGoogle}
+          className="mt-4 w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 px-4 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <path
+              fill="#4285F4"
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            />
+            <path
+              fill="#34A853"
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+            />
+            <path
+              fill="#EA4335"
+              d="M12 6.72c1.63 0 3.06.56 4.21 1.65l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+            />
+          </svg>
+          Sign in with Google
+        </button>
+
         <p
           className={`text-center text-sm mt-4 ${
             theme === "dark" ? "text-gray-400" : "text-gray-600"
           }`}
         >
-          Don&apos;t have an account?{" "}
+          Do not have an account?{" "}
           <a href="/sign-up" className="text-rose-500 hover:underline">
             Sign up
           </a>
