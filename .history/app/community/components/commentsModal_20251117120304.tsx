@@ -60,8 +60,10 @@ export default function CommentModal() {
     setOpenPostId(id === "0" ? "0" : id);
   };
 
-  const handleAddComment = (e: unknown) => {
-    (e as React.FormEvent<HTMLFormElement>).preventDefault();
+  const handleAddComment = (
+    e: React.FormEvent<HTMLFormElement> | EventTarget
+  ) => {
+    e.preventDefault();
     if (newComment.trim()) {
       const comment = {
         id: String(comments.length + 1),

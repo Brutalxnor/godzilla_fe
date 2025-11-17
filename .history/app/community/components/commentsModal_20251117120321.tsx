@@ -61,7 +61,7 @@ export default function CommentModal() {
   };
 
   const handleAddComment = (e: unknown) => {
-    (e as React.FormEvent<HTMLFormElement>).preventDefault();
+    e.preventDefault() as React.FormEvent<HTMLFormElement>;
     if (newComment.trim()) {
       const comment = {
         id: String(comments.length + 1),

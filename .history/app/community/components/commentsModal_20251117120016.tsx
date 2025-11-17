@@ -60,11 +60,11 @@ export default function CommentModal() {
     setOpenPostId(id === "0" ? "0" : id);
   };
 
-  const handleAddComment = (e: unknown) => {
-    (e as React.FormEvent<HTMLFormElement>).preventDefault();
+  const handleAddComment = (e: Event) => {
+    e.preventDefault();
     if (newComment.trim()) {
       const comment = {
-        id: String(comments.length + 1),
+        id: comments.length + 1,
         userName: mockUser.first_name,
         userAvatar: mockUser.avatar_url,
         comment: newComment,
