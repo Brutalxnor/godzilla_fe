@@ -3275,7 +3275,7 @@ export default function ProfilePage() {
             id: u.user_id ?? userIdParam,
             name:
               toSafeTitle(
-                `${u.first_name ?? ""} ${u.second_name ?? ""}.trim()`
+                ${u.first_name ?? ""} ${u.second_name ?? ""}.trim()
               ) || "User",
             email: u.email ?? "",
             location: u.location ?? null,
@@ -3334,7 +3334,7 @@ export default function ProfilePage() {
 
       const email = d.email ?? "";
       const rawFullName =
-        `${u.first_name ?? ""} ${u.second_name ?? ""}.trim()` ||
+        ${u.first_name ?? ""} ${u.second_name ?? ""}.trim() ||
         email.split("@")[0] ||
         "User";
       const fullName = toTitleCase(rawFullName);
@@ -3628,7 +3628,7 @@ export default function ProfilePage() {
         const res = await fetch(
           "https://godzilla-be.vercel.app/api/v1/chat/conversations",
           {
-            headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
+            headers: { Authorization: Bearer ${userDB?.data.access_token} },
           }
         );
         if (!res.ok) throw new Error("Failed to fetch conversations");
@@ -3653,7 +3653,7 @@ export default function ProfilePage() {
 
     conversations.forEach((convId) => {
       const channel = supabase
-        .channel(`chat-${convId}`)
+        .channel(chat-${convId})
         .on("broadcast", { event: "new-message" }, (payload) => {
           const newMessage = payload.payload as ChatMessage;
           if (newMessage.sender_id === userDB?.data?.user_id) return;
@@ -3717,7 +3717,7 @@ export default function ProfilePage() {
           setPrograms(mapped);
         } else {
           const response = await axios.get(
-            `https://godzilla-be.vercel.app/api/v1/subscripe/${userId}`
+            https://godzilla-be.vercel.app/api/v1/subscripe/${userId}
           );
 
           type Row = {
@@ -3737,7 +3737,7 @@ export default function ProfilePage() {
 
           const mapped: DashboardProgram[] = Array.isArray(raw)
             ? raw.map((row, idx) => ({
-                id: row.programs?.id ?? row.program_id ?? row.id ?? `${idx}`,
+                id: row.programs?.id ?? row.program_id ?? row.id ?? ${idx},
                 title: row.programs?.title ?? "Program",
                 coachName: row.programs?.users?.first_name ?? "Coach",
               }))
@@ -4161,7 +4161,7 @@ export default function ProfilePage() {
                         programs.slice(0, 5).map((el) => (
                           <Link
                             key={el.id}
-                            href={`/programs/${el.id}`}
+                            href={/programs/${el.id}}
                             className="block"
                           >
                             <ProgramCard

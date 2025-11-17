@@ -3717,7 +3717,7 @@ export default function ProfilePage() {
           setPrograms(mapped);
         } else {
           const response = await axios.get(
-            `https://godzilla-be.vercel.app/api/v1/subscripe/${userId}`
+            https://godzilla-be.vercel.app/api/v1/subscripe/${userId}
           );
 
           type Row = {
@@ -4161,7 +4161,7 @@ export default function ProfilePage() {
                         programs.slice(0, 5).map((el) => (
                           <Link
                             key={el.id}
-                            href={`/programs/${el.id}`}
+                            href={/programs/${el.id}}
                             className="block"
                           >
                             <ProgramCard

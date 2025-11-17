@@ -1703,6 +1703,7 @@ export default function GodzillaLandingPage(): JSX.Element {
           </div>
         </div>
       </section>
+      {/* --------------------- GLIMPSE INSIDE GODZILLA ---------------------- */}
 
       {/* --------------------- GLIMPSE INSIDE GODZILLA ---------------------- */}
       <section id="app" className="bg-[#f7f8fc] py-16 lg:py-24">
