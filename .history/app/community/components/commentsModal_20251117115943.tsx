@@ -4,7 +4,7 @@ import { Heart, Send } from "lucide-react";
 // Mock data for demonstration
 const mockComments = [
   {
-    id: "1",
+    id: 1,
     userName: "أحمد محمود",
     userAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmad",
     comment: "Great workout! Keep pushing yourself 💪",
@@ -12,7 +12,7 @@ const mockComments = [
     likes: 5,
   },
   {
-    id: "2",
+    id: 2,
     userName: "سارة أحمد",
     userAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sara",
     comment: "This is so motivating! Thank you for sharing your journey",
@@ -20,7 +20,7 @@ const mockComments = [
     likes: 8,
   },
   {
-    id: "3",
+    id: 3,
     userName: "محمد علي",
     userAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mohamed",
     comment: "What program are you following? I'd love to try it!",
@@ -28,7 +28,7 @@ const mockComments = [
     likes: 2,
   },
   {
-    id: "4",
+    id: 4,
     userName: "فاطمة حسن",
     userAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fatima",
     comment: "Amazing progress! You're such an inspiration 🔥",
@@ -60,11 +60,11 @@ export default function CommentModal() {
     setOpenPostId(id === "0" ? "0" : id);
   };
 
-  const handleAddComment = (e: unknown) => {
-    (e as React.FormEvent<HTMLFormElement>).preventDefault();
+  const handleAddComment = (e: Event) => {
+    e.preventDefault();
     if (newComment.trim()) {
       const comment = {
-        id: String(comments.length + 1),
+        id: comments.length + 1,
         userName: mockUser.first_name,
         userAvatar: mockUser.avatar_url,
         comment: newComment,
@@ -146,7 +146,7 @@ export default function CommentModal() {
                     {comment.timestamp}
                   </span>
                   <button
-                    onClick={() => toggleLike(comment.id)}
+                    onClick={() => toggleLike(comment.id as string)}
                     className="flex items-center gap-1 text-xs text-gray-500 hover:text-red-500 transition"
                   >
                     <Heart
