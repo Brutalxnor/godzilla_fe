@@ -1703,6 +1703,61 @@ export default function GodzillaLandingPage(): JSX.Element {
           </div>
         </div>
       </section>
+      {/* --------------------- GLIMPSE INSIDE GODZILLA ---------------------- */}
+      {/* <section id="app" className="bg-[#f7f8fc] py-16 lg:py-24">
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-12 px-4 lg:flex-row lg:items-center lg:gap-20 lg:px-0">
+          <div className="flex-1 space-y-6 text-center lg:text-left">
+            <h2 className="text-[18px] font-semibold tracking-wide text-red-500">
+              A Glimpse Inside Godzilla
+            </h2>
+
+            <h3 className="text-3xl sm:text-[36px] lg:text-[42px] font-bold leading-[1.2] text-slate-900 lg:max-w-xl">
+              Track every rep, message, and milestone — right in your pocket.
+            </h3>
+
+            <p className="text-base sm:text-[18px] leading-relaxed text-slate-600 max-w-lg mx-auto lg:mx-0">
+              From workout logs to progress photos and coach messages, the
+              Godzilla app keeps everything organized and ready whenever you
+              are. No spreadsheets, no lost chats, no guesswork.
+            </p>
+
+            <div className="flex justify-center lg:justify-start">
+              <button className="mt-4 inline-flex cursor-pointer items-center gap-3 rounded-[14px] bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-[16px] font-semibold text-white shadow-xl hover:opacity-95 transition">
+                Download App Now
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-1 items-center justify-center relative lg:mt-0">
+            <img
+              src="mobleft.png"
+              alt="Godzilla app screen"
+              className="
+
+                w-[230px] sm:w-[300px] lg:w-[480px]
+                rotate-[-10deg]
+                drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
+                relative
+                z-10
+                -mr-4 sm:mr-10 lg:-mr-50
+              "
+            />
+
+            {/* -------- LEFT TEXT -------- */}
+            <div className="flex-1 space-y-6 text-center lg:text-left">
+              <h2 className="text-[18px] font-semibold tracking-wide text-red-500">
+                A Glimpse Inside Godzilla
+              </h2>
+
+              {/* smaller on mobile, same 42px on web (lg) */}
+              <h3 className="text-3xl sm:text-[36px] lg:text-[42px] font-bold leading-[1.2] text-slate-900 lg:max-w-xl">
+                Track every rep, message, and milestone — right in your pocket.
+              </h3>
+            </div>
+          </div>
+        </div>
+      </section> */}
 
       {/* --------------------- GLIMPSE INSIDE GODZILLA ---------------------- */}
       <section id="app" className="bg-[#f7f8fc] py-16 lg:py-24">
