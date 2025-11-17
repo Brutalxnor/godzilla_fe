@@ -801,7 +801,6 @@ import Link from "next/link";
 import useGetTheme from "@/app/Hooks/useGetTheme";
 import { useRouter } from "next/navigation";
 
-
 export const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -811,7 +810,7 @@ export const SignupForm = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const router = useRouter(); 
+  const router = useRouter();
 
   const {
     register,
@@ -901,42 +900,39 @@ export const SignupForm = () => {
   const onSubmit = async (data: SignUpFormData) => {
     try {
       setIsSubmitting(true);
-  
+
       let avatarUrl = "";
-  
+
       if (data.avatar_url instanceof File) {
         avatarUrl = await uploadToSupabase(data.avatar_url);
       }
-  
+
       const payload = {
         ...data,
         avatar_url: avatarUrl,
       };
-  
-      const res = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/auth/register",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-  
+
+      const res = await fetch("http://localhost:4000/api/v1/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
       const result = await res.json();
       console.log("✅ Registration response:", result);
-  
+
       // 🔴 user already exists (409 Conflict)
       if (res.status === 409) {
         toast.error("User already exists. Please sign in instead.");
         return;
       }
-  
+
       if (!res.ok) {
         // other backend errors
         toast.error(result?.message || "Something went wrong while signing up");
         return;
       }
-  
+
       // ✅ success
       toast.success("Account created successfully! Please sign in.");
       router.push("/login"); // or "/sign-in" if that's your route
@@ -947,8 +943,6 @@ export const SignupForm = () => {
       setIsSubmitting(false);
     }
   };
-  
-  
 
   const userType = watch("user_type");
 
@@ -1645,20 +1639,6 @@ export const SignupForm = () => {
     </div>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 

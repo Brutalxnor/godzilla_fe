@@ -280,6 +280,7 @@
 //   Sign In
 // </Link>
 
+
 //               {/* burger for mobile / tablet */}
 //               <button
 //                 type="button"
@@ -505,9 +506,9 @@
 //           <img
 //             src="8f3cceb6c00884ff29ce68a33ade48666895e1ad.png"
 //             className="
-//               relative z-10
-//               w-[520px]
-//               -rotate-9
+//               relative z-10 
+//               w-[520px] 
+//               -rotate-9 
 //               drop-shadow-[0_20px_60px_rgba(0,0,0,0.35)]
 //               object-contain
 //             "
@@ -518,8 +519,8 @@
 //             className="
 //               absolute top-0 left-6
 //               w-[520px]
-//               -rotate-6
-//               opacity-20
+//               -rotate-6 
+//               opacity-20 
 //               blur-[2px]
 //             "
 //             aria-hidden="true"
@@ -531,8 +532,8 @@
 //           <img
 //             src="4744ceaa4dac2c594c0d1e586a750b81f8bdb6a1.png"
 //             className="
-//               relative z-10
-//               w-[560px]
+//               relative z-10 
+//               w-[560px] 
 //               rotate-7
 //               drop-shadow-[0_20px_60px_rgba(0,0,0,0.35)]
 //               object-contain
@@ -545,7 +546,7 @@
 //               absolute top-0 right-6
 //               w-[560px]
 //               rotate-6
-//               opacity-20
+//               opacity-20 
 //               blur-[2px]
 //             "
 //             aria-hidden="true"
@@ -685,10 +686,10 @@
 //                 {/* main center card */}
 //                 <div
 //                   className={`
-//                     testimonial-fade
-//                     ${animate ? "active" : ""}
-//                     flex w-full max-w-xl flex-1 flex-col gap-5 rounded-[24px] border border-slate-100
-//                     bg-[#f9fbff] px-5 py-6 text-left shadow-[0_18px_40px_rgba(15,23,42,0.10)]
+//                     testimonial-fade 
+//                     ${animate ? "active" : ""} 
+//                     flex w-full max-w-xl flex-1 flex-col gap-5 rounded-[24px] border border-slate-100 
+//                     bg-[#f9fbff] px-5 py-6 text-left shadow-[0_18px_40px_rgba(15,23,42,0.10)] 
 //                     sm:px-10 sm:py-8
 //                   `}
 //                 >
@@ -859,6 +860,7 @@
 //     </div>
 //   );
 // }
+
 
 "use client";
 
@@ -1077,6 +1079,7 @@ export default function GodzillaLandingPage(): JSX.Element {
     setActiveTestimonial(index);
   };
 
+
   // auto-slide (paused on hover)
   useEffect(() => {
     if (isHovered) return;
@@ -1084,6 +1087,7 @@ export default function GodzillaLandingPage(): JSX.Element {
     const id = setInterval(() => {
       setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 1000); // adjust speed if you want
+
 
     return () => clearInterval(id);
   }, [isHovered]);
@@ -1419,8 +1423,12 @@ export default function GodzillaLandingPage(): JSX.Element {
         </div>
       </section>
 
+
+
       {/* ----------------------- MID IMAGES STRIP ----------------------- */}
       <section className="relative w-full bg-[#F7F8FF] py-20 sm:py-28 overflow-hidden">
+
+
         {/* LEFT IMAGE — desktop */}
         <div className="hidden lg:block absolute left-0 top-0">
           <img
@@ -1512,6 +1520,8 @@ export default function GodzillaLandingPage(): JSX.Element {
           <div className="flex-1 space-y-4 text-center lg:text-left">
             <h2 className="text-xs md:text-sm font-semibold uppercase tracking-[0.32em] text-red-500">
               Turn Your Passion into Impact and Income
+
+=
             </h2>
 
             <h3 className="text-2xl md:text-[32px] lg:text-[36px] font-semibold leading-snug text-slate-900">
@@ -1544,8 +1554,69 @@ export default function GodzillaLandingPage(): JSX.Element {
         </div>
       </section>
       {/* ----------------------- TESTIMONIALS ----------------------- */}
+      <section id="testimonials" className="bg-[#f4f6ff] py-24">
+        <div className="mx-auto max-w-6xl px-4 lg:px-0">
+          <div className="relative overflow-hidden rounded-[32px] bg-white px-6 py-10 shadow-[0_32px_80px_rgba(15,23,42,0.12)] sm:px-10 sm:py-12">
+            <h2 className="mb-10 text-center text-[24px] font-semibold leading-tight text-slate-900 sm:text-[28px]">
+              What Our <span className="text-red-500">Clients Say</span> About
+              Us
+            </h2>
+
+            <h3 className="text-2xl md:text-[32px] lg:text-[36px] font-semibold leading-snug text-slate-900">
+              Grow your coaching business with built-in tools for scale.
+            </h3>
+
+
+            <p className="text-sm md:text-base lg:text-lg leading-relaxed text-slate-600">
+              Godzilla makes it easy to package your knowledge into programs,
+              onboard new clients, and manage monthly subscriptions — all in one
+              place.
+            </p>
+
+            <ul className="mt-4 space-y-2 text-sm md:text-[16px] leading-relaxed text-slate-700 text-center lg:text-center">
+              <li>• Offer 1:1, group, or self-paced programs.</li>
+              <li>• Collect payments securely and track subscriptions.</li>
+              <li>• Deliver updates, videos, and resources instantly.</li>
+            </ul>
+          </div>
+
+          {/* IMAGE */}
+          <div className="flex flex-1 justify-center lg:justify-end w-full">
+            <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-[480px]">
+              <img
+                src="179f6c24c41c3334a553f4e1898ef4352193bb56.png"
+                alt="Coaches on Godzilla"
+                className="w-full h-auto object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+            <ul className="mt-4 space-y-2 text-sm md:text-[16px] leading-relaxed text-slate-700 text-center lg:text-center">
+              <li>• Offer 1:1, group, or self-paced programs.</li>
+              <li>• Collect payments securely and track subscriptions.</li>
+              <li>• Deliver updates, videos, and resources instantly.</li>
+            </ul>
+          </div>
+
+          {/* IMAGE */}
+          <div className="flex flex-1 justify-center lg:justify-end w-full">
+            <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-[480px]">
+              <img
+                src="179f6c24c41c3334a553f4e1898ef4352193bb56.png"
+                alt="Coaches on Godzilla"
+                className="w-full h-auto object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* ----------------------- TESTIMONIALS ----------------------- */}
       <section id="coaches" className="bg-[#f4f6ff] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 lg:px-0">
+
           <div
             className="relative overflow-hidden rounded-[40px] bg-white px-4 py-10 sm:px-10 sm:py-14 shadow-[0_32px_80px_rgba(15,23,42,0.12)]"
             onMouseEnter={() => setIsHovered(true)}
@@ -1568,8 +1639,8 @@ export default function GodzillaLandingPage(): JSX.Element {
 
             {/* title */}
             <h2 className="relative z-10 mb-10 text-center text-2xl sm:text-[32px] font-semibold leading-tight text-slate-900">
-              What Our <span className="text-red-500">Clients Say</span> About
-              Us
+              What Our <span className="text-red-500">Clients Say</span> About Us
+
             </h2>
 
             {/* slider area */}
@@ -1706,10 +1777,13 @@ export default function GodzillaLandingPage(): JSX.Element {
       {/* --------------------- GLIMPSE INSIDE GODZILLA ---------------------- */}
       <section id="app" className="bg-[#f7f8fc] py-16 lg:py-24">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-12 px-4 lg:flex-row lg:items-center lg:gap-20 lg:px-0">
+
+
           <div className="flex-1 space-y-6 text-center lg:text-left">
             <h2 className="text-[18px] font-semibold tracking-wide text-red-500">
               A Glimpse Inside Godzilla
             </h2>
+
 
             <h3 className="text-3xl sm:text-[36px] lg:text-[42px] font-bold leading-[1.2] text-slate-900 lg:max-w-xl">
               Track every rep, message, and milestone — right in your pocket.
@@ -1723,11 +1797,13 @@ export default function GodzillaLandingPage(): JSX.Element {
 
             <div className="flex justify-center lg:justify-start">
               <button className="mt-4 inline-flex cursor-pointer items-center gap-3 rounded-[14px] bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-[16px] font-semibold text-white shadow-xl hover:opacity-95 transition">
+
                 Download App Now
                 <ArrowRight className="h-5 w-5" />
               </button>
             </div>
           </div>
+
 
           <div className="mt-8 flex flex-1 items-center justify-center relative lg:mt-0">
             <img
@@ -1742,32 +1818,16 @@ export default function GodzillaLandingPage(): JSX.Element {
                 z-10
                 -mr-4 sm:mr-10 lg:-mr-50
               "
+
             />
 
-            {/* -------- LEFT TEXT -------- */}
-            <div className="flex-1 space-y-6 text-center lg:text-left">
-              <h2 className="text-[18px] font-semibold tracking-wide text-red-500">
-                A Glimpse Inside Godzilla
-              </h2>
-
-              {/* smaller on mobile, same 42px on web (lg) */}
-              <h3 className="text-3xl sm:text-[36px] lg:text-[42px] font-bold leading-[1.2] text-slate-900 lg:max-w-xl">
-                Track every rep, message, and milestone — right in your pocket.
-              </h3>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --------------------- GLIMPSE INSIDE GODZILLA ---------------------- */}
-      <section id="app" className="bg-[#f7f8fc] py-16 lg:py-24">
-        <div className="mx-auto flex max-w-7xl flex-col items-start gap-12 px-4 lg:flex-row lg:items-center lg:gap-20 lg:px-0">
-          {/* LEFT TEXT */}
+          {/* -------- LEFT TEXT -------- */}
           <div className="flex-1 space-y-6 text-center lg:text-left">
             <h2 className="text-[18px] font-semibold tracking-wide text-red-500">
               A Glimpse Inside Godzilla
             </h2>
 
+            {/* smaller on mobile, same 42px on web (lg) */}
             <h3 className="text-3xl sm:text-[36px] lg:text-[42px] font-bold leading-[1.2] text-slate-900 lg:max-w-xl">
               Track every rep, message, and milestone — right in your pocket.
             </h3>
@@ -1779,29 +1839,74 @@ export default function GodzillaLandingPage(): JSX.Element {
             </p>
 
             <div className="flex justify-center lg:justify-start">
-              <button className="mt-4 inline-flex cursor-pointer items-center gap-3 rounded-[14px] bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-[16px] font-semibold text-white shadow-xl hover:opacity-95 transition">
+              <button className="mt-4 inline-flex items-center gap-3 rounded-[14px] bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-[16px] font-semibold text-white shadow-xl hover:opacity-95 transition">
                 Download App Now
                 <ArrowRight className="h-5 w-5" />
               </button>
             </div>
           </div>
 
-          {/* RIGHT PHONES */}
+          {/* -------- RIGHT PHONES -------- */}
+          {/* same look on web, fixed overflow + spacing on mobile */}
           <div className="mt-8 flex flex-1 items-center justify-center relative lg:mt-0">
             <img
               src="mobleft.png"
               alt="Godzilla app screen"
-              className="w-[230px] sm:w-[300px] lg:w-[480px] rotate-[-10deg] drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)] relative z-10 -mr-4 sm:mr-10 lg:-mr-50"
+              className="
+          w-[230px] sm:w-[300px] lg:w-[480px]
+          rotate-[-10deg]
+          drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
+          relative
+          z-10
+          -mr-4 sm:mr-5 lg:-mr-50
+        "
             />
 
             <img
               src="mobright.png"
               alt="Godzilla app screen"
-              className="w-[230px] sm:w-[300px] lg:w-[480px] rotate-[8deg] drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)] relative -ml-4 sm:-ml-1 lg:-ml-30"
+              className="
+<<<<<<< Updated upstream
+
+                w-[230px] sm:w-[300px] lg:w-[480px]
+                rotate-[8deg]
+                drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
+                relative
+             -ml-4 sm:-ml-1 lg:-ml-30
+              "
+
+=======
+          w-[230px] sm:w-[300px] lg:w-[480px]
+          rotate-[8deg]
+          drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
+          relative
+          -ml-4 sm:-ml-10 lg:-ml-40
+        "
+>>>>>>> Stashed changes
             />
           </div>
         </div>
       </section>
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
+      {/* ----------------------------- FOOTER ------------------------------ */}
+      <footer className="border-t border-red-200 bg-[#f7f8fc] py-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 text-[14px] text-slate-500 sm:flex-row">
+          <div className="flex gap-6">
+            <button className="hover:text-slate-700 transition">
+              Terms &amp; Conditions
+            </button>
+            <button className="hover:text-slate-700 transition">Privacy</button>
+          </div>
+
+          <p className="whitespace-nowrap">
+            © {new Date().getFullYear()} Godzilla. All rights reserved.
+          </p>
+        </div>
+      </footer>
+         
     </div>
   );
 }

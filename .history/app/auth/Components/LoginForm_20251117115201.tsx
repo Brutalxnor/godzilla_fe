@@ -253,13 +253,13 @@ export default function LoginForm() {
       // onAuthStateChanged will catch the user → toast shown
     } catch (err: unknown) {
       console.error("Google login error:", err);
-      // if (err.code === "auth/popup-blocked") {
-      //   toast.error("Popup blocked. Please allow popups and try again.");
-      // } else if (err.code === "auth/cancelled-popup-request") {
-      //   // User closed popup
-      // } else {
-      //   toast.error("Google sign-in failed. Try again.");
-      // }
+      if ((err.code as string) === "auth/popup-blocked") {
+        toast.error("Popup blocked. Please allow popups and try again.");
+      } else if (err.code === "auth/cancelled-popup-request") {
+        // User closed popup
+      } else {
+        toast.error("Google sign-in failed. Try again.");
+      }
     }
   };
 
@@ -412,7 +412,7 @@ export default function LoginForm() {
             theme === "dark" ? "text-gray-400" : "text-gray-600"
           }`}
         >
-          Do not have an account?{" "}
+          Don't have an account?{" "}
           <a href="/sign-up" className="text-rose-500 hover:underline">
             Sign up
           </a>
