@@ -126,3 +126,30 @@ export async function toggleCommentLike(commentId: string) {
     liked_by: string[];
   };
 }
+
+export const getCommentLikers = async (commentId: string) => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  try {
+    const response = await fetch(
+      `https://godzilla-be.vercel.app/api/v1/comments/${commentId}/likers`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.data?.access_token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch comment likers");
+    }
+
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching comment likers:", error);
+    throw error;
+  }
+};

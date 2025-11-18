@@ -1054,12 +1054,14 @@ import { toast } from "react-toastify";
 import { GetUserById } from "../services/Auth.service";
 import {
   createComment,
+  getCommentLikers,
   SharePostToUser,
   toggleCommentLike,
   togglePostLike,
   UpdatePost,
 } from "./Service/posts.service";
 import { GetAllInterests } from "../sign-up/Services/Interest.service";
+import CommentLikersModal from "./components/CommentLikersModal";
 
 function Tag({ label, count }: { label: string; count?: number }) {
   return (
@@ -1111,6 +1113,8 @@ export default function CommunityPage() {
   const [postToEdit, setPostToEdit] = useState<Post | null>(null);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [sharePostId, setSharePostId] = useState<string | null>(null);
+  const [likersModalOpen, setLikersModalOpen] = useState(false);
+  const [currentCommentId, setCurrentCommentId] = useState<string | null>(null);
 
   const [newPosts, setNewPosts] = useState<Post[]>([]);
   const [newPostsCount, setNewPostsCount] = useState(0);
@@ -1185,6 +1189,17 @@ export default function CommunityPage() {
   const channelsRef = useRef<RealtimeChannel[]>([]);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
+
+  const handleViewCommentLikers = async (
+    commentId: string,
+    e: React.MouseEvent
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setCurrentCommentId(commentId);
+    setLikersModalOpen(true);
+  };
   // Load users
   const fetchUsers = async () => {
     try {
@@ -1956,8 +1971,9 @@ export default function CommunityPage() {
                                               </div>
                                               <div className="flex items-center gap-4 mt-2 px-2">
                                                 {/* Comment Like Button */}
+                                                {/* Comment Like Button */}
                                                 <button
-                                                  className="flex items-center gap-1 text-xs transition"
+                                                  className="flex items-center gap-1 text-xs transition hover:text-rose-500"
                                                   onClick={(e) =>
                                                     handleCommentLike(
                                                       comment.id,
@@ -1987,11 +2003,18 @@ export default function CommunityPage() {
                                                     />
                                                   </svg>
                                                   <span
-                                                    className={
-                                                      comment.liked_by_current_user
-                                                        ? "text-red-500"
+                                                    className={`${
+                                                      comment.is_liked
+                                                        ? "text-rose-500"
                                                         : "text-gray-500"
+                                                    } hover:text-rose-500 cursor-pointer`}
+                                                    onClick={(e) =>
+                                                      handleViewCommentLikers(
+                                                        comment.id,
+                                                        e
+                                                      )
                                                     }
+                                                    title="View who liked this comment"
                                                   >
                                                     {comment.likes_count || 0}
                                                   </span>
@@ -2266,6 +2289,15 @@ export default function CommunityPage() {
           subtitle: "Share with your community",
           // avatarUrl: "/avatar-1.jpg", // optional; show initials if missing
         }}
+      />
+      {/* Comment Likers Modal */}
+      <CommentLikersModal
+        isOpen={likersModalOpen}
+        onClose={() => {
+          setLikersModalOpen(false);
+          setCurrentCommentId(null);
+        }}
+        commentId={currentCommentId || ""}
       />
     </div>
   );
