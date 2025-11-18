@@ -578,7 +578,7 @@
 //                       }
 //                     };
 
-//                     const isLikedByMe = post.liked_by?.includes(
+//                     const is_likedByMe = post.liked_by?.includes(
 //                       userDB?.data?.user_id as string
 //                     );
 
@@ -1974,12 +1974,12 @@ export default function CommunityPage() {
                                                   <svg
                                                     className="w-4 h-4"
                                                     fill={
-                                                      comment.liked_by_current_user
+                                                      comment.is_liked
                                                         ? "red"
                                                         : "none"
                                                     }
                                                     stroke={
-                                                      comment.liked_by_current_user
+                                                      comment.is_liked
                                                         ? "red"
                                                         : "currentColor"
                                                     }
@@ -2114,12 +2114,12 @@ export default function CommunityPage() {
                                                             <svg
                                                               className="w-4 h-4"
                                                               fill={
-                                                                reply.liked_by_current_user
+                                                                reply.is_liked
                                                                   ? "red"
                                                                   : "none"
                                                               }
                                                               stroke={
-                                                                reply.liked_by_current_user
+                                                                reply.is_liked
                                                                   ? "red"
                                                                   : "currentColor"
                                                               }
@@ -2134,7 +2134,7 @@ export default function CommunityPage() {
                                                             </svg>
                                                             <span
                                                               className={
-                                                                reply.liked_by_current_user
+                                                                reply.is_liked
                                                                   ? "text-red-500"
                                                                   : "text-gray-500"
                                                               }
