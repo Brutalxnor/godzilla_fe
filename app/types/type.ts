@@ -24,6 +24,19 @@ export interface User {
   username: string;
 }
 
+export interface Comment {
+  id: string;
+  post_id: string;
+  parent_comment_id: string | null;
+  user_id: string;
+  text: string;
+  created_at: string;
+  updated_at: string;
+  user: User;
+  likes_count: number;
+  is_liked: boolean;
+  replies: Comment[];
+}
 export interface Post {
   id: string;
   bio: string;
@@ -61,6 +74,7 @@ export interface Post {
       user_type: string;
     };
   }[];
+  comments: Comment[];
 }
 
 export type Program = {

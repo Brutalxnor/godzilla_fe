@@ -1053,7 +1053,9 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
 import { GetUserById } from "../services/Auth.service";
 import {
+  createComment,
   SharePostToUser,
+  toggleCommentLike,
   togglePostLike,
   UpdatePost,
 } from "./Service/posts.service";
@@ -1181,7 +1183,8 @@ export default function CommunityPage() {
   const [sender_id, setSenderId] = useState<string>();
   const [conversations, setConversations] = useState<string[]>([]);
   const channelsRef = useRef<RealtimeChannel[]>([]);
-
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
   // Load users
   const fetchUsers = async () => {
     try {
@@ -1412,6 +1415,54 @@ export default function CommunityPage() {
     } catch (error) {
       console.error("Error deleting post:", error);
       toast.error("Failed to delete post");
+    }
+  };
+
+  const handleCommentSubmit = async (post_id: string, text: string) => {
+    try {
+      await createComment({
+        post_id,
+        text,
+        parent_comment_id: null, // This is for main comments
+      });
+
+      // Refresh posts to show the new comment
+      await fetchGetPosts();
+      reset(); // Clear the form
+    } catch (err) {
+      console.error("Error adding comment:", err);
+      toast.error("Failed to add comment");
+    }
+  };
+  const handleCommentLike = async (commentId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      const result = await toggleCommentLike(commentId);
+      // Update the UI by refreshing posts
+      await fetchGetPosts();
+    } catch (err) {
+      console.error("Error toggling comment like:", err);
+      toast.error("Failed to like comment");
+    }
+  };
+  const handleReplySubmit = async (post_id: string, commentId: string) => {
+    if (!replyText.trim()) return;
+
+    try {
+      await createComment({
+        post_id, // Pass the post_id here
+        text: replyText,
+        parent_comment_id: commentId, // This makes it a reply
+      });
+
+      await fetchGetPosts(); // Refresh to show the reply
+      setReplyText("");
+      setReplyingTo(null);
+    } catch (err) {
+      console.error("Error adding reply:", err);
+      toast.error("Failed to add reply");
     }
   };
 
@@ -1821,7 +1872,7 @@ export default function CommunityPage() {
                               >
                                 <span>💬</span>
                                 <span className="text-sm">
-                                  {post.comment_new?.length}
+                                  {post.comments?.length}
                                 </span>
                               </button>
 
@@ -1876,82 +1927,223 @@ export default function CommunityPage() {
 
                                   {/* Comments List */}
                                   <div className="overflow-y-auto flex-1 p-4 space-y-4">
-                                    {post.comment_new &&
-                                    post.comment_new.length > 0 ? (
-                                      post.comment_new.map((comment: any) => (
+                                    {post.comments &&
+                                    post.comments.length > 0 ? (
+                                      post.comments.map((comment: any) => (
                                         <div
                                           key={comment.id}
-                                          className="flex gap-3"
+                                          className="space-y-3"
                                         >
-                                          <img
-                                            src={
-                                              comment.user?.avatar_url ||
-                                              "https://via.placeholder.com/40"
-                                            }
-                                            alt={comment.user?.first_name}
-                                            className="w-10 h-10 rounded-full shrink-0"
-                                          />
-                                          <div className="flex-1">
-                                            <div className="bg-gray-100 rounded-2xl px-4 py-3">
-                                              <div className="font-bold text-sm mb-1">
-                                                {comment.user?.first_name}{" "}
-                                                {comment.user?.second_name}
+                                          {/* Main Comment */}
+                                          <div className="flex gap-3">
+                                            <img
+                                              src={
+                                                comment.user?.avatar_url ||
+                                                "https://via.placeholder.com/40"
+                                              }
+                                              alt={comment.user?.first_name}
+                                              className="w-10 h-10 rounded-full shrink-0"
+                                            />
+                                            <div className="flex-1">
+                                              <div className="bg-gray-100 rounded-2xl px-4 py-3">
+                                                <div className="font-bold text-sm mb-1">
+                                                  {comment.user?.first_name}{" "}
+                                                  {comment.user?.second_name}
+                                                </div>
+                                                <p className="text-sm leading-relaxed">
+                                                  {comment.text}
+                                                </p>
                                               </div>
-                                              <p className="text-sm leading-relaxed">
-                                                {comment.comment}
-                                              </p>
-                                            </div>
-                                            <div className="flex items-center gap-4 mt-2 px-2">
-                                              {/* <span className="text-xs text-gray-500">
-                                                {comment.created_at}
-                                              </span> */}
-
-                                              <button
-                                                className="flex items-center gap-1 text-xs transition"
-                                                onClick={() =>
-                                                  setCommentLoveColor(
-                                                    (prev) => !prev
-                                                  )
-                                                }
-                                              >
-                                                <svg
-                                                  className="w-4 h-4"
-                                                  fill={
-                                                    commentLoveColor
-                                                      ? "red"
-                                                      : "none"
+                                              <div className="flex items-center gap-4 mt-2 px-2">
+                                                {/* Comment Like Button */}
+                                                <button
+                                                  className="flex items-center gap-1 text-xs transition"
+                                                  onClick={(e) =>
+                                                    handleCommentLike(
+                                                      comment.id,
+                                                      e
+                                                    )
                                                   }
-                                                  stroke={
-                                                    commentLoveColor
-                                                      ? "red"
-                                                      : "currentColor"
-                                                  }
-                                                  viewBox="0 0 24 24"
                                                 >
-                                                  <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                                  <svg
+                                                    className="w-4 h-4"
+                                                    fill={
+                                                      comment.liked_by_current_user
+                                                        ? "red"
+                                                        : "none"
+                                                    }
+                                                    stroke={
+                                                      comment.liked_by_current_user
+                                                        ? "red"
+                                                        : "currentColor"
+                                                    }
+                                                    viewBox="0 0 24 24"
+                                                  >
+                                                    <path
+                                                      strokeLinecap="round"
+                                                      strokeLinejoin="round"
+                                                      strokeWidth={2}
+                                                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                                    />
+                                                  </svg>
+                                                  <span
+                                                    className={
+                                                      comment.liked_by_current_user
+                                                        ? "text-red-500"
+                                                        : "text-gray-500"
+                                                    }
+                                                  >
+                                                    {comment.likes_count || 0}
+                                                  </span>
+                                                </button>
+
+                                                {/* Reply Button */}
+                                                <button
+                                                  className="text-xs text-gray-500 hover:text-gray-700 font-medium transition"
+                                                  onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    setReplyingTo(
+                                                      replyingTo === comment.id
+                                                        ? null
+                                                        : comment.id
+                                                    );
+                                                  }}
+                                                >
+                                                  Reply
+                                                </button>
+                                              </div>
+
+                                              {/* Reply Input */}
+                                              {replyingTo === comment.id && (
+                                                <div className="flex gap-2 mt-3">
+                                                  <input
+                                                    type="text"
+                                                    value={replyText}
+                                                    onChange={(e) =>
+                                                      setReplyText(
+                                                        e.target.value
+                                                      )
+                                                    }
+                                                    placeholder="Write a reply..."
+                                                    className="flex-1 bg-white border border-gray-200 rounded-full px-4 py-2 text-sm outline-none focus:border-red-500 transition"
+                                                    onKeyPress={(e) => {
+                                                      if (
+                                                        e.key === "Enter" &&
+                                                        !e.shiftKey
+                                                      ) {
+                                                        e.preventDefault();
+                                                        handleReplySubmit(
+                                                          post.id,
+                                                          comment.id
+                                                          // e
+                                                        );
+                                                      }
+                                                    }}
                                                   />
-                                                </svg>
-
-                                                <span
-                                                  className={
-                                                    commentLoveColor
-                                                      ? "text-red-500"
-                                                      : "text-gray-500"
-                                                  }
-                                                >
-                                                  0
-                                                </span>
-                                              </button>
-
-                                              <button className="text-xs text-gray-500 hover:text-gray-700 font-medium transition">
-                                                Reply
-                                              </button>
+                                                  <button
+                                                    onClick={(e) =>
+                                                      handleReplySubmit(
+                                                        post.id,
+                                                        comment.id
+                                                        // e
+                                                      )
+                                                    }
+                                                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm transition"
+                                                  >
+                                                    Reply
+                                                  </button>
+                                                </div>
+                                              )}
                                             </div>
                                           </div>
+
+                                          {/* Replies to this comment */}
+                                          {comment.replies &&
+                                            comment.replies.length > 0 && (
+                                              <div className="ml-12 space-y-3">
+                                                {comment.replies.map(
+                                                  (reply: any) => (
+                                                    <div
+                                                      key={reply.id}
+                                                      className="flex gap-3"
+                                                    >
+                                                      <img
+                                                        src={
+                                                          reply.user
+                                                            ?.avatar_url ||
+                                                          "https://via.placeholder.com/40"
+                                                        }
+                                                        alt={
+                                                          reply.user?.first_name
+                                                        }
+                                                        className="w-8 h-8 rounded-full shrink-0"
+                                                      />
+                                                      <div className="flex-1">
+                                                        <div className="bg-gray-50 rounded-2xl px-3 py-2">
+                                                          <div className="font-bold text-xs mb-1">
+                                                            {
+                                                              reply.user
+                                                                ?.first_name
+                                                            }{" "}
+                                                            {
+                                                              reply.user
+                                                                ?.second_name
+                                                            }
+                                                          </div>
+                                                          <p className="text-xs leading-relaxed">
+                                                            {reply.text}
+                                                          </p>
+                                                        </div>
+                                                        <div className="flex items-center gap-4 mt-1 px-2">
+                                                          <button
+                                                            className="flex items-center gap-1 text-xs transition"
+                                                            onClick={(e) =>
+                                                              handleCommentLike(
+                                                                reply.id,
+                                                                e
+                                                              )
+                                                            }
+                                                          >
+                                                            <svg
+                                                              className="w-4 h-4"
+                                                              fill={
+                                                                reply.liked_by_current_user
+                                                                  ? "red"
+                                                                  : "none"
+                                                              }
+                                                              stroke={
+                                                                reply.liked_by_current_user
+                                                                  ? "red"
+                                                                  : "currentColor"
+                                                              }
+                                                              viewBox="0 0 24 24"
+                                                            >
+                                                              <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth={2}
+                                                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                                              />
+                                                            </svg>
+                                                            <span
+                                                              className={
+                                                                reply.liked_by_current_user
+                                                                  ? "text-red-500"
+                                                                  : "text-gray-500"
+                                                              }
+                                                            >
+                                                              {reply.likes_count ||
+                                                                0}
+                                                            </span>
+                                                          </button>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  )
+                                                )}
+                                              </div>
+                                            )}
                                         </div>
                                       ))
                                     ) : (
@@ -1964,6 +2156,7 @@ export default function CommunityPage() {
                                     )}
                                   </div>
 
+                                  {/* Input Section */}
                                   {/* Input Section */}
                                   <div className="p-4 shrink-0 bg-gray-50">
                                     <div className="flex gap-3 items-start">
@@ -1987,7 +2180,14 @@ export default function CommunityPage() {
                                               !e.shiftKey
                                             ) {
                                               e.preventDefault();
-                                              handleSubmit(handleAddComment)(e);
+                                              handleSubmit((data) => {
+                                                if (data.comment?.trim()) {
+                                                  handleCommentSubmit(
+                                                    post.id,
+                                                    data.comment
+                                                  );
+                                                }
+                                              })();
                                             }
                                           }}
                                         />
@@ -1995,7 +2195,14 @@ export default function CommunityPage() {
                                           onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
-                                            handleSubmit(handleAddComment)(e);
+                                            handleSubmit((data) => {
+                                              if (data.comment?.trim()) {
+                                                handleCommentSubmit(
+                                                  post.id,
+                                                  data.comment
+                                                );
+                                              }
+                                            })();
                                           }}
                                           className="bg-red-500 hover:bg-red-600 text-white p-2.5 rounded-full transition shrink-0"
                                         >

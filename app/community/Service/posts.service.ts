@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 const BASE_URL = "https://godzilla-be.vercel.app/api/v1"; // adjust if needed
 
@@ -79,3 +80,49 @@ export const UpdatePost = async (postId: string, postData: CreatePostType) => {
     throw error;
   }
 };
+
+interface CreateCommentType {
+  post_id: string;
+  text: string;
+  parent_comment_id?: string | null;
+}
+
+export async function createComment(commentData: CreateCommentType) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const res = await axios.post(`${BASE_URL}/comments`, commentData, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user?.data?.access_token}`,
+    },
+  });
+
+  return res.data as {
+    success: boolean;
+    message: string;
+    data: any;
+  };
+}
+
+export async function toggleCommentLike(commentId: string) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const res = await axios.post(
+    `${BASE_URL}/comments/${commentId}/toggle-like`,
+    {},
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.data?.access_token}`,
+      },
+    }
+  );
+
+  return res.data as {
+    success: boolean;
+    message: string;
+    liked: boolean;
+    likesCount: number;
+    liked_by: string[];
+  };
+}
