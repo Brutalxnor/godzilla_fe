@@ -505,9 +505,11 @@
 //           <img
 //             src="8f3cceb6c00884ff29ce68a33ade48666895e1ad.png"
 //             className="
+
 //               relative z-10
 //               w-[520px]
 //               -rotate-9
+
 //               drop-shadow-[0_20px_60px_rgba(0,0,0,0.35)]
 //               object-contain
 //             "
@@ -518,8 +520,10 @@
 //             className="
 //               absolute top-0 left-6
 //               w-[520px]
+
 //               -rotate-6
 //               opacity-20
+
 //               blur-[2px]
 //             "
 //             aria-hidden="true"
@@ -531,8 +535,10 @@
 //           <img
 //             src="4744ceaa4dac2c594c0d1e586a750b81f8bdb6a1.png"
 //             className="
+
 //               relative z-10
 //               w-[560px]
+
 //               rotate-7
 //               drop-shadow-[0_20px_60px_rgba(0,0,0,0.35)]
 //               object-contain
@@ -545,7 +551,9 @@
 //               absolute top-0 right-6
 //               w-[560px]
 //               rotate-6
+
 //               opacity-20
+
 //               blur-[2px]
 //             "
 //             aria-hidden="true"
@@ -685,10 +693,12 @@
 //                 {/* main center card */}
 //                 <div
 //                   className={`
+
 //                     testimonial-fade
 //                     ${animate ? "active" : ""}
 //                     flex w-full max-w-xl flex-1 flex-col gap-5 rounded-[24px] border border-slate-100
 //                     bg-[#f9fbff] px-5 py-6 text-left shadow-[0_18px_40px_rgba(15,23,42,0.10)]
+
 //                     sm:px-10 sm:py-8
 //                   `}
 //                 >
@@ -1243,11 +1253,11 @@ export default function GodzillaLandingPage(): JSX.Element {
                     Coaches
                   </Link>
                   <Link
-                    href="/home"
+                    href="/community"
                     onClick={() => setNavOpen(false)}
                     className="py-1 hover:text-white"
                   >
-                    home
+                    Community
                   </Link>
                   <Link
                     href="#app"
@@ -1543,6 +1553,14 @@ export default function GodzillaLandingPage(): JSX.Element {
           </div>
         </div>
       </section>
+
+      {/* <ul className="mt-4 space-y-2 text-sm md:text-[16px] leading-relaxed text-slate-700 text-center lg:text-center">
+              <li>• Offer 1:1, group, or self-paced programs.</li>
+              <li>• Collect payments securely and track subscriptions.</li>
+              <li>• Deliver updates, videos, and resources instantly.</li>
+            </ul>
+          </div> */}
+
       {/* ----------------------- TESTIMONIALS ----------------------- */}
       <section id="coaches" className="bg-[#f4f6ff] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 lg:px-0">
@@ -1552,7 +1570,9 @@ export default function GodzillaLandingPage(): JSX.Element {
             onMouseLeave={() => setIsHovered(false)}
           >
             {/* decorative red bars */}
-            <div className="pointer-events-none absolute inset-x-0 top-10 flex justify-center">
+
+            {/* <div className="pointer-events-none absolute inset-x-0 top-10 flex px-5">
+
               <div className="flex gap-[3px] text-red-300">
                 {Array.from({ length: 15 }).map((_, i) => (
                   <span
@@ -1564,7 +1584,8 @@ export default function GodzillaLandingPage(): JSX.Element {
                   />
                 ))}
               </div>
-            </div>
+
+            </div> */}
 
             {/* title */}
             <h2 className="relative z-10 mb-10 text-center text-2xl sm:text-[32px] font-semibold leading-tight text-slate-900">
@@ -1736,13 +1757,26 @@ export default function GodzillaLandingPage(): JSX.Element {
             <img
               src="mobleft.png"
               alt="Godzilla app screen"
-              className="w-[230px] sm:w-[300px] lg:w-[480px] rotate-[-10deg] drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)] relative z-10 -mr-4 sm:mr-10 lg:-mr-50"
+              className="
+                w-[230px] sm:w-[300px] lg:w-[480px]
+                rotate-[-10deg]
+                drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
+                relative
+                z-10
+                -mr-4 sm:mr-10 lg:-mr-50
+              "
             />
 
             <img
               src="mobright.png"
               alt="Godzilla app screen"
-              className="w-[230px] sm:w-[300px] lg:w-[480px] rotate-[8deg] drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)] relative -ml-4 sm:-ml-1 lg:-ml-30"
+              className="
+                w-[230px] sm:w-[300px] lg:w-[480px]
+                rotate-[8deg]
+                drop-shadow-[0_40px_70px_rgba(0,0,0,0.25)]
+                relative
+             -ml-4 sm:-ml-1 lg:-ml-30
+              "
             />
           </div>
         </div>

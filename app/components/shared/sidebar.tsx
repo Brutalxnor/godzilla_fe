@@ -854,7 +854,7 @@
 //         </div>
 //       </nav>
 //     </>
-//   );
+//   );njkhjihjihijhiu
 // }
 
 "use client";
@@ -879,7 +879,7 @@ type Item = { href: string; label: string; Icon: IconType };
 
 // 🔹 All possible nav items
 const items: Item[] = [
-  { href: "/", label: "Home", Icon: AiOutlineHome },
+  // { href: "/", label: "Home", Icon: AiOutlineHome },
   { href: "/community", label: "Community", Icon: FiUsers },
   { href: "/trainers", label: "Trainers", Icon: MdOutlineFitnessCenter },
   { href: "/programs", label: "Programs", Icon: AiOutlineTrophy },
@@ -994,20 +994,26 @@ export default function Sidebar() {
       >
         <div className="flex h-full w-full flex-col px-2 py-5">
           {/* Brand */}
-          <div className="flex items-center gap-5 px-2 py-10">
-            <div className="grid h-12 w-12 p-4 place-items-center rounded-full bg-rose-500 text-white font-bold text-sm leading-none">
-              GZ
-            </div>
-            <span
-              className="
-                text-base font-semibold text-gray-800 dark:text-zinc-100
-                opacity-0 transition-all duration-200
-                group-hover:opacity-100
-              "
-            >
-              Godzilla
-            </span>
-          </div>
+         {/* Brand */}
+<Link
+  href="/"
+  className="flex items-center gap-5 px-2 py-10 cursor-pointer"
+>
+  <div className="grid h-12 w-12 p-4 place-items-center rounded-full bg-rose-500 text-white font-bold text-sm leading-none">
+    GZ
+  </div>
+  <span
+    className="
+      text-base font-semibold text-gray-800 dark:text-zinc-100
+      opacity-0 transition-all duration-200
+      group-hover:opacity-100
+    "
+  >
+    Godzilla
+  </span>
+</Link>
+
+
 
           {/* Nav items */}
           <nav className="flex flex-1 flex-col gap-1 px-2">
@@ -1156,6 +1162,7 @@ export default function Sidebar() {
         "
       >
         <div className="relative flex items-center justify-between px-2">
+          
           {/* primary tabs */}
           <ul className="flex flex-1 justify-evenly mr-2">
             {mobilePrimaryItems.map(({ href, label, Icon }) => {
@@ -1184,6 +1191,7 @@ export default function Sidebar() {
 
           {/* burger */}
           <div className="relative flex items-center">
+            
             <button
               onClick={() => setMobileMenuOpen((v) => !v)}
               className="
@@ -1204,6 +1212,18 @@ export default function Sidebar() {
                   shadow-lg shadow-black/10 overflow-hidden
                 "
               >
+                 <Link
+      href="/"
+      onClick={() => setMobileMenuOpen(false)}
+      className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-zinc-800"
+    >
+      <div className="grid h-9 w-9 place-items-center rounded-full bg-rose-500 text-white font-bold text-xs leading-none">
+        GZ
+      </div>
+      <span className="text-sm font-semibold text-gray-800 dark:text-zinc-100">
+        Godzilla
+      </span>
+    </Link>
                 {/* user + theme + secondary links etc. – unchanged, just using mobileSecondaryItems */}
                 {typedUser && (
                   <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-zinc-800">

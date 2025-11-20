@@ -179,6 +179,7 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+
   const { theme } = useGetTheme();
 
   // Firebase Config
@@ -224,6 +225,7 @@ export default function LoginForm() {
 
   // Email/Password Login
   // Email/Password Login
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -231,12 +233,18 @@ export default function LoginForm() {
     try {
       const res = await LoginService({ email, password });
       if ("error" in res) {
-        toast.error(res.error as string);
+
+        console.log("error :", res);
+        toast.error("res.error as string");
+
+
       } else {
         console.log("Login success:", res);
         toast.success("Login Successfully!");
         setTimeout(() => {
-          router.push("/community");
+
+          router.push('/community');
+
         }, 1500);
       }
     } catch (err) {
@@ -368,7 +376,8 @@ export default function LoginForm() {
                 className="absolute inset-y-0 right-3 flex items-center text-gray-400 text-base sm:text-lg select-none cursor-pointer"
                 onClick={() => setShowPw(!showPw)}
               >
-                {showPw ? "Hide" : "View"}
+                {showPw ? "Hide" : "Show"}
+
               </span>
             </div>
           </div>
