@@ -33,7 +33,6 @@ html[data-theme="dark"] .bg-\[\#F7F8FF\] {
   transform: translateY(0);
 }
 
-
 /* === Dark tokens (activate via <html data-theme="dark">) === */
 html[data-theme="dark"] {
   --background: #0a0a0a;
@@ -46,7 +45,6 @@ html[data-theme="dark"] {
   /* tell browsers we’re dark (affects form controls, etc.) */
   color-scheme: dark;
 }
-
 
 html {
   scroll-behavior: smooth;
