@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import axios from "axios";
 import {
   Heart,
@@ -10,7 +10,6 @@ import {
   Calendar,
   Clock,
   Target,
-  User,
   Activity,
   Sparkles,
   Download,
@@ -22,18 +21,31 @@ import {
 } from "lucide-react";
 import Sidebar from "../components/shared/sidebar";
 import useGetTheme from "../Hooks/useGetTheme";
+import { User } from "../types/admin";
 
 // WorkoutGenerator Component
 const WorkoutGenerator = () => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const [user, setUser] = useState<User | null>(null);
+  
   const [formData, setFormData] = useState({
-    user_id: user?.data?.user_id,
+    user_id: "",
     main_goal: "",
     workout_level: "",
     days_per_week: "",
     time_per_workout: "",
     equipment: "",
   });
+
+
+    useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    setUser(storedUser);
+
+    setFormData((prev) => ({
+      ...prev,
+      user_id: storedUser?.data?.user_id || "",
+    }));
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [workoutData, setWorkoutData] = useState(null);
@@ -175,7 +187,7 @@ const WorkoutGenerator = () => {
 
   const resetForm = () => {
     setFormData({
-      user_id: user?.data?.user_id,
+      user_id: user?.data?.user_id || "",
       main_goal: "",
       workout_level: "",
       days_per_week: "",
