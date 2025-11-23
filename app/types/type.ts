@@ -37,10 +37,11 @@ export interface Post {
   users: User;
   watch: "public" | "friends";
   comment_new: {
+    id?: string;
     comment: string;
     user_id: string;
     created_at: string;
-    usersData: {
+    usersData?: {
       avatar_url: string;
       bio: boolean;
       created_at: string;
@@ -59,6 +60,11 @@ export interface Post {
       timestamp: string;
       updated_at: string;
       user_type: string;
+    };
+    user?: {
+      avatar_url: string;
+      first_name: string;
+      second_name: string;
     };
   }[];
 }

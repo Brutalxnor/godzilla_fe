@@ -1,4 +1,4 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
+
 // // app/community/page.tsx
 // "use client";
 
@@ -1034,7 +1034,7 @@
 //   );
 // }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // app/community/page.tsx
 "use client";
 
@@ -1884,9 +1884,9 @@ export default function CommunityPage() {
                                   <div className="overflow-y-auto flex-1 p-4 space-y-4">
                                     {post.comment_new &&
                                     post.comment_new.length > 0 ? (
-                                      post.comment_new.map((comment: any) => (
+                                      post.comment_new.map((comment, index) => (
                                         <div
-                                          key={comment.id}
+                                          key={comment.id || index}
                                           className="flex gap-3"
                                         >
                                           <img
