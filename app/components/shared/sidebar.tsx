@@ -873,6 +873,7 @@ import useGetTheme from "@/app/Hooks/useGetTheme";
 import useGetUser from "@/app/Hooks/useGetUser";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import { useState, useEffect } from "react";
+import { DumbbellIcon } from "lucide-react";
 
 type Item = { href: string; label: string; Icon: IconType };
 
@@ -883,6 +884,7 @@ const items: Item[] = [
   { href: "/trainers", label: "Trainers", Icon: MdOutlineFitnessCenter },
   { href: "/programs", label: "Programs", Icon: AiOutlineTrophy },
   { href: "/chat", label: "Chat", Icon: FiMessageSquare },
+  { href: "/workout", label: "Workout", Icon: DumbbellIcon },
 ];
 
 const stripLocale = (p?: string) => {
@@ -961,9 +963,13 @@ export default function Sidebar() {
     setMobileMenuOpen(false);
   }, [pathname]);
 
-
-  const mobilePrimaryHrefs = [ "/community", "/programs" , "/chat"]; // Home, Community, Programs, Chat
-
+  const mobilePrimaryHrefs = [
+    "/",
+    "/community",
+    "/programs",
+    "/chat",
+    "/workout",
+  ]; // Home, Community, Programs, Chat
 
   // 👇 use sidebarItems instead of items so /trainers is also hidden on mobile
   const mobilePrimaryItems = sidebarItems.filter((i) =>

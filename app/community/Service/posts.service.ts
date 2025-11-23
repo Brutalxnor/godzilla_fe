@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 const BASE_URL = "https://godzilla-be.vercel.app/api/v1"; // adjust if needed
 
@@ -76,6 +77,79 @@ export const UpdatePost = async (postId: string, postData: CreatePostType) => {
     return result;
   } catch (error) {
     console.error("Error updating post:", error);
+    throw error;
+  }
+};
+
+interface CreateCommentType {
+  post_id: string;
+  text: string;
+  parent_comment_id?: string | null;
+}
+
+export async function createComment(commentData: CreateCommentType) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const res = await axios.post(`${BASE_URL}/comments`, commentData, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user?.data?.access_token}`,
+    },
+  });
+
+  return res.data as {
+    success: boolean;
+    message: string;
+    data: any;
+  };
+}
+
+export async function toggleCommentLike(commentId: string) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const res = await axios.post(
+    `${BASE_URL}/comments/${commentId}/toggle-like`,
+    {},
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.data?.access_token}`,
+      },
+    }
+  );
+
+  return res.data as {
+    success: boolean;
+    message: string;
+    liked: boolean;
+    likesCount: number;
+    liked_by: string[];
+  };
+}
+
+export const getCommentLikers = async (commentId: string) => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  try {
+    const response = await fetch(
+      `https://godzilla-be.vercel.app/api/v1/comments/${commentId}/likers`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.data?.access_token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch comment likers");
+    }
+
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching comment likers:", error);
     throw error;
   }
 };
