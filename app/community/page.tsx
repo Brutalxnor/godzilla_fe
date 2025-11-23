@@ -1129,6 +1129,10 @@ export default function CommunityPage() {
     console.log("CreatePost payload:", data);
   }
 
+
+  console.log("Posts:", Posts);
+  
+
   const { userDB } = useGetUser();
   const { openPostId, addComment, handleTriggerOpenCommentModal } =
     useComments();
@@ -1449,9 +1453,9 @@ export default function CommunityPage() {
       toast.error("Failed to add comment");
     }
   };
-  const handleCommentLike = async (commentId: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleCommentLike = async (commentId: string, e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
 
     try {
       const result = await toggleCommentLike(commentId);
@@ -1949,12 +1953,12 @@ export default function CommunityPage() {
                                   {/* Comments List */}
                                   <div className="overflow-y-auto flex-1 p-4 space-y-4">
 
-                                    {post.comment_new &&
-                                    post.comment_new.length > 0 ? (
-                                      post.comment_new.map((comment, index) => (
+                                    {post.comments &&
+                                    post.comments.length > 0 ? (
+                                      post.comments.map((comment, index) => (
                                         <div
                                           key={comment.id || index}
-                                          className="flex gap-3"
+                                          className="flex flex-col gap-3"
 
                                         >
                                           {/* Main Comment */}
@@ -1984,8 +1988,8 @@ export default function CommunityPage() {
                                                   className="flex items-center gap-1 text-xs transition hover:text-rose-500"
                                                   onClick={(e) =>
                                                     handleCommentLike(
-                                                      comment.id,
-                                                      e
+                                                      comment?.id,
+                                                      
                                                     )
                                                   }
                                                 >
@@ -2094,10 +2098,10 @@ export default function CommunityPage() {
                                             comment.replies.length > 0 && (
                                               <div className="ml-12 space-y-3">
                                                 {comment.replies.map(
-                                                  (reply: any) => (
+                                                  (reply) => (
                                                     <div
                                                       key={reply.id}
-                                                      className="flex gap-3"
+                                                      className="flex  gap-3"
                                                     >
                                                       <img
                                                         src={
