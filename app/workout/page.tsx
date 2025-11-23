@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 import React, { useState, Suspense } from "react";
 import axios from "axios";
@@ -36,7 +36,7 @@ const WorkoutGenerator = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [workoutData, setWorkoutData] = useState<any>(null);
+  const [workoutData, setWorkoutData] = useState(null);
   const [error, setError] = useState("");
 
   // Options for select boxes
@@ -164,10 +164,10 @@ const WorkoutGenerator = () => {
       } else {
         setError(response.data.error || "Failed to generate workout plan");
       }
-    } catch (err: any) {
-      setError(
-        err.response?.data?.error || "Something went wrong. Please try again."
-      );
+    } catch (err) {
+      // setError(
+      //   err.response?.data?.error || "Something went wrong. Please try again."
+      // );
     } finally {
       setLoading(false);
     }
@@ -265,7 +265,7 @@ const WorkoutGenerator = () => {
     if (!ragProgram) return [];
 
     const lines = ragProgram.split("\n");
-    const exercises: any[] = [];
+    const exercises: exercises[] = [];
     let currentDay = "";
 
     lines.forEach((line, index) => {
@@ -614,6 +614,30 @@ const WorkoutGenerator = () => {
   );
 };
 
+interface exercises {
+  type: string;
+  content: string;
+  key: string;
+}
+
+interface WorkoutDisplayProps {
+  workoutData: {
+    rag_program: string;
+    program: string;
+  };
+  onBack: () => void;
+  formData: {
+    main_goal: string;
+    workout_level: string;
+    days_per_week: string;
+    time_per_workout: string;
+    equipment: string;
+  };
+  formatProgramText: (text: string) => React.ReactNode;
+  formatExercises: (ragProgram: string) => exercises[];
+  theme: string;
+}
+
 // Enhanced Workout Display Component
 const WorkoutDisplay = ({
   workoutData,
@@ -622,8 +646,8 @@ const WorkoutDisplay = ({
   formatProgramText,
   formatExercises,
   theme,
-}: any) => {
-  const exercises = formatExercises(workoutData.rag_program);
+}: WorkoutDisplayProps) => {
+  const exercises: exercises[] = formatExercises(workoutData.rag_program);
 
   return (
     <div className="space-y-6">
@@ -709,9 +733,9 @@ const WorkoutDisplay = ({
               </h3>
             </div>
             <div className="space-y-3 max-h-80 overflow-y-auto">
-              {exercises.map((item) => (
+              {exercises.map((item, index) => (
                 <div
-                  key={item.key}
+                  key={index}
                   className={`p-3 rounded-xl border-l-4 ${
                     item.type === "day"
                       ? theme === "dark"
