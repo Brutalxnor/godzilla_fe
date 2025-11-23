@@ -40,7 +40,7 @@ export const UpdateUser = async (
 ) => {
   try {
     const res = await axios.put(
-      `http://localhost:4000/api/v1/auth/updateuser/${id}`,
+      `https://godzilla-be.vercel.app/api/v1/auth/updateuser/${id}`,
       data,
       {
         headers: {

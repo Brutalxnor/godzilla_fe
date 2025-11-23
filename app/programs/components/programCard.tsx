@@ -452,11 +452,17 @@
 
 "use client";
 
+import useGetUser from "@/app/Hooks/useGetUser";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FiStar, FiClock } from "react-icons/fi";
 import { LuDumbbell } from "react-icons/lu";
+import { toast } from "react-toastify";
+
+
+
 
 export type Program = {
   id: string;
@@ -499,6 +505,9 @@ export type Program = {
   };
 };
 
+
+
+
 export default function ProgramCard({
   program,
   onPreview,
@@ -510,13 +519,16 @@ export default function ProgramCard({
   onSubscribe?: (p: Program) => void;
   isSubscribed?: boolean;
 }) {
+
+  console.log(program, "PROGRAM");
+
   const { safeRating, safeRatingsCount, safeWeeks, safeLevel, safeCover } =
     useMemo(() => {
       const r = Number(program.rating);
       const w = Number(program.durationWeeks);
 
       return {
-        safeRating: Number.isFinite(r) ? r : 4.9,
+        safeRating: Number.isFinite(r) ? r : 2,
         safeRatingsCount:
           typeof program.ratingsCount === "number" ? program.ratingsCount : 0,
         safeWeeks: Number.isFinite(w) ? w : 12,
@@ -530,6 +542,39 @@ export default function ProgramCard({
       program.level,
       program.cover,
     ]);
+
+
+      
+const [rating, setRating] = useState<number | null>(null);
+
+useEffect(() => {
+  const fetchRating = async () => {
+    try {
+      const res = await axios.get(
+        `https://godzilla-be.vercel.app/api/v1/reviews/${program.id}`
+      );
+
+        console.log(res.data?.data?.[0]?.rating, "DATATATA");
+
+      const ratingValue =
+        res.data?.data?.[0]?.rating && !isNaN(res.data?.data?.[0]?.rating)
+          ? Number(res.data?.data?.[0]?.rating)
+          : 0;
+
+      setRating(ratingValue);
+    } catch (err) {
+      console.error("Failed to load rating", err);
+      setRating(0);
+    }
+  };
+
+  
+  fetchRating();
+}, [program.id]);
+
+const {userDB} = useGetUser();
+
+
 
   const hasSubscribe = Boolean(onSubscribe);
   const router = useRouter();
@@ -572,6 +617,64 @@ export default function ProgramCard({
       {/* Body */}
       <div className="p-4 lg:p-5">
         <h3 className="text-lg font-semibold">{program.title}</h3>
+
+            <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <svg
+          key={star}
+//           onClick={async () => {
+//   await axios.post(
+//     `https://godzilla-be.vercel.app/api/v1/reviews/${program.id}`,
+//     {
+//       rating: Number(star),
+//     },
+//     {
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${userDB?.data?.access_token}`,    
+//       },
+//     }
+//   );
+// }}
+
+          onClick={async () => {
+            const oldRating = rating;
+            setRating(star);
+
+            try {
+              await axios.post(
+                `https://godzilla-be.vercel.app/api/v1/reviews/${program.id}`,
+                { rating: Number(star) },
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${userDB?.data?.access_token}`,
+                  },
+                }
+              );
+              toast.success("Review added successfully");
+            } catch (err) {
+              console.error("Failed to send review:", err);
+              setRating(oldRating); // نرجع القيمة القديمة لو حصل Error
+              toast.error("Failed to send review");
+            }
+          }}
+          xmlns="http://www.w3.org/2000/svg"
+          fill={star <= (rating ?? 0) ? "#facc15" : "none"}
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="#facc15"
+          className="w-6 h-6 cursor-pointer hover:scale-110 transition"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442a.563.563 0 01.317.98l-4.204 3.602a.563.563 0 00-.182.557l1.29 5.385a.563.563 0 01-.84.61l-4.726-2.845a.563.563 0 00-.586 0L6.49 20.53a.563.563 0 01-.84-.61l1.29-5.385a.563.563 0 00-.182-.557L2.553 10.38a.563.563 0 01.317-.98l5.518-.442a.563.563 0 00.475-.345L10.99 3.5z"
+          />
+        </svg>
+      ))}
+    </div>
+        
 
         <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
           <LuDumbbell className="text-gray-500" />
