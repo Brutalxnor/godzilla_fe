@@ -873,7 +873,7 @@ import useGetTheme from "@/app/Hooks/useGetTheme";
 import useGetUser from "@/app/Hooks/useGetUser";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import { useState, useEffect } from "react";
-import { DumbbellIcon } from "lucide-react";
+import { Beef, DumbbellIcon } from "lucide-react";
 
 type Item = { href: string; label: string; Icon: IconType };
 
@@ -885,6 +885,7 @@ const items: Item[] = [
   { href: "/programs", label: "Programs", Icon: AiOutlineTrophy },
   { href: "/chat", label: "Chat", Icon: FiMessageSquare },
   { href: "/workout", label: "Workout", Icon: DumbbellIcon },
+  { href: "/nutration", label: "Nutration", Icon: Beef },
 ];
 
 const stripLocale = (p?: string) => {
@@ -969,6 +970,7 @@ export default function Sidebar() {
     "/programs",
     "/chat",
     "/workout",
+    "/nutration",
   ]; // Home, Community, Programs, Chat
 
   // 👇 use sidebarItems instead of items so /trainers is also hidden on mobile
@@ -994,26 +996,24 @@ export default function Sidebar() {
       >
         <div className="flex h-full w-full flex-col px-2 py-5">
           {/* Brand */}
-         {/* Brand */}
-<Link
-  href="/"
-  className="flex items-center gap-5 px-2 py-10 cursor-pointer"
->
-  <div className="grid h-12 w-12 p-4 place-items-center rounded-full bg-rose-500 text-white font-bold text-sm leading-none">
-    GZ
-  </div>
-  <span
-    className="
+          {/* Brand */}
+          <Link
+            href="/"
+            className="flex items-center gap-5 px-2 py-10 cursor-pointer"
+          >
+            <div className="grid h-12 w-12 p-4 place-items-center rounded-full bg-rose-500 text-white font-bold text-sm leading-none">
+              GZ
+            </div>
+            <span
+              className="
       text-base font-semibold text-gray-800 dark:text-zinc-100
       opacity-0 transition-all duration-200
       group-hover:opacity-100
     "
-  >
-    Godzilla
-  </span>
-</Link>
-
-
+            >
+              Godzilla
+            </span>
+          </Link>
 
           {/* Nav items */}
           <nav className="flex flex-1 flex-col gap-1 px-2">
@@ -1162,7 +1162,6 @@ export default function Sidebar() {
         "
       >
         <div className="relative flex items-center justify-between px-2">
-          
           {/* primary tabs */}
           <ul className="flex flex-1 justify-evenly mr-2">
             {mobilePrimaryItems.map(({ href, label, Icon }) => {
@@ -1191,7 +1190,6 @@ export default function Sidebar() {
 
           {/* burger */}
           <div className="relative flex items-center">
-            
             <button
               onClick={() => setMobileMenuOpen((v) => !v)}
               className="
@@ -1212,18 +1210,18 @@ export default function Sidebar() {
                   shadow-lg shadow-black/10 overflow-hidden
                 "
               >
-                 <Link
-      href="/"
-      onClick={() => setMobileMenuOpen(false)}
-      className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-zinc-800"
-    >
-      <div className="grid h-9 w-9 place-items-center rounded-full bg-rose-500 text-white font-bold text-xs leading-none">
-        GZ
-      </div>
-      <span className="text-sm font-semibold text-gray-800 dark:text-zinc-100">
-        Godzilla
-      </span>
-    </Link>
+                <Link
+                  href="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-zinc-800"
+                >
+                  <div className="grid h-9 w-9 place-items-center rounded-full bg-rose-500 text-white font-bold text-xs leading-none">
+                    GZ
+                  </div>
+                  <span className="text-sm font-semibold text-gray-800 dark:text-zinc-100">
+                    Godzilla
+                  </span>
+                </Link>
                 {/* user + theme + secondary links etc. – unchanged, just using mobileSecondaryItems */}
                 {typedUser && (
                   <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-zinc-800">
