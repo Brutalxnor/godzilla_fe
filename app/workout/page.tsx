@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, Suspense, useEffect } from "react";
 import axios from "axios";
@@ -26,18 +25,17 @@ import { User } from "../types/admin";
 // WorkoutGenerator Component
 const WorkoutGenerator = () => {
   const [user, setUser] = useState<User | null>(null);
-  
+
   const [formData, setFormData] = useState({
     user_id: "",
     main_goal: "",
     workout_level: "",
     days_per_week: "",
     time_per_workout: "",
-    equipment: "",
+    equipment: [] as string[],
   });
 
-
-    useEffect(() => {
+  useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
     setUser(storedUser);
 
@@ -152,11 +150,24 @@ const WorkoutGenerator = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    const { name, value, type } = e.target;
+
+    if (name === "equipment" && e.target instanceof HTMLSelectElement) {
+      const select = e.target;
+      const selectedValues = Array.from(
+        select.selectedOptions,
+        (option) => option.value
+      );
+      setFormData((prev) => ({
+        ...prev,
+        [name]: selectedValues,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -192,7 +203,7 @@ const WorkoutGenerator = () => {
       workout_level: "",
       days_per_week: "",
       time_per_workout: "",
-      equipment: "",
+      equipment: [],
     });
     setWorkoutData(null);
     setError("");
@@ -535,6 +546,7 @@ const WorkoutGenerator = () => {
                   </div>
 
                   {/* Equipment */}
+                  {/* Equipment - Enhanced Multi Select */}
                   <div className="space-y-2">
                     <label
                       className={`flex items-center gap-2 text-sm font-medium ${
@@ -544,24 +556,137 @@ const WorkoutGenerator = () => {
                       <Dumbbell className="w-4 h-4" />
                       المعدات المتاحة
                     </label>
-                    <select
-                      name="equipment"
-                      value={formData.equipment}
-                      onChange={handleChange}
-                      required
-                      className={`w-full px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-rose-400 border ${
-                        theme === "dark"
-                          ? "bg-[#18181b] border-[#27272a] text-gray-100"
-                          : "bg-[#f7f7fb] border-gray-200 text-gray-900"
+
+                    {/* Custom Multi Select Dropdown */}
+                    <div className="relative">
+                      {/* Selected Items Display */}
+                      <div
+                        className={`w-full px-4 py-3 rounded-xl border cursor-pointer min-h-[52px] flex flex-wrap items-center gap-2 ${
+                          theme === "dark"
+                            ? "bg-[#18181b] border-[#27272a] text-gray-100"
+                            : "bg-[#f7f7fb] border-gray-200 text-gray-900"
+                        }`}
+                        onClick={() => {
+                          const dropdown =
+                            document.getElementById("equipment-dropdown");
+                          if (dropdown) {
+                            dropdown.classList.toggle("hidden");
+                          }
+                        }}
+                      >
+                        {formData.equipment.length === 0 ? (
+                          <span
+                            className={`text-sm ${
+                              theme === "dark"
+                                ? "text-gray-400"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            اختر المعدات المتاحة
+                          </span>
+                        ) : (
+                          formData.equipment.map((equip) => {
+                            const equipment = equipmentOptions.find(
+                              (opt) => opt.value === equip
+                            );
+                            return (
+                              <div
+                                key={equip}
+                                className="flex items-center gap-1 bg-rose-500 text-white px-3 py-1 rounded-full text-sm"
+                              >
+                                <span>{equipment?.label}</span>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      equipment: prev.equipment.filter(
+                                        (item) => item !== equip
+                                      ),
+                                    }));
+                                  }}
+                                  className="hover:bg-rose-600 rounded-full w-4 h-4 flex items-center justify-center ml-1"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+
+                      {/* Dropdown Options */}
+                      <div
+                        id="equipment-dropdown"
+                        className={`hidden absolute top-full left-0 right-0 mt-1 max-h-60 overflow-y-auto rounded-xl border z-10 ${
+                          theme === "dark"
+                            ? "bg-[#18181b] border-[#27272a]"
+                            : "bg-[#f7f7fb] border-gray-200"
+                        }`}
+                      >
+                        {equipmentOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            className={`flex items-center gap-3 px-4 py-3 cursor-pointer border-b ${
+                              theme === "dark"
+                                ? "border-[#27272a] hover:bg-[#27272a]"
+                                : "border-gray-200 hover:bg-gray-100"
+                            } ${
+                              formData.equipment.includes(option.value)
+                                ? "bg-rose-500/10"
+                                : ""
+                            }`}
+                            onClick={() => {
+                              setFormData((prev) => {
+                                const isSelected = prev.equipment.includes(
+                                  option.value
+                                );
+                                return {
+                                  ...prev,
+                                  equipment: isSelected
+                                    ? prev.equipment.filter(
+                                        (item) => item !== option.value
+                                      )
+                                    : [...prev.equipment, option.value],
+                                };
+                              });
+                            }}
+                          >
+                            <div
+                              className={`w-4 h-4 rounded border flex items-center justify-center ${
+                                formData.equipment.includes(option.value)
+                                  ? "bg-rose-500 border-rose-500"
+                                  : theme === "dark"
+                                  ? "border-gray-500"
+                                  : "border-gray-400"
+                              }`}
+                            >
+                              {formData.equipment.includes(option.value) && (
+                                <div className="w-2 h-2 bg-white rounded-sm" />
+                              )}
+                            </div>
+                            <span
+                              className={
+                                theme === "dark"
+                                  ? "text-gray-100"
+                                  : "text-gray-900"
+                              }
+                            >
+                              {option.label}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <p
+                      className={`text-xs ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      <option value="">اختر المعدات</option>
-                      {equipmentOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                      اضغط لاختيار أو إزالة المعدات
+                    </p>
                   </div>
                 </div>
 
@@ -643,7 +768,7 @@ interface WorkoutDisplayProps {
     workout_level: string;
     days_per_week: string;
     time_per_workout: string;
-    equipment: string;
+    equipment: string[]; // Change from string to string[]
   };
   formatProgramText: (text: string) => React.ReactNode;
   formatExercises: (ragProgram: string) => exercises[];
