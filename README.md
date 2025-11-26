@@ -14,7 +14,7 @@ pnpm dev
 bun dev
 ```
 
-Open [https://godzilla-be.vercel.app](https://godzilla-be.vercel.app) with your browser to see the result.
+Open [https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com](https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

@@ -23,7 +23,7 @@ export const LoginService = async (
 ): Promise<LoginResponse | { error: string }> => {
   try {
     const response = await axios.post<LoginResponse>(
-      "https://godzilla-be.vercel.app/api/v1/auth/login",
+      "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/login",
       data
     );
 

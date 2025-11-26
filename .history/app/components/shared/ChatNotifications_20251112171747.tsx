@@ -45,7 +45,7 @@ export default function ChatNotifications() {
     const fetchSubscriptions = async () => {
       try {
         const response = await axios.get(
-          `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
+          `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
         );
         console.log("Fetched subscriptions:", response.data);
         // تقدر هنا تعمل setState(response.data) مثلاً لو محتاج تحفظها
@@ -71,7 +71,7 @@ export default function ChatNotifications() {
       setError("");
 
       const res = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/auth/getusers"
+        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
       );
       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -134,7 +134,7 @@ export default function ChatNotifications() {
     const fetchConversations = async () => {
       try {
         const res = await fetch(
-          "https://godzilla-be.vercel.app/api/v1/chat/conversations",
+          "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
           {
             headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
           }

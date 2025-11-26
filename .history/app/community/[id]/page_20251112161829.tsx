@@ -16,7 +16,7 @@
 //   useEffect(() => {
 //     const fetchGetPostById = async () => {
 //       const data = await axios.get(
-//         `https://godzilla-be.vercel.app/api/v1/posts/postbyid/${id}`
+//         `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/posts/postbyid/${id}`
 //       );
 //       setPost(data.data.data);
 //     };
@@ -103,7 +103,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
   useEffect(() => {
     const fetchGetPostById = async () => {
       const data = await axios.get(
-        `https://godzilla-be.vercel.app/api/v1/posts/postbyid/${id}/${userDB?.data?.user}`
+        `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/posts/postbyid/${id}/${userDB?.data?.user}`
       );
       setPostData(data.data.data);
     };
