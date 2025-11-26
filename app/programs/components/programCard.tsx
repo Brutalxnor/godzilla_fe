@@ -79,7 +79,7 @@
 //       try {
 //         setIsLoading(true);
 //         const { data } = await axios.get(
-//           `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
+//           `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
 //         );
 
 //         // افترض إن كل subscription فيه program_id
@@ -300,7 +300,7 @@
 //   //     try {
 //   //       setIsLoading(true);
 //   //       const { data } = await axios.get(
-//   //         `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
+//   //         `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
 //   //       );
 
 //   //       const programIds =
@@ -551,7 +551,7 @@ useEffect(() => {
   const fetchRating = async () => {
     try {
       const res = await axios.get(
-        `https://godzilla-be.vercel.app/api/v1/reviews/${program.id}`
+        `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/reviews/${program.id}`
       );
 
         console.log(res.data?.data?.[0]?.rating, "DATATATA");
@@ -624,7 +624,7 @@ const {userDB} = useGetUser();
           key={star}
 //           onClick={async () => {
 //   await axios.post(
-//     `https://godzilla-be.vercel.app/api/v1/reviews/${program.id}`,
+//     `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/reviews/${program.id}`,
 //     {
 //       rating: Number(star),
 //     },
@@ -643,7 +643,7 @@ const {userDB} = useGetUser();
 
             try {
               await axios.post(
-                `https://godzilla-be.vercel.app/api/v1/reviews/${program.id}`,
+                `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/reviews/${program.id}`,
                 { rating: Number(star) },
                 {
                   headers: {

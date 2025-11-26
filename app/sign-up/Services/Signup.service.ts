@@ -5,7 +5,7 @@ export const SignUoService = async (data: SignUpFormData) => {
   try {
     const response = await axios.post(
 
-      "https://godzilla-be.vercel.app/api/v1/auth/register",
+      "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/register",
 
       data
     );

@@ -203,7 +203,7 @@ export default function LoginForm() {
       if (user) {
         // toast.success("Login Successfullysdfsdfd!");
 
-        await fetch("https://godzilla-be.vercel.app/api/v1/auth/login-with-google", {
+        await fetch("https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/login-with-google", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -53,7 +53,7 @@
 //       try {
 //         setIsLoading(true);
 //         const { data } = await axios.get(
-//           `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
+//           `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
 //         );
 
 //         setPrograms(data);
@@ -427,7 +427,7 @@ export default function Home() {
       setError("");
 
       const res = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/auth/getusers"
+        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
       );
       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -596,7 +596,7 @@ export default function Home() {
       setView("chat");
 
       const response = await fetch(
-        `https://godzilla-be.vercel.app/api/v1/chat/conversations/start/${user.id}`,
+        `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
         {
           method: "POST",
           headers: {
@@ -614,7 +614,7 @@ export default function Home() {
       localStorage.setItem("conversation_id", convId);
 
       const messagesRes = await fetch(
-        `https://godzilla-be.vercel.app/api/v1/chat/conversations/${convId}/messages`,
+        `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
         { headers: { Authorization: `Bearer ${userDB?.data.access_token}` } }
       );
       const messagesData = await messagesRes.json();
@@ -640,7 +640,7 @@ export default function Home() {
       if (!token) return toast.error("You're not logged in.");
 
       const res = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/chat/messages/send",
+        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/messages/send",
         {
           method: "POST",
           headers: {
@@ -725,7 +725,7 @@ export default function Home() {
       setView("chat");
 
       const response = await fetch(
-        `https://godzilla-be.vercel.app/api/v1/chat/conversations/start/${user.id}`,
+        `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
         {
           method: "POST",
           headers: {
@@ -743,7 +743,7 @@ export default function Home() {
       localStorage.setItem("conversation_id", convId);
 
       const messagesRes = await fetch(
-        `https://godzilla-be.vercel.app/api/v1/chat/conversations/${convId}/messages`,
+        `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
         { headers: { Authorization: `Bearer ${userDB?.data.access_token}` } }
       );
       const messagesData = await messagesRes.json();
@@ -839,7 +839,7 @@ export default function Home() {
           // ---------- ATHLETE: programs this athlete is subscribed to ----------
           // use same base URL you use in /programs page
           const response = await axios.get(
-            `https://godzilla-be.vercel.app/api/v1/subscripe/${userId}`
+            `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userId}`
           );
 
           type Row = {

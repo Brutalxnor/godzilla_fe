@@ -11,7 +11,7 @@
 // ============================= */
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as string | undefined) ??
-//   "https://godzilla-be.vercel.app/api/v1";
+//   "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1";
 
 // const CATEGORIES = ["All", "Strength", "Cardio", "Yoga", "Nutrition", "HIIT"];
 

@@ -110,7 +110,7 @@ export default function Home() {
       setError("");
 
       const res = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/auth/getusers"
+        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
       );
       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -177,7 +177,7 @@ export default function Home() {
     const fetchConversations = async () => {
       try {
         const res = await fetch(
-          "https://godzilla-be.vercel.app/api/v1/chat/conversations",
+          "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
           {
             headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
           }
@@ -265,7 +265,7 @@ export default function Home() {
           // ---------- ATHLETE: programs this athlete is subscribed to ----------
           // use same base URL you use in /programs page
           const response = await axios.get(
-            `https://godzilla-be.vercel.app/api/v1/subscripe/${userId}`
+            `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userId}`
           );
 
           type Row = {

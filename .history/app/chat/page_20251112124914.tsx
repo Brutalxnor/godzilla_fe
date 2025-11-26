@@ -47,7 +47,7 @@
 //       setError("");
 
 //       const res = await fetch(
-//         "https://godzilla-be.vercel.app/api/v1/auth/getusers"
+//         "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
 //       );
 //       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -154,7 +154,7 @@
 //       }
 
 //       const res = await fetch(
-//         "https://godzilla-be.vercel.app/api/v1/chat/messages/send",
+//         "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/messages/send",
 //         {
 //           method: "POST",
 //           headers: {
@@ -218,7 +218,7 @@
 //       setShowUserList(false); // Close user list on mobile after selection
 
 //       const response = await fetch(
-//         `https://godzilla-be.vercel.app/api/v1/chat/conversations/start/${user.id}`,
+//         `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
 //         {
 //           method: "POST",
 //           headers: {
@@ -240,7 +240,7 @@
 //       console.log("💾 Conversation ID saved:", convId);
 
 //       const messagesRes = await fetch(
-//         `https://godzilla-be.vercel.app/api/v1/chat/conversations/${convId}/messages`,
+//         `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
 //         {
 //           headers: {
 //             Authorization: `Bearer ${userDB?.data.access_token}`,
@@ -579,7 +579,7 @@
 //       setError("");
 
 //       const res = await fetch(
-//         "https://godzilla-be.vercel.app/api/v1/auth/getusers"
+//         "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
 //       );
 //       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -666,7 +666,7 @@
 //       setShowUserList(false);
 
 //       const response = await fetch(
-//         `https://godzilla-be.vercel.app/api/v1/chat/conversations/start/${user.id}`,
+//         `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
 //         {
 //           method: "POST",
 //           headers: {
@@ -684,7 +684,7 @@
 //       localStorage.setItem("conversation_id", convId);
 
 //       const messagesRes = await fetch(
-//         `https://godzilla-be.vercel.app/api/v1/chat/conversations/${convId}/messages`,
+//         `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
 //         { headers: { Authorization: `Bearer ${userDB?.data.access_token}` } }
 //       );
 //       const messagesData = await messagesRes.json();
@@ -710,7 +710,7 @@
 //       if (!token) return toast.error("You're not logged in.");
 
 //       const res = await fetch(
-//         "https://godzilla-be.vercel.app/api/v1/chat/messages/send",
+//         "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/messages/send",
 //         {
 //           method: "POST",
 //           headers: {
@@ -1155,7 +1155,7 @@ const EMOJIS = [
       setError("");
 
       const res = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/auth/getusers"
+        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
       );
       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -1238,7 +1238,7 @@ const EMOJIS = [
       setView("chat");
 
       const response = await fetch(
-        `https://godzilla-be.vercel.app/api/v1/chat/conversations/start/${user.id}`,
+        `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
         {
           method: "POST",
           headers: {
@@ -1256,7 +1256,7 @@ const EMOJIS = [
       localStorage.setItem("conversation_id", convId);
 
       const messagesRes = await fetch(
-        `https://godzilla-be.vercel.app/api/v1/chat/conversations/${convId}/messages`,
+        `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
         { headers: { Authorization: `Bearer ${userDB?.data.access_token}` } }
       );
       const messagesData = await messagesRes.json();
@@ -1282,7 +1282,7 @@ const EMOJIS = [
       if (!token) return toast.error("You're not logged in.");
 
       const res = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/chat/messages/send",
+        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/messages/send",
         {
           method: "POST",
           headers: {
