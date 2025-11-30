@@ -196,7 +196,7 @@ const NutritionGenerator = () => {
 
     try {
       const response = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/ai-service/generate-nutrationPlan",
+        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/ai-service/generate-nutrationPlan",
         {
           method: "POST",
           headers: {
@@ -806,7 +806,7 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
           className="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-medium px-4 py-3 rounded-xl flex items-center gap-2 justify-center transition"
         >
           <Sparkles className="w-4 h-4" />
-          إنشاء خطة جديدة
+          New Plan
         </button>
         <button
           className={`flex-1 border font-medium px-4 py-3 rounded-xl flex items-center gap-2 justify-center transition ${
@@ -816,7 +816,7 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
           }`}
         >
           <Download className="w-4 h-4" />
-          حفظ الخطة
+          Save Plan
         </button>
         <button
           className={`flex-1 border font-medium px-4 py-3 rounded-xl flex items-center gap-2 justify-center transition ${
@@ -826,7 +826,7 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
           }`}
         >
           <Share2 className="w-4 h-4" />
-          مشاركة
+          Share
         </button>
       </div>
     </div>
