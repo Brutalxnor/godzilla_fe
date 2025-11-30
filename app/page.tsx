@@ -1049,7 +1049,6 @@ export default function GodzillaLandingPage(): JSX.Element {
   // ⭐ handle Community click
   const handleCommunityClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-
     if (isLoggedIn) {
       router.push("/community");
     } else {
