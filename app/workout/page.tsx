@@ -51,100 +51,100 @@ const WorkoutGenerator = () => {
 
   // Options for select boxes
   const goalOptions = [
-    { value: "Build Muscle", label: "بناء العضلات" },
-    { value: "General Fitness", label: "تحسين اللياقة العامة" },
-    { value: "Increase Endurance", label: "زيادة التحمل" },
-    { value: "Increase Strength", label: "زيادة القوة" },
-    { value: "Lose Fat", label: "فقدان الدهون" },
-    { value: "Sports Performance", label: "الأداء الرياضي" },
+    { value: "Build Muscle", label: "Build Muscle" },
+    { value: "General Fitness", label: "General Fitness" },
+    { value: "Increase Endurance", label: "Increase Endurance" },
+    { value: "Increase Strength", label: "Increase Strength" },
+    { value: "Lose Fat", label: "Lose Fat" },
+    { value: "Sports Performance", label: "Sports Performance" },
   ];
 
   const levelOptions = [
-    { value: "Beginner", label: "مبتدئ" },
-    { value: "Intermediate", label: "متوسط" },
-    { value: "Advanced", label: "متقدم" },
+    { value: "Beginner", label: "Beginner" },
+    { value: "Intermediate", label: "Intermediate" },
+    { value: "Advanced", label: "Advanced" },
   ];
 
   const daysOptions = [
-    { value: "1", label: "يوم واحد" },
-    { value: "2", label: "يومين" },
-    { value: "3", label: "ثلاثة أيام" },
-    { value: "4", label: "أربعة أيام" },
-    { value: "5", label: "خمسة أيام" },
-    { value: "6", label: "ستة أيام" },
-    { value: "7", label: "سبعة أيام" },
+    { value: "1", label: "1 Day" },
+    { value: "2", label: "2 Days" },
+    { value: "3", label: "3 Days" },
+    { value: "4", label: "4 Days" },
+    { value: "5", label: "5 Days" },
+    { value: "6", label: "6 Days" },
+    { value: "7", label: "7 Days" },
   ];
 
   const timeOptions = [
-    { label: "1 - 5 دقائق", value: "1-5 minutes" },
-    { label: "10 دقائق", value: "10 minutes" },
-    { label: "10 - 15 دقيقة", value: "10-15 minutes" },
-    { label: "10 - 20 دقيقة", value: "10-20 minutes" },
-    { label: "120 دقيقة", value: "120 minutes" },
-    { label: "120 - 150 دقيقة", value: "120-150 minutes" },
-    { label: "15 دقيقة", value: "15 minutes" },
-    { label: "15 - 20 دقيقة", value: "15-20 minutes" },
-    { label: "15 - 30 دقيقة", value: "15-30 minutes" },
-    { label: "15 - 45 دقيقة", value: "15-45 minutes" },
-    { label: "15 - 60 دقيقة", value: "15-60 minutes" },
-    { label: "15 - 75 دقيقة", value: "15-75 minutes" },
-    { label: "20 دقيقة", value: "20 minutes" },
-    { label: "20 - 25 دقيقة", value: "20-25 minutes" },
-    { label: "20 - 30 دقيقة", value: "20-30 minutes" },
-    { label: "20 - 35 دقيقة", value: "20-35 minutes" },
-    { label: "20 - 40 دقيقة", value: "20-40 minutes" },
-    { label: "20 - 45 دقيقة", value: "20-45 minutes" },
-    { label: "20 - 60 دقيقة", value: "20-60 minutes" },
-    { label: "25 - 30 دقيقة", value: "25-30 minutes" },
-    { label: "25 - 35 دقيقة", value: "25-35 minutes" },
-    { label: "25 - 45 دقيقة", value: "25-45 minutes" },
-    { label: "30 دقيقة", value: "30 minutes" },
-    { label: "30 - 40 دقيقة", value: "30-40 minutes" },
-    { label: "30 - 45 دقيقة", value: "30-45 minutes" },
-    { label: "30 - 60 دقيقة", value: "30-60 minutes" },
-    { label: "30 - 75 دقيقة", value: "30-75 minutes" },
-    { label: "30 - 90 دقيقة", value: "30-90 minutes" },
-    { label: "35 - 40 دقيقة", value: "35-40 minutes" },
-    { label: "35 - 45 دقيقة", value: "35-45 minutes" },
-    { label: "40 دقيقة", value: "40 minutes" },
-    { label: "40 - 60 دقيقة", value: "40-60 minutes" },
-    { label: "45 دقيقة", value: "45 minutes" },
-    { label: "45 - 120 دقيقة", value: "45-120 minutes" },
-    { label: "45 - 60 دقيقة", value: "45-60 minutes" },
-    { label: "45 - 70 دقيقة", value: "45-70 minutes" },
-    { label: "45 - 75 دقيقة", value: "45-75 minutes" },
-    { label: "45 - 90 دقيقة", value: "45-90 minutes" },
-    { label: "5 - 15 دقيقة", value: "5-15 minutes" },
-    { label: "50 دقيقة", value: "50 minutes" },
-    { label: "50 - 60 دقيقة", value: "50-60 minutes" },
-    { label: "50 - 70 دقيقة", value: "50-70 minutes" },
-    { label: "50 - 75 دقيقة", value: "50-75 minutes" },
-    { label: "55 دقيقة", value: "55 minutes" },
-    { label: "60 دقيقة", value: "60 minutes" },
-    { label: "60 - 75 دقيقة", value: "60-75 minutes" },
-    { label: "60 - 90 دقيقة", value: "60-90 minutes" },
-    { label: "65 دقيقة", value: "65 minutes" },
-    { label: "75 دقيقة", value: "75 minutes" },
-    { label: "75 - 90 دقيقة", value: "75-90 minutes" },
-    { label: "8 دقائق", value: "8 minutes" },
-    { label: "90 دقيقة", value: "90 minutes" },
-    { label: "90 - 120 دقيقة", value: "90-120 minutes" },
+    { label: "1 - 5 minutes", value: "1-5 minutes" },
+    { label: "10 minutes", value: "10 minutes" },
+    { label: "10 - 15 minutes", value: "10-15 minutes" },
+    { label: "10 - 20 minutes", value: "10-20 minutes" },
+    { label: "120 minutes", value: "120 minutes" },
+    { label: "120 - 150 minutes", value: "120-150 minutes" },
+    { label: "15 minutes", value: "15 minutes" },
+    { label: "15 - 20 minutes", value: "15-20 minutes" },
+    { label: "15 - 30 minutes", value: "15-30 minutes" },
+    { label: "15 - 45 minutes", value: "15-45 minutes" },
+    { label: "15 - 60 minutes", value: "15-60 minutes" },
+    { label: "15 - 75 minutes", value: "15-75 minutes" },
+    { label: "20 minutes", value: "20 minutes" },
+    { label: "20 - 25 minutes", value: "20-25 minutes" },
+    { label: "20 - 30 minutes", value: "20-30 minutes" },
+    { label: "20 - 35 minutes", value: "20-35 minutes" },
+    { label: "20 - 40 minutes", value: "20-40 minutes" },
+    { label: "20 - 45 minutes", value: "20-45 minutes" },
+    { label: "20 - 60 minutes", value: "20-60 minutes" },
+    { label: "25 - 30 minutes", value: "25-30 minutes" },
+    { label: "25 - 35 minutes", value: "25-35 minutes" },
+    { label: "25 - 45 minutes", value: "25-45 minutes" },
+    { label: "30 minutes", value: "30 minutes" },
+    { label: "30 - 40 minutes", value: "30-40 minutes" },
+    { label: "30 - 45 minutes", value: "30-45 minutes" },
+    { label: "30 - 60 minutes", value: "30-60 minutes" },
+    { label: "30 - 75 minutes", value: "30-75 minutes" },
+    { label: "30 - 90 minutes", value: "30-90 minutes" },
+    { label: "35 - 40 minutes", value: "35-40 minutes" },
+    { label: "35 - 45 minutes", value: "35-45 minutes" },
+    { label: "40 minutes", value: "40 minutes" },
+    { label: "40 - 60 minutes", value: "40-60 minutes" },
+    { label: "45 minutes", value: "45 minutes" },
+    { label: "45 - 120 minutes", value: "45-120 minutes" },
+    { label: "45 - 60 minutes", value: "45-60 minutes" },
+    { label: "45 - 70 minutes", value: "45-70 minutes" },
+    { label: "45 - 75 minutes", value: "45-75 minutes" },
+    { label: "45 - 90 minutes", value: "45-90 minutes" },
+    { label: "5 - 15 minutes", value: "5-15 minutes" },
+    { label: "50 minutes", value: "50 minutes" },
+    { label: "50 - 60 minutes", value: "50-60 minutes" },
+    { label: "50 - 70 minutes", value: "50-70 minutes" },
+    { label: "50 - 75 minutes", value: "50-75 minutes" },
+    { label: "55 minutes", value: "55 minutes" },
+    { label: "60 minutes", value: "60 minutes" },
+    { label: "60 - 75 minutes", value: "60-75 minutes" },
+    { label: "60 - 90 minutes", value: "60-90 minutes" },
+    { label: "65 minutes", value: "65 minutes" },
+    { label: "75 minutes", value: "75 minutes" },
+    { label: "75 - 90 minutes", value: "75-90 minutes" },
+    { label: "8 minutes", value: "8 minutes" },
+    { label: "90 minutes", value: "90 minutes" },
+    { label: "90 - 120 minutes", value: "90-120 minutes" },
   ];
 
   const equipmentOptions = [
-    { value: "Bands", label: "أشرطة المقاومة" },
-    { value: "Barbell", label: "باربل" },
-    { value: "Bodyweight", label: "وزن الجسم" },
-    { value: "Cables", label: "كابلات" },
-    { value: "Dumbbells", label: "دامبل" },
-    { value: "EZ Bar", label: "EZ بار" },
-    { value: "Exercise Ball", label: "كرة التمرين" },
-    { value: "Foam Roll", label: "فوم رول" },
-    { value: "Kettle Bells", label: "كتل بيلز" },
-    { value: "Machines", label: "آلات" },
-    { value: "Medicine Ball", label: "كرة طبية" },
-    { value: "None", label: "بدون معدات" },
-    { value: "Other", label: "أخرى" },
+    { value: "Bands", label: "Bands" },
+    { value: "Barbell", label: "Barbell" },
+    { value: "Bodyweight", label: "Bodyweight" },
+    { value: "Cables", label: "Cables" },
+    { value: "Dumbbells", label: "Dumbbells" },
+    { value: "EZ Bar", label: "EZ Bar" },
+    { value: "Exercise Ball", label: "Exercise Ball" },
+    { value: "Foam Roll", label: "Foam Roll" },
+    { value: "Kettle Bells", label: "Kettle Bells" },
+    { value: "Machines", label: "Machines" },
+    { value: "Medicine Ball", label: "Medicine Ball" },
+    { value: "None", label: "None" },
+    { value: "Other", label: "Other" },
   ];
 
   const handleChange = (
@@ -358,14 +358,14 @@ const WorkoutGenerator = () => {
               theme === "dark" ? "text-white" : "text-gray-900"
             } mb-2`}
           >
-            توليد برنامج التمرين
+            Generate Workout Plan
           </h1>
           <p
             className={`text-sm ${
               theme === "dark" ? "text-gray-400" : "text-gray-500"
             }`}
           >
-            احصل على برنامج تمرين مخصص باستخدام الذكاء الاصطناعي
+            Get a personalized workout plan using AI
           </p>
         </div>
 
@@ -381,7 +381,7 @@ const WorkoutGenerator = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Dumbbell className="w-6 h-6" />
-                <h1 className="text-xl font-bold">برنامج التمرين الذكي</h1>
+                <h1 className="text-xl font-bold">Smart Workout Plan</h1>
               </div>
               {workoutData && (
                 <button
@@ -433,7 +433,7 @@ const WorkoutGenerator = () => {
                       }`}
                     >
                       <Target className="w-4 h-4" />
-                      الهدف الرئيسي
+                      Main Goal
                     </label>
                     <select
                       name="main_goal"
@@ -446,7 +446,7 @@ const WorkoutGenerator = () => {
                           : "bg-[#f7f7fb] border-gray-200 text-gray-900"
                       }`}
                     >
-                      <option value="">اختر الهدف</option>
+                      <option value="">Select Goal</option>
                       {goalOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -463,7 +463,7 @@ const WorkoutGenerator = () => {
                       }`}
                     >
                       <Activity className="w-4 h-4" />
-                      المستوى
+                      Level
                     </label>
                     <select
                       name="workout_level"
@@ -476,7 +476,7 @@ const WorkoutGenerator = () => {
                           : "bg-[#f7f7fb] border-gray-200 text-gray-900"
                       }`}
                     >
-                      <option value="">اختر المستوى</option>
+                      <option value="">Select Level</option>
                       {levelOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -493,7 +493,7 @@ const WorkoutGenerator = () => {
                       }`}
                     >
                       <Calendar className="w-4 h-4" />
-                      الأيام في الأسبوع
+                      Days per Week
                     </label>
                     <select
                       name="days_per_week"
@@ -506,7 +506,7 @@ const WorkoutGenerator = () => {
                           : "bg-[#f7f7fb] border-gray-200 text-gray-900"
                       }`}
                     >
-                      <option value="">اختر عدد الأيام</option>
+                      <option value="">Select Days</option>
                       {daysOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -523,7 +523,7 @@ const WorkoutGenerator = () => {
                       }`}
                     >
                       <Clock className="w-4 h-4" />
-                      مدة التمرين
+                      Workout Duration
                     </label>
                     <select
                       name="time_per_workout"
@@ -536,7 +536,7 @@ const WorkoutGenerator = () => {
                           : "bg-[#f7f7fb] border-gray-200 text-gray-900"
                       }`}
                     >
-                      <option value="">اختر المدة</option>
+                      <option value="">Select Duration</option>
                       {timeOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -554,7 +554,7 @@ const WorkoutGenerator = () => {
                       }`}
                     >
                       <Dumbbell className="w-4 h-4" />
-                      المعدات المتاحة
+                      Available Equipment
                     </label>
 
                     {/* Custom Multi Select Dropdown */}
@@ -582,7 +582,7 @@ const WorkoutGenerator = () => {
                                 : "text-gray-500"
                             }`}
                           >
-                            اختر المعدات المتاحة
+                            Select Equipment
                           </span>
                         ) : (
                           formData.equipment.map((equip) => {
@@ -685,7 +685,7 @@ const WorkoutGenerator = () => {
                         theme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      اضغط لاختيار أو إزالة المعدات
+                      Click to select or remove equipment
                     </p>
                   </div>
                 </div>
@@ -700,12 +700,12 @@ const WorkoutGenerator = () => {
                     {loading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        جاري التوليد...
+                        Generating...
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4" />
-                        توليد البرنامج
+                        Generate Program
                       </>
                     )}
                   </button>
@@ -718,7 +718,7 @@ const WorkoutGenerator = () => {
                         : "border-gray-300 text-gray-700 hover:bg-gray-50"
                     }`}
                   >
-                    إعادة تعيين
+                    Reset
                   </button>
                 </div>
               </form>
@@ -798,19 +798,19 @@ const WorkoutDisplay = ({
       >
         <div className="flex items-center justify-center gap-2 mb-2">
           <Trophy className="w-5 h-5" />
-          <span className="font-semibold">تم إنشاء برنامجك بنجاح!</span>
+          <span className="font-semibold">Program Generated Successfully!</span>
         </div>
-        <p className="text-sm">برنامج تمرين مخصص جاهز للاستخدام</p>
+        <p className="text-sm">Your personalized workout program is ready</p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
-          { icon: Target, label: "الهدف", value: formData.main_goal },
-          { icon: Activity, label: "المستوى", value: formData.workout_level },
-          { icon: Calendar, label: "الأيام", value: formData.days_per_week },
-          { icon: Clock, label: "المدة", value: formData.time_per_workout },
-          { icon: Dumbbell, label: "المعدات", value: formData.equipment },
+          { icon: Target, label: "Goal", value: formData.main_goal },
+          { icon: Activity, label: "Level", value: formData.workout_level },
+          { icon: Calendar, label: "Days", value: formData.days_per_week },
+          { icon: Clock, label: "Duration", value: formData.time_per_workout },
+          { icon: Dumbbell, label: "Equipment", value: formData.equipment },
         ].map((item, index) => (
           <div
             key={index}
@@ -846,7 +846,7 @@ const WorkoutDisplay = ({
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-rose-500" />
             <h3 className="text-lg font-bold text-foreground">
-              البرنامج التفصيلي
+              Detailed Program
             </h3>
           </div>
           <div className="space-y-3 text-foreground leading-relaxed">
@@ -866,7 +866,7 @@ const WorkoutDisplay = ({
             <div className="flex items-center gap-2 mb-4">
               <Zap className="w-5 h-5 text-rose-500" />
               <h3 className="text-lg font-bold text-foreground">
-                تمارين البرنامج
+                Program Exercises
               </h3>
             </div>
             <div className="space-y-3 max-h-80 overflow-y-auto">
@@ -918,7 +918,7 @@ const WorkoutDisplay = ({
               className="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-medium px-4 py-3 rounded-xl flex items-center gap-2 justify-center transition"
             >
               <Sparkles className="w-4 h-4" />
-              إنشاء برنامج جديد
+              Generate New Program
             </button>
             <button
               className={`flex-1 border font-medium px-4 py-3 rounded-xl flex items-center gap-2 justify-center transition ${
@@ -928,7 +928,7 @@ const WorkoutDisplay = ({
               }`}
             >
               <Download className="w-4 h-4" />
-              حفظ البرنامج
+              Save Program
             </button>
             <button
               className={`flex-1 border font-medium px-4 py-3 rounded-xl flex items-center gap-2 justify-center transition ${
@@ -938,7 +938,7 @@ const WorkoutDisplay = ({
               }`}
             >
               <Share2 className="w-4 h-4" />
-              مشاركة
+              Share
             </button>
           </div>
         </div>

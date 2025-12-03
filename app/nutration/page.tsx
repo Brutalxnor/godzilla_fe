@@ -161,22 +161,22 @@ const NutritionGenerator = () => {
 
   // Options for select boxes
   const genderOptions: Option[] = [
-    { value: "ذكر", label: "ذكر" },
-    { value: "أنثى", label: "أنثى" },
+    { value: "male", label: "Male" },
+    { value: "female", label: "Female" },
   ];
 
   const activityLevelOptions: Option[] = [
-    { value: "غير نشط", label: "قليل النشاط" },
-    { value: "نشاط خفيف", label: "نشاط خفيف" },
-    { value: "نشاط متوسط", label: "نشاط متوسط" },
-    { value: " نشط", label: "نشاط عالي" },
-    { value: " نشط جداً", label: "نشاط عالي جداً" },
+    { value: "sedentary", label: "Sedentary" },
+    { value: "light", label: "Lightly Active" },
+    { value: "moderate", label: "Moderately Active" },
+    { value: "active", label: "Active" },
+    { value: "very_active", label: "Very Active" },
   ];
 
   const goalOptions: Option[] = [
-    { value: "خسارة وزن", label: "خسارة وزن", icon: TrendingDown },
-    { value: "زيادة وزن", label: "زيادة وزن", icon: TrendingUp },
-    { value: "ثبات", label: "الحفاظ على الوزن", icon: Minus },
+    { value: "loss", label: "Lose Weight", icon: TrendingDown },
+    { value: "gain", label: "Gain Weight", icon: TrendingUp },
+    { value: "maintain", label: "Maintain Weight", icon: Minus },
   ];
 
   const handleChange = (
@@ -196,7 +196,7 @@ const NutritionGenerator = () => {
 
     try {
       const response = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/ai-service/generate-nutrationPlan",
+        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/ai-service/generate-nutrationPlan",
         {
           method: "POST",
           headers: {
@@ -275,14 +275,14 @@ const NutritionGenerator = () => {
               theme === "dark" ? "text-white" : "text-gray-900"
             } mb-2`}
           >
-            توليد خطة التغذية
+            Generate Nutrition Plan
           </h1>
           <p
             className={`text-sm ${
               theme === "dark" ? "text-gray-400" : "text-gray-500"
             }`}
           >
-            احصل على خطة تغذية مخصصة باستخدام الذكاء الاصطناعي
+            Get a personalized nutrition plan using AI
           </p>
         </div>
 
@@ -298,7 +298,7 @@ const NutritionGenerator = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Apple className="w-6 h-6" />
-                <h1 className="text-xl font-bold">خطة التغذية الذكية</h1>
+                <h1 className="text-xl font-bold">Smart Nutrition Plan</h1>
               </div>
               {nutritionData && (
                 <button
@@ -325,14 +325,14 @@ const NutritionGenerator = () => {
                       }`}
                     >
                       <Calendar className="w-4 h-4" />
-                      العمر
+                      Age
                     </label>
                     <input
                       type="number"
                       name="age"
                       value={formData.age}
                       onChange={handleChange}
-                      placeholder="أدخل عمرك"
+                      placeholder="Enter your age"
                       min="1"
                       max="120"
                       className={`w-full px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-rose-400 border ${
@@ -351,7 +351,7 @@ const NutritionGenerator = () => {
                       }`}
                     >
                       <User className="w-4 h-4" />
-                      الجنس
+                      Gender
                     </label>
                     <select
                       name="gender"
@@ -363,7 +363,7 @@ const NutritionGenerator = () => {
                           : "bg-[#f7f7fb] border-gray-200 text-gray-900"
                       }`}
                     >
-                      <option value="">اختر الجنس</option>
+                      <option value="">Select Gender</option>
                       {genderOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -380,14 +380,14 @@ const NutritionGenerator = () => {
                       }`}
                     >
                       <Scale className="w-4 h-4" />
-                      الوزن (كجم)
+                      Weight (kg)
                     </label>
                     <input
                       type="number"
                       name="weight"
                       value={formData.weight}
                       onChange={handleChange}
-                      placeholder="أدخل وزنك"
+                      placeholder="Enter your weight"
                       min="1"
                       step="0.1"
                       className={`w-full px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-rose-400 border ${
@@ -406,14 +406,14 @@ const NutritionGenerator = () => {
                       }`}
                     >
                       <Ruler className="w-4 h-4" />
-                      الطول (سم)
+                      Height (cm)
                     </label>
                     <input
                       type="number"
                       name="height"
                       value={formData.height}
                       onChange={handleChange}
-                      placeholder="أدخل طولك"
+                      placeholder="Enter your height"
                       min="1"
                       step="0.1"
                       className={`w-full px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-rose-400 border ${
@@ -432,7 +432,7 @@ const NutritionGenerator = () => {
                       }`}
                     >
                       <Activity className="w-4 h-4" />
-                      مستوى النشاط
+                      Activity Level
                     </label>
                     <select
                       name="activity_level"
@@ -444,7 +444,7 @@ const NutritionGenerator = () => {
                           : "bg-[#f7f7fb] border-gray-200 text-gray-900"
                       }`}
                     >
-                      <option value="">اختر مستوى النشاط</option>
+                      <option value="">Select Activity Level</option>
                       {activityLevelOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -461,7 +461,7 @@ const NutritionGenerator = () => {
                       }`}
                     >
                       <Target className="w-4 h-4" />
-                      الهدف
+                      Goal
                     </label>
                     <select
                       name="goal"
@@ -473,7 +473,7 @@ const NutritionGenerator = () => {
                           : "bg-[#f7f7fb] border-gray-200 text-gray-900"
                       }`}
                     >
-                      <option value="">اختر الهدف</option>
+                      <option value="">Select Goal</option>
                       {goalOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -493,12 +493,12 @@ const NutritionGenerator = () => {
                     {loading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        جاري التوليد...
+                        Generating...
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4" />
-                        توليد الخطة
+                        Generate Plan
                       </>
                     )}
                   </button>
@@ -510,7 +510,7 @@ const NutritionGenerator = () => {
                         : "border-gray-300 text-gray-700 hover:bg-gray-50"
                     }`}
                   >
-                    إعادة تعيين
+                    Reset
                   </button>
                 </div>
               </div>
@@ -588,24 +588,24 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
       >
         <div className="flex items-center justify-center gap-2 mb-2">
           <Trophy className="w-5 h-5" />
-          <span className="font-semibold">تم إنشاء خطتك بنجاح!</span>
+          <span className="font-semibold">Plan Generated Successfully!</span>
         </div>
-        <p className="text-sm">خطة تغذية مخصصة جاهزة للاستخدام</p>
+        <p className="text-sm">Your personalized nutrition plan is ready</p>
       </div>
 
       {/* Profile Summary */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
         {[
-          { icon: Calendar, label: "العمر", value: `${profile.age} سنة` },
+          { icon: Calendar, label: "Age", value: `${profile.age} years` },
           {
             icon: User,
-            label: "الجنس",
-            value: profile.gender === "male" ? "ذكر" : "أنثى",
+            label: "Gender",
+            value: profile.gender === "male" ? "Male" : "Female",
           },
-          { icon: Scale, label: "الوزن", value: `${profile.weight} كجم` },
-          { icon: Ruler, label: "الطول", value: `${profile.height} سم` },
-          { icon: Activity, label: "النشاط", value: profile.activity_level },
-          { icon: Target, label: "الهدف", value: profile.goal },
+          { icon: Scale, label: "Weight", value: `${profile.weight} kg` },
+          { icon: Ruler, label: "Height", value: `${profile.height} cm` },
+          { icon: Activity, label: "Activity", value: profile.activity_level },
+          { icon: Target, label: "Goal", value: profile.goal },
         ].map((item, index) => (
           <div
             key={index}
@@ -633,25 +633,25 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
         {renderMetricCard(
           "BMR",
           nutrition_plan.bmr,
-          "سعرة",
+          "kcal",
           <Flame className="w-5 h-5" />
         )}
         {renderMetricCard(
           "TDEE",
           nutrition_plan.tdee,
-          "سعرة",
+          "kcal",
           <Activity className="w-5 h-5" />
         )}
         {renderMetricCard(
-          "البروتين",
+          "Protein",
           nutrition_plan.target.protein,
-          "جرام",
+          "g",
           <Scale className="w-5 h-5" />
         )}
         {renderMetricCard(
-          "الكربوهيدرات",
+          "Carbs",
           nutrition_plan.target.carbs,
-          "جرام",
+          "g",
           <Zap className="w-5 h-5" />
         )}
       </div>
@@ -666,36 +666,36 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
       >
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="w-5 h-5 text-rose-500" />
-          <h3 className="text-lg font-bold text-foreground">ملخص اليوم</h3>
+          <h3 className="text-lg font-bold text-foreground">Daily Summary</h3>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div className="text-center">
             <div className="text-2xl font-bold text-rose-500">
               {day_program?.day_summary?.total_calories}
             </div>
-            <div className="text-sm text-muted">السعرات</div>
+            <div className="text-sm text-muted">Calories</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-500">
               {day_program?.day_summary?.total_protein}g
             </div>
-            <div className="text-sm text-muted">البروتين</div>
+            <div className="text-sm text-muted">Protein</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-500">
               {day_program?.day_summary?.total_carbs}g
             </div>
-            <div className="text-sm text-muted">الكربوهيدرات</div>
+            <div className="text-sm text-muted">Carbs</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-yellow-500">
               {day_program?.day_summary?.total_fats}g
             </div>
-            <div className="text-sm text-muted">الدهون</div>
+            <div className="text-sm text-muted">Fats</div>
           </div>
           <div className="text-center col-span-2 md:col-span-1">
             <div className="text-sm text-green-500 font-medium">
-              ✓ على الهدف
+              ✓ On Target
             </div>
             <div className="text-xs text-muted">
               {day_program?.day_summary?.note}
@@ -714,7 +714,7 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
       >
         <div className="flex items-center gap-2 mb-6">
           <Utensils className="w-5 h-5 text-rose-500" />
-          <h3 className="text-lg font-bold text-foreground">الوجبات اليومية</h3>
+          <h3 className="text-lg font-bold text-foreground">Daily Meals</h3>
         </div>
         <div className="space-y-4">
           {day_program.meals.map((meal, index) => (
@@ -750,32 +750,32 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
                       <div className="font-bold text-rose-500">
                         {meal.calories}
                       </div>
-                      <div className="text-xs text-muted">سعرة</div>
+                      <div className="text-xs text-muted">kcal</div>
                     </div>
                     <div className="text-center">
                       <div className="font-bold text-green-500">
                         {meal.protein_g}g
                       </div>
-                      <div className="text-xs text-muted">بروتين</div>
+                      <div className="text-xs text-muted">Protein</div>
                     </div>
                     <div className="text-center">
                       <div className="font-bold text-blue-500">
                         {meal.carbs_g}g
                       </div>
-                      <div className="text-xs text-muted">كربوهيدرات</div>
+                      <div className="text-xs text-muted">Carbs</div>
                     </div>
                     <div className="text-center">
                       <div className="font-bold text-yellow-500">
                         {meal.fats_g}g
                       </div>
-                      <div className="text-xs text-muted">دهون</div>
+                      <div className="text-xs text-muted">Fats</div>
                     </div>
                   </div>
 
                   {/* Ingredients */}
                   <div>
                     <h5 className="text-sm font-medium text-foreground mb-2">
-                      المكونات:
+                      Ingredients:
                     </h5>
                     <div className="flex flex-wrap gap-2">
                       {meal.ingredients.map((ingredient, ingIndex) => (
@@ -806,7 +806,7 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
           className="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-medium px-4 py-3 rounded-xl flex items-center gap-2 justify-center transition"
         >
           <Sparkles className="w-4 h-4" />
-          إنشاء خطة جديدة
+          New Plan
         </button>
         <button
           className={`flex-1 border font-medium px-4 py-3 rounded-xl flex items-center gap-2 justify-center transition ${
@@ -816,7 +816,7 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
           }`}
         >
           <Download className="w-4 h-4" />
-          حفظ الخطة
+          Save Plan
         </button>
         <button
           className={`flex-1 border font-medium px-4 py-3 rounded-xl flex items-center gap-2 justify-center transition ${
@@ -826,7 +826,7 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
           }`}
         >
           <Share2 className="w-4 h-4" />
-          مشاركة
+          Share
         </button>
       </div>
     </div>

@@ -179,7 +179,6 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-
   const { theme } = useGetTheme();
 
   // Firebase Config
@@ -203,6 +202,7 @@ export default function LoginForm() {
       if (user) {
         // toast.success("Login Successfullysdfsdfd!");
 
+<<<<<<< HEAD
         await fetch("https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/login-with-google", {
           method: "POST",
           headers: {
@@ -215,6 +215,23 @@ export default function LoginForm() {
             password: "Gz!@435&Hk90",
           }),
         }).then((res) => {
+=======
+        await fetch(
+          "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/login-with-google",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: user.email,
+              name: user.displayName,
+              photoURL: user.photoURL,
+              password: "Gz!@435&Hk90",
+            }),
+          }
+        ).then((res) => {
+>>>>>>> a562cf1e1a99f62ebc4455096db6f1370941b21b
           return res.json();
         });
       }
@@ -233,18 +250,13 @@ export default function LoginForm() {
     try {
       const res = await LoginService({ email, password });
       if ("error" in res) {
-
         console.log("error :", res);
         toast.error("res.error as string");
-
-
       } else {
         console.log("Login success:", res);
         toast.success("Login Successfully!");
         setTimeout(() => {
-
-          router.push('/community');
-
+          router.push("/community");
         }, 1500);
       }
     } catch (err) {
@@ -377,7 +389,6 @@ export default function LoginForm() {
                 onClick={() => setShowPw(!showPw)}
               >
                 {showPw ? "Hide" : "Show"}
-
               </span>
             </div>
           </div>
