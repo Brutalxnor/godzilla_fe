@@ -733,14 +733,14 @@ export default function CreateProgramModal({
 
       const url = URL.createObjectURL(f);
       setPreview(url);
-      onChange?.(f);
+      // onChange?.(f);
     }
 
     function remove() {
       if (preview) URL.revokeObjectURL(preview);
       setPreview(null);
       if (fileRef.current) fileRef.current.value = "";
-      onChange?.(null);
+      // onChange?.(null);
     }
 
   const canSave =

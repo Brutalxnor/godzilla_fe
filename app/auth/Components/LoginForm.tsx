@@ -201,8 +201,6 @@ export default function LoginForm() {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         // toast.success("Login Successfullysdfsdfd!");
-
-<<<<<<< HEAD
         await fetch("https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/login-with-google", {
           method: "POST",
           headers: {
@@ -215,23 +213,7 @@ export default function LoginForm() {
             password: "Gz!@435&Hk90",
           }),
         }).then((res) => {
-=======
-        await fetch(
-          "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/login-with-google",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: user.email,
-              name: user.displayName,
-              photoURL: user.photoURL,
-              password: "Gz!@435&Hk90",
-            }),
-          }
-        ).then((res) => {
->>>>>>> a562cf1e1a99f62ebc4455096db6f1370941b21b
+
           return res.json();
         });
       }
