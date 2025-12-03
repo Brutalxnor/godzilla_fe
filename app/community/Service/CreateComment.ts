@@ -7,7 +7,7 @@ export const CreateComment = async (
 ) => {
   try {
     const response = await axios.put(
-      "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/posts/update-comment",
+      "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/update-comment",
       {
         postId,
         user_id,

@@ -53,7 +53,7 @@
 //       try {
 //         setIsLoading(true);
 //         const { data } = await axios.get(
-//           `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
+//           `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
 //         );
 
 //         setPrograms(data);
@@ -357,7 +357,7 @@ export default function Home() {
           // ---------- ATHLETE: programs this athlete is subscribed to ----------
           // use same base URL you use in /programs page
           const response = await axios.get(
-            `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userId}`
+            `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userId}`
           );
 
           type Row = {

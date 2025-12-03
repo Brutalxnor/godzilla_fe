@@ -20,7 +20,7 @@ export const GetAllPosts = async () => {
     }
 
     const response = await axios.get(
-      `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/posts/${user?.data?.user_id}`
+      `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/${user?.data?.user_id}`
     );
     return response.data.data;
   } catch (error: unknown) {
@@ -36,7 +36,7 @@ export const GetAllPosts = async () => {
 export const CreatePost = async (data: CreatePostType) => {
   try {
     const response = await axios.post(
-      "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/posts/create-post",
+      "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/create-post",
       data
     );
 

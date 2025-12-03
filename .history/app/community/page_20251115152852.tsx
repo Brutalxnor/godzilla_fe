@@ -124,7 +124,7 @@ export default function CommunityPage() {
       setError("");
 
       const res = await fetch(
-        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
+        "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
       );
       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -215,7 +215,7 @@ export default function CommunityPage() {
     const fetchConversations = async () => {
       try {
         const res = await fetch(
-          "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
+          "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
           {
             headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
           }

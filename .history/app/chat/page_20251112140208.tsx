@@ -47,7 +47,7 @@
 //       setError("");
 
 //       const res = await fetch(
-//         "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
+//         "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
 //       );
 //       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -154,7 +154,7 @@
 //       }
 
 //       const res = await fetch(
-//         "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/messages/send",
+//         "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/messages/send",
 //         {
 //           method: "POST",
 //           headers: {
@@ -218,7 +218,7 @@
 //       setShowUserList(false); // Close user list on mobile after selection
 
 //       const response = await fetch(
-//         `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
+//         `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
 //         {
 //           method: "POST",
 //           headers: {
@@ -240,7 +240,7 @@
 //       console.log("💾 Conversation ID saved:", convId);
 
 //       const messagesRes = await fetch(
-//         `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
+//         `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
 //         {
 //           headers: {
 //             Authorization: `Bearer ${userDB?.data.access_token}`,
@@ -579,7 +579,7 @@
 //       setError("");
 
 //       const res = await fetch(
-//         "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
+//         "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
 //       );
 //       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -666,7 +666,7 @@
 //       setShowUserList(false);
 
 //       const response = await fetch(
-//         `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
+//         `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
 //         {
 //           method: "POST",
 //           headers: {
@@ -684,7 +684,7 @@
 //       localStorage.setItem("conversation_id", convId);
 
 //       const messagesRes = await fetch(
-//         `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
+//         `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
 //         { headers: { Authorization: `Bearer ${userDB?.data.access_token}` } }
 //       );
 //       const messagesData = await messagesRes.json();
@@ -710,7 +710,7 @@
 //       if (!token) return toast.error("You're not logged in.");
 
 //       const res = await fetch(
-//         "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/messages/send",
+//         "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/messages/send",
 //         {
 //           method: "POST",
 //           headers: {
@@ -1178,7 +1178,7 @@ const Chat = () => {
       setError("");
 
       const res = await fetch(
-        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
+        "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
       );
       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -1283,7 +1283,7 @@ const Chat = () => {
       setView("chat");
 
       const response = await fetch(
-        `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
+        `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/start/${user.id}`,
         {
           method: "POST",
           headers: {
@@ -1301,7 +1301,7 @@ const Chat = () => {
       localStorage.setItem("conversation_id", convId);
 
       const messagesRes = await fetch(
-        `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
+        `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations/${convId}/messages`,
         { headers: { Authorization: `Bearer ${userDB?.data.access_token}` } }
       );
       const messagesData = await messagesRes.json();
@@ -1327,7 +1327,7 @@ const Chat = () => {
       if (!token) return toast.error("You're not logged in.");
 
       const res = await fetch(
-        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/messages/send",
+        "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/messages/send",
         {
           method: "POST",
           headers: {

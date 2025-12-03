@@ -48,6 +48,9 @@ export interface Post {
         is_liked: boolean;
       }[]
     }[];
+    ft_post: {
+      content : string;
+    }
   id: string;
   bio: string;
   created_at: string;

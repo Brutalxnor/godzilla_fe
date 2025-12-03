@@ -36,7 +36,7 @@
 //       try {
 //         setLoading(true);
 //         const { data } = await axios.get(
-//           `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/programs/f2f50790-dbdb-4a2b-8402-7fa07c527b07/media`,
+//           `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/programs/f2f50790-dbdb-4a2b-8402-7fa07c527b07/media`,
 //           {
 //             headers: {
 //               Authorization: `Bearer ${userDB?.data.access_token}`,
@@ -88,13 +88,13 @@
 
 //         // 1️⃣ هات بيانات البرنامج الحالي
 //         const { data: programRes } = await axios.get(
-//           `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/programs/${id}`
+//           `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/programs/${id}`
 //         );
 //         setPrograms(programRes);
 
 //         // 2️⃣ هات اشتراكات المستخدم
 //         const { data: subsRes } = await axios.get(
-//           `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
+//           `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
 //         );
 
 //         // لو الـ backend بيرجع array فيه program_id
@@ -122,7 +122,7 @@
 //       try {
 //         setLoading(true);
 //         const { data } = await axios.get(
-//           `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/programs/${id}`
+//           `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/programs/${id}`
 //         );
 //         setPrograms(data);
 //       } catch (err: unknown) {
@@ -556,7 +556,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/programs/${id}/media`,
+          `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/programs/${id}/media`,
           {
             headers: {
               Authorization: `Bearer ${userDB?.data.access_token}`,
@@ -584,12 +584,12 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
         setLoading(true);
 
         const { data: programRes } = await axios.get(
-          `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/programs/${id}`
+          `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/programs/${id}`
         );
         setPrograms(programRes);
 
         const { data: subsRes } = await axios.get(
-          `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
+          `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
         );
 
         const ids =

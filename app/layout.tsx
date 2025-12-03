@@ -54,13 +54,13 @@ export default function RootLayout({
           color: "var(--foreground)",
         }}
       >
-        <GlobalHttpInterceptor>
+        {/* <GlobalHttpInterceptor> */}
           <ChatNotifications />
           <ToastContainer />
           <CommentsProvider>
             <ShareModalProvider>{children}</ShareModalProvider>
           </CommentsProvider>
-        </GlobalHttpInterceptor>
+        {/* </GlobalHttpInterceptor> */}
       </body>
     </html>
   );

@@ -178,7 +178,7 @@ const WorkoutGenerator = () => {
 
     try {
       const response = await axios.post(
-        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/ai-service/generate-workout",
+        "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/ai-service/generate-workout",
         formData
       );
 

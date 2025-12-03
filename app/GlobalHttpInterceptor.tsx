@@ -17,7 +17,7 @@ export default function GlobalHttpInterceptor({ children }: Props) {
 
     // ---- OVERRIDE FETCH ----
     window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("user");
 
       // Attach token to every request
       const headers = new Headers(init?.headers || {});

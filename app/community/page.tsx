@@ -153,7 +153,7 @@
 //       setError("");
 
 //       const res = await fetch(
-//         "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
+//         "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
 //       );
 //       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -253,7 +253,7 @@
 //     const fetchConversations = async () => {
 //       try {
 //         const res = await fetch(
-//           "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
+//           "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
 //           {
 //             headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
 //           }
@@ -1211,7 +1211,7 @@ export default function CommunityPage() {
       setError("");
 
       const res = await fetch(
-        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
+        "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
       );
       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -1311,7 +1311,7 @@ export default function CommunityPage() {
     const fetchConversations = async () => {
       try {
         const res = await fetch(
-          "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
+          "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
           {
             headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
           }
@@ -1709,6 +1709,23 @@ export default function CommunityPage() {
                               : p
                           )
                         );
+
+                        // const response = await fetch("https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/feed/users/actions", {
+                        //   method: "POST",
+                        //   headers: {
+                        //     "Content-Type": "application/json",
+                        //     Authorization: `Bearer ${userDB?.data?.access_token}`,
+                        //   },
+                        //   body: JSON.stringify({ "post_id": post.id, "action_type":"like" }),
+                        // }).then((res) => {
+                        //   return res.json()
+                        // });
+
+                        // if (!response.ok) {
+                        //   throw new Error("Failed to like post");
+                        // }
+
+
                       } catch (error) {
                         console.error("Error toggling like:", error);
                         toast.error("Failed to like post");
@@ -1853,7 +1870,7 @@ export default function CommunityPage() {
 
                             {/* Body */}
                             <div className="mt-3 text-sm text-gray-800 whitespace-pre-line">
-                              {post.bio}
+                              {post.bio || post?.ft_post?.content}
                             </div>
 
                             {post.image && (
