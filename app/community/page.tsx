@@ -152,7 +152,7 @@
 //       setError("");
 
 //       const res = await fetch(
-//         "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
+//         "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
 //       );
 //       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -252,7 +252,7 @@
 //     const fetchConversations = async () => {
 //       try {
 //         const res = await fetch(
-//           "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
+//           "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
 //           {
 //             headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
 //           }
@@ -1234,7 +1234,7 @@ export default function CommunityPage() {
       setError("");
 
       const res = await fetch(
-        "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
+        "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
       );
       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -1336,7 +1336,7 @@ export default function CommunityPage() {
     const fetchConversations = async () => {
       try {
         const res = await fetch(
-          "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
+          "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
           {
             headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
           }
@@ -1728,8 +1728,43 @@ export default function CommunityPage() {
 
                 const likesCount = post.liked_by?.length || 0;
 
+<<<<<<< HEAD
+                        setPosts((prev) =>
+                          prev.map((p) =>
+                            p.id === post.id
+                              ? {
+                                  ...p,
+                                  liked_by: res.liked_by,
+                                }
+                              : p
+                          )
+                        );
+
+                        // const response = await fetch("https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/feed/users/actions", {
+                        //   method: "POST",
+                        //   headers: {
+                        //     "Content-Type": "application/json",
+                        //     Authorization: `Bearer ${userDB?.data?.access_token}`,
+                        //   },
+                        //   body: JSON.stringify({ "post_id": post.id, "action_type":"like" }),
+                        // }).then((res) => {
+                        //   return res.json()
+                        // });
+
+                        // if (!response.ok) {
+                        //   throw new Error("Failed to like post");
+                        // }
+
+
+                      } catch (error) {
+                        console.error("Error toggling like:", error);
+                        toast.error("Failed to like post");
+                      }
+                    };
+=======
                 const handleToggleLike = async () => {
                   if (!userDB?.data?.user_id) return;
+>>>>>>> a562cf1e1a99f62ebc4455096db6f1370941b21b
 
                   try {
                     const res = await togglePostLike(
@@ -1855,6 +1890,90 @@ export default function CommunityPage() {
                                       Edit Post
                                     </button>
 
+<<<<<<< HEAD
+                            {/* Body */}
+                            <div className="mt-3 text-sm text-gray-800 whitespace-pre-line">
+                              {post.bio || post?.ft_post?.content}
+                            </div>
+
+                            {post.image && (
+                              <div className="mt-3 overflow-hidden rounded-xl border border-gray-200">
+                                <img
+                                  src={post.image}
+                                  alt="post image"
+                                  width={1200}
+                                  height={800}
+                                  className="w-full h-64 sm:h-72 object-contain bg-gray-100"
+                                />
+                              </div>
+                            )}
+
+                            {/* Footer stats */}
+                            <div className="mt-3 flex items-center gap-6 text-gray-500">
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleToggleLike();
+                                }}
+                                className={[
+                                  "inline-flex items-center gap-1.5 transition-colors",
+                                  isLikedByMe
+                                    ? "text-rose-600"
+                                    : "text-gray-500 hover:text-rose-600",
+                                ].join(" ")}
+                              >
+                                <span>{isLikedByMe ? "❤️" : "🤍"}</span>
+                                <span className="text-sm">{likesCount}</span>
+                              </button>
+
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleTriggerOpenCommentModal(post.id);
+                                }}
+                                className="inline-flex cursor-pointer items-center gap-1.5 hover:text-gray-700 transition-colors"
+                              >
+                                <span>💬</span>
+                                <span className="text-sm">
+                                  {post.comments?.length}
+                                </span>
+                              </button>
+
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setSharePostId(post.id);
+                                  setShareModalOpen(true);
+                                }}
+                                className="inline-flex items-center gap-1.5 hover:text-gray-700 transition-colors"
+                              >
+                                <span>↗</span>
+                                <span className="text-sm">
+                                  {post.share_count}
+                                </span>
+                              </button>
+                            </div>
+
+                            {/* Comment Modal */}
+                            {openPostId === post.id && (
+                              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                                <div
+                                  className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  {/* Header */}
+                                  <div className="flex items-center justify-between p-4 shrink-0">
+                                    <h2 className="text-xl font-bold">
+                                      Comments
+                                    </h2>
+=======
+>>>>>>> a562cf1e1a99f62ebc4455096db6f1370941b21b
                                     <button
                                       onClick={(e) => {
                                         e.preventDefault();

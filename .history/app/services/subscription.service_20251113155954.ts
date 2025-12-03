@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe"; // 👈 adjust if your backend route differs
+const BASE_URL = "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe"; // 👈 adjust if your backend route differs
 
 export interface SubscriptionPayload {
   athlete_id: string;

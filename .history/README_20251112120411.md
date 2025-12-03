@@ -14,7 +14,7 @@ pnpm dev
 bun dev
 ```
 
-Open [https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com](https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com) with your browser to see the result.
+Open [https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com](https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

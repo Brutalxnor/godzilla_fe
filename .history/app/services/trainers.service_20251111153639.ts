@@ -2,7 +2,7 @@ import axios from "axios";
 import { Trainer } from "../trainers/TrainerCard";
  // 👈 same Trainer type you already use in the page
 
-const BASE_URL = "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/coaches"; 
+const BASE_URL = "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/coaches"; 
 // adjust if your backend route is different
 
 // === Raw shape from your backend (coach_profiles joined with users) ===

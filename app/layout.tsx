@@ -54,7 +54,10 @@ export default function RootLayout({
           color: "var(--foreground)",
         }}
       >
+<<<<<<< HEAD
+=======
         
+>>>>>>> a562cf1e1a99f62ebc4455096db6f1370941b21b
         {/* <GlobalHttpInterceptor> */}
           <ChatNotifications />
           <ToastContainer />

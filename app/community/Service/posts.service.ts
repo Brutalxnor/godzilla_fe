@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
-const BASE_URL = "https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1"; // adjust if needed
+const BASE_URL = "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1"; // adjust if needed
 
 interface CreatePostType {
   bio: string;
@@ -12,16 +12,18 @@ interface CreatePostType {
 }
 
 export async function togglePostLike(postId: string, userId: string) {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const user =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("user") || "{}")
+      : null;
 
   const res = await axios.post(
     `${BASE_URL}/posts/like`,
     { postId, user_id: userId },
     {
-      headers: token
+      headers: user
         ? {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user?.data?.access_token}`,
           }
         : {},
     }
@@ -39,7 +41,7 @@ export async function togglePostLike(postId: string, userId: string) {
 export async function SharePostToUser(postId: string, receiver_id: string) {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  const res = await fetch(`https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/posts/share`, {
+  const res = await fetch(`https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/share`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -58,7 +60,7 @@ export async function SharePostToUser(postId: string, receiver_id: string) {
 export const UpdatePost = async (postId: string, postData: CreatePostType) => {
   try {
     const response = await fetch(
-      `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/posts/${postId}`,
+      `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/${postId}`,
       {
         method: "Patch",
         headers: {
@@ -132,7 +134,7 @@ export const getCommentLikers = async (commentId: string) => {
 
   try {
     const response = await fetch(
-      `https://gdv8tql1h2.execute-api.eu-west-2.amazonaws.com/api/v1/comments/${commentId}/likers`,
+      `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/comments/${commentId}/likers`,
       {
         method: "GET",
         headers: {
