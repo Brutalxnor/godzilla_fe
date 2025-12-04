@@ -87,6 +87,7 @@ interface CreateCommentType {
   post_id: string;
   text: string;
   parent_comment_id?: string | null;
+  access_token: string;
 }
 
 export async function createComment(commentData: CreateCommentType) {
@@ -95,7 +96,7 @@ export async function createComment(commentData: CreateCommentType) {
   const res = await axios.post(`${BASE_URL}/comments`, commentData, {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${user?.data?.access_token}`,
+      Authorization: `Bearer ${commentData.access_token}`,
     },
   });
 
