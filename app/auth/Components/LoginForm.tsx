@@ -116,7 +116,7 @@ export default function LoginForm() {
       localStorage.setItem(
         "user",
         JSON.stringify({
-          data: JSON.stringify(resData.body),
+          data: resData.body,
         }) as unknown as string
       );
 
