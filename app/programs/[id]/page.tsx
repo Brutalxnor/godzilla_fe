@@ -976,6 +976,7 @@ import { Program } from "../components/programCard";
 import useGetUser from "@/app/Hooks/useGetUser";
 import Link from "next/link";
 import { createAthleteSubscription } from "@/app/services/subscription.service";
+import {Lock } from "lucide-react"
 
 
 const Page = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -1288,7 +1289,10 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                         }
                       `}
                     >
-                      {tab}
+                      <div className="flex items-center gap-3">
+                        <span>{tab}</span>
+                        <span>{isMaterialsLocked && <Lock size={20}/>}</span>
+                      </div>
                     </button>
                   );
                 })}

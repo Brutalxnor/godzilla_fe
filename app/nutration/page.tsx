@@ -22,8 +22,10 @@ import {
   LucideIcon,
   Clock,
   Utensils,
+  Dumbbell,
 } from "lucide-react";
 import Sidebar from "../components/shared/sidebar";
+import useGetTheme from "../Hooks/useGetTheme";
 
 // Types
 interface User {
@@ -125,11 +127,6 @@ interface NutritionDisplayProps {
   theme: string;
 }
 
-// Mock theme hook - replace with your actual hook
-const useGetTheme = () => {
-  const [theme, setTheme] = useState("dark");
-  return { theme };
-};
 
 // NutritionGenerator Component
 const NutritionGenerator = () => {
@@ -188,6 +185,11 @@ const NutritionGenerator = () => {
       [name]: value,
     }));
   };
+
+  
+    const shellVars = {
+      "--sb-w": "88px",
+    } as React.CSSProperties;
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -251,7 +253,8 @@ const NutritionGenerator = () => {
 
   return (
     <div
-      className={`min-h-screen overflow-x-hidden ${
+    style={shellVars}
+      className={`min-h-screen overflow-x-hidden  ${
         theme === "dark" ? "bg-black" : "bg-[#f7f7f7]"
       }`}
     >
@@ -264,27 +267,25 @@ const NutritionGenerator = () => {
       >
         <Sidebar />
       </Suspense>
-      <div className="max-w-6xl mx-auto px-4 py-8 overflow-x-hidden">
+      <div className="max-w-6xl mx-auto py-8 overflow-x-hidden">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto rounded-full bg-rose-500 flex items-center justify-center mb-4">
-            <Apple className="w-8 h-8 text-white" />
+          {/* Header */}
+          <div className="bg-rose-500 p-6 text-white">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Dumbbell className="w-6 h-6" />
+                <h1 className="text-xl font-bold">Smart Nutrition Plan</h1>
+              </div>
+              {nutritionData && (
+                <button
+                  onClick={resetForm}
+                  className="p-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
+            </div>
           </div>
-          <h1
-            className={`text-3xl font-bold ${
-              theme === "dark" ? "text-white" : "text-gray-900"
-            } mb-2`}
-          >
-            Generate Nutrition Plan
-          </h1>
-          <p
-            className={`text-sm ${
-              theme === "dark" ? "text-gray-400" : "text-gray-500"
-            }`}
-          >
-            Get a personalized nutrition plan using AI
-          </p>
-        </div>
 
         <div
           className={`rounded-2xl ${
@@ -294,7 +295,7 @@ const NutritionGenerator = () => {
           }`}
         >
           {/* Header */}
-          <div className="bg-rose-500 p-6 text-white">
+          {/* <div className="bg-rose-500 p-6 text-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Apple className="w-6 h-6" />
@@ -309,7 +310,7 @@ const NutritionGenerator = () => {
                 </button>
               )}
             </div>
-          </div>
+          </div> */}
 
           {/* Content */}
           <div className="p-6">
@@ -486,22 +487,22 @@ const NutritionGenerator = () => {
                 {/* Buttons */}
                 <div className="flex gap-4 justify-center pt-4">
                   <button
-                    onClick={handleSubmit}
-                    disabled={loading || !isFormValid}
-                    className="bg-rose-500 hover:bg-rose-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium px-8 py-3 rounded-xl flex items-center gap-2 transition min-w-[150px] justify-center"
-                  >
-                    {loading ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-4 h-4" />
-                        Generate Plan
-                      </>
-                    )}
-                  </button>
+                      type="submit"
+                      disabled={loading}
+                      className="bg-rose-500 hover:bg-rose-600 disabled:bg-gray-300 text-white font-medium px-8 py-3 rounded-xl flex items-center gap-2 transition min-w-[150px] justify-center"
+                    >
+                      {loading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4" />
+                          Generate Plan
+                        </>
+                      )}
+                    </button>
                   <button
                     onClick={resetForm}
                     className={`border font-medium px-8 py-3 rounded-xl transition min-w-[150px] ${
@@ -577,7 +578,7 @@ const NutritionDisplay: React.FC<NutritionDisplayProps> = ({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 flex items-center justify-center w-full">
       {/* Success Header */}
       <div
         className={`p-4 rounded-xl border text-center ${

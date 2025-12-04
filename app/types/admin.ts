@@ -33,6 +33,7 @@ export interface User {
       user_type: string;
       message: string;
       username: string;
+      email_verified?: boolean;
     };
   };
 }

@@ -22,35 +22,41 @@ export interface User {
   email_verified: boolean;
   experience_level: string;
   username: string;
+  role?: string;
+}
+
+export interface Reply {
+  id: string;
+  comment_id: string;
+  user_id: string;
+  text: string;
+  created_at: string;
+  updated_at: string;
+  user: User;
+  likes_count: number;
+  is_liked: boolean;
+}
+
+export interface Comment {
+  id: string;
+  post_id?: string;
+  parent_comment_id?: string | null;
+  user_id: string;
+  text: string;
+  created_at: string;
+  updated_at?: string;
+  user: User;
+  likes_count?: number;
+  is_liked?: boolean;
+  replies?: Reply[];
+  users?: User;
 }
 
 export interface Post {
-  comments:  {
-      id: string;
-      post_id: string;
-      parent_comment_id: string | null;
-      user_id: string;
-      text: string;
-      created_at: string;
-      updated_at: string;
-      user: User;
-      likes_count: number;
-      is_liked: boolean;
-      replies: {
-        id: string;
-        comment_id: string;
-        user_id: string;
-        text: string;
-        created_at: string;
-        updated_at: string;
-        user: User;
-        likes_count: number;
-        is_liked: boolean;
-      }[]
-    }[];
-    ft_post: {
-      content : string;
-    }
+  comments: Comment[];
+  ft_post: {
+    content: string;
+  };
   id: string;
   bio: string;
   created_at: string;
@@ -62,53 +68,7 @@ export interface Post {
   user_id: string;
   users: User;
   watch: "public" | "friends";
-  comment_new: {
-    id: string
-    comment: string;
-    user_id: string;
-    text: string
-    is_liked: boolean
-    likes_count: number
-    user: {
-      first_name: string,
-      second_name:string
-      text: string
-      avatar_url: string
-    }
-    replies: {
-      id: string;
-      comment_id: string;
-      user_id: string;
-      text: string;
-      created_at: string;
-      updated_at: string;
-      user: User;
-      likes_count: number;
-      is_liked: boolean;
-    }[]
-    created_at: string;
-    usersData: {
-      avatar_url: string;
-      bio: boolean;
-      created_at: string;
-      date_of_birth: string;
-      email: string;
-      email_verified: boolean;
-      experience_level: string;
-      first_name: string;
-      id: string;
-      is_active: boolean;
-      last_login: boolean;
-      location: string;
-      phone: string;
-      second_name: string;
-      status: string;
-      timestamp: string;
-      updated_at: string;
-      user_type: string;
-    };
-  
-  }[];
+  comment_new: Comment[];
 }
 
 export type Program = {

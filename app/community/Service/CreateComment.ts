@@ -8,11 +8,11 @@ export const CreateComment = async (
 ) => {
   try {
     const response = await axios.post(
-      "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/comments",
+      "http://localhost:4000/api/v1/comments",
       {
-        postId,
+        post_id: postId,
         user_id,
-        comment,
+        text: comment,
       },
       {
         headers: {

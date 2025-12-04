@@ -1044,7 +1044,7 @@ import CreatePostModal from "./components/createPost";
 import EditPostModal from "./components/editPost";
 import { GetAllPosts } from "../sign-up/Services/posts.service";
 import useGetUser from "../Hooks/useGetUser";
-import { Post, InterestType } from "../types/type";
+import { Post, InterestType, User } from "../types/type";
 import { useComments } from "./context/CommentsContext";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -1062,6 +1062,7 @@ import {
 } from "./Service/posts.service";
 import { GetAllInterests } from "../sign-up/Services/Interest.service";
 import CommentLikersModal from "./components/CommentLikersModal";
+import { CreateComment } from "./Service/CreateComment";
 
 function Tag({ label, count }: { label: string; count?: number }) {
   return (
@@ -1150,6 +1151,9 @@ export default function CommunityPage() {
       setLoading(false);
     }
   };
+
+  console.log(Posts, "POSTS");
+  
 
   // Fetch interests
   const fetchInterests = async () => {
@@ -1266,7 +1270,7 @@ export default function CommunityPage() {
         .channel("community-realTime")
         .on(
           "postgres_changes",
-          { event: "*", schema: "public", table: "posts" },
+          { event: "INSERT", schema: "public", table: "posts" },
           async (payload) => {
             console.log("New post:", payload.new);
 
@@ -1437,23 +1441,23 @@ export default function CommunityPage() {
     }
   };
 
-  const handleCommentSubmit = async (post_id: string, text: string) => {
-    try {
-      await createComment({
-        post_id,
-        text,
-        parent_comment_id: null, // This is for main comments
-        access_token: userDB?.data?.access_token || "",
-      });
+  // const handleCommentSubmit = async (post_id: string, text: string) => {
+  //   try {
+  //     await createComment({
+  //       post_id,
+  //       text,
+  //       parent_comment_id: null, // This is for main comments
+  //       access_token: userDB?.data?.access_token || "",
+  //     });
 
-      // Refresh posts to show the new comment
-      await fetchGetPosts();
-      reset(); // Clear the form
-    } catch (err) {
-      console.error("Error adding comment:", err);
-      toast.error("Failed to add comment");
-    }
-  };
+  //     // Refresh posts to show the new comment
+  //     await fetchGetPosts();
+  //     reset(); // Clear the form
+  //   } catch (err) {
+  //     console.error("Error adding comment:", err);
+  //     toast.error("Failed to add comment");
+  //   }
+  // };
   const handleCommentLike = async (commentId: string, e?: React.MouseEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
@@ -1486,6 +1490,84 @@ export default function CommunityPage() {
       toast.error("Failed to add reply");
     }
   };
+
+
+  const createOptimisticComment = (
+    postId: string,
+    text: string,
+    user: Partial<User> & { id: string }
+  ) => ({
+    id: `temp-${Date.now()}`,
+    post_id: postId,
+    parent_comment_id: null,
+    user_id: user.id,
+    text,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    user: user as User,
+    likes_count: 0,
+    is_liked: false,
+    replies: [],
+    users: user as User,
+  });
+
+  const handleCommentSubmit = async (postId: string, text: string) => {
+    if (!userDB?.data?.user) return;
+    const optimistic = createOptimisticComment(postId, text, {
+      ...userDB.data.user,
+      id: userDB.data.user_id, // Ensure id is present
+      email_verified: Boolean(userDB.data.user.email_verified),
+      user_type: (userDB.data.user.user_type as "Coach" | "Athlete" | undefined) || undefined,
+    });
+
+  // Apply optimistic update
+  setPosts(prev =>
+    prev.map(post =>
+      post.id === postId
+        ? {
+            ...post,
+            comments: [...post.comments, optimistic],
+          }
+        : post
+    )
+  
+  );
+console.log(Posts, "klasjdkasjdsalkdasklkldkl");
+  // Send to API
+  const { data, error } = await CreateComment(postId, userDB?.data?.user_id || "",text, userDB?.data?.access_token || "");
+
+  // If fails: rollback
+  if (error) {
+    setPosts(prev =>
+      prev.map(post =>
+        post.id === postId
+          ? {
+              ...post,
+              comments: post.comments.filter(c => c.id !== optimistic.id),
+            }
+          : post
+      )
+    );
+    return;
+  }
+
+  // Replace temp comment with real one
+  setPosts(prev =>
+    prev.map(post =>
+      post.id === postId
+        ? {
+            ...post,
+            comments: post.comments.map(c =>
+              c.id === optimistic.id ? data : c
+            ),
+          }
+        : post
+    )
+  );
+};
+
+
+
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
@@ -1668,23 +1750,7 @@ export default function CommunityPage() {
               <>
                 {Array.isArray(Posts) && Posts.length > 0 ? (
                   Posts.map((post) => {
-                    const handleAddComment = async (data: CommentFormData) => {
-                      if (!data.comment?.trim()) return;
 
-                      try {
-                        await addComment(
-                          post.id,
-                          data.comment,
-                          userDB?.data?.user_id as string
-                        );
-
-                        await fetchGetPosts();
-                        reset();
-                        handleTriggerOpenCommentModal("0");
-                      } catch (error) {
-                        console.error("Error adding comment:", error);
-                      }
-                    };
 
                     const isLikedByMe = post.liked_by?.includes(
                       userDB?.data?.user_id as string
@@ -1733,6 +1799,9 @@ export default function CommunityPage() {
                         toast.error("Failed to like post");
                       }
                     };
+
+                  
+                    
 
                     return (
                       <Link
@@ -1984,17 +2053,17 @@ export default function CommunityPage() {
                                           <div className="flex gap-3">
                                             <img
                                               src={
-                                                comment.user?.avatar_url ||
+                                                comment.users?.avatar_url || comment.user?.avatar_url ||
                                                 "https://via.placeholder.com/40"
                                               }
-                                              alt={comment.user?.first_name}
+                                              alt={comment.users?.first_name}
                                               className="w-10 h-10 rounded-full shrink-0"
                                             />
                                             <div className="flex-1">
                                               <div className="bg-gray-100 rounded-2xl px-4 py-3">
                                                 <div className="font-bold text-sm mb-1">
-                                                  {comment.user?.first_name}{" "}
-                                                  {comment.user?.second_name}
+                                                  {comment.users?.first_name || comment.user?.first_name}{" "}
+                                                  {comment.users?.second_name || comment.user?.second_name}
                                                 </div>
                                                 <p className="text-sm leading-relaxed">
                                                   {comment.text}

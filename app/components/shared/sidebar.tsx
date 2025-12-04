@@ -884,8 +884,9 @@ const items: Item[] = [
   { href: "/trainers", label: "Trainers", Icon: MdOutlineFitnessCenter },
   { href: "/programs", label: "Programs", Icon: AiOutlineTrophy },
   { href: "/chat", label: "Chat", Icon: FiMessageSquare },
-  { href: "/workout", label: "Workout", Icon: DumbbellIcon },
-  { href: "/nutration", label: "Nutration", Icon: Beef },
+  // { href: "/workout", label: "Workout", Icon: DumbbellIcon },
+  // { href: "/nutration", label: "Nutrition", Icon: Beef },
+  {href: "/ai-workouts", label: "Ai Workouts", Icon: DumbbellIcon}
 ];
 
 const stripLocale = (p?: string) => {
@@ -985,14 +986,16 @@ export default function Sidebar() {
     <>
       {/* ============ DESKTOP SIDEBAR (>= lg) ============ */}
       <aside
-        className="
+        className={
+          `
           sidebar
           group fixed left-0 top-0 z-40 hidden h-screen
           w-[88px] hover:w-[260px]
           overflow-hidden border-r border-gray-200 
           transition-[width] duration-300 lg:flex
           bg-white dark:bg-zinc-900
-        "
+        `
+        }
       >
         <div className="flex h-full w-full flex-col px-2 py-5">
           {/* Brand */}
