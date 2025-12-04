@@ -1210,18 +1210,18 @@ export default function Sidebar() {
                   shadow-lg shadow-black/10 overflow-hidden
                 "
               >
-                <Link
-                  href="/"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-zinc-800"
-                >
-                  <div className="grid h-9 w-9 place-items-center rounded-full bg-rose-500 text-white font-bold text-xs leading-none">
-                    GZ
-                  </div>
-                  <span className="text-sm font-semibold text-gray-800 dark:text-zinc-100">
-                    Godzilla
-                  </span>
-                </Link>
+                 <Link
+      href="/"
+      onClick={() => setMobileMenuOpen(false)}
+      className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-zinc-800"
+    >
+      <div className="mt-auto px-2 pb-3 pt-3 border-t border-gray-200 dark:border-zinc-700 flex flex-col gap-2">
+        GZ
+      </div>
+      <span className="text-sm font-semibold text-gray-800 dark:text-zinc-100">
+        Godzilla
+      </span>
+    </Link>
                 {/* user + theme + secondary links etc. – unchanged, just using mobileSecondaryItems */}
                 {typedUser && (
                   <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-zinc-800">
