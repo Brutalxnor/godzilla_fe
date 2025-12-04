@@ -25,6 +25,32 @@ export interface User {
 }
 
 export interface Post {
+  comments:  {
+      id: string;
+      post_id: string;
+      parent_comment_id: string | null;
+      user_id: string;
+      text: string;
+      created_at: string;
+      updated_at: string;
+      user: User;
+      likes_count: number;
+      is_liked: boolean;
+      replies: {
+        id: string;
+        comment_id: string;
+        user_id: string;
+        text: string;
+        created_at: string;
+        updated_at: string;
+        user: User;
+        likes_count: number;
+        is_liked: boolean;
+      }[]
+    }[];
+    ft_post: {
+      content : string;
+    }
   id: string;
   bio: string;
   created_at: string;
@@ -37,8 +63,29 @@ export interface Post {
   users: User;
   watch: "public" | "friends";
   comment_new: {
+    id: string
     comment: string;
     user_id: string;
+    text: string
+    is_liked: boolean
+    likes_count: number
+    user: {
+      first_name: string,
+      second_name:string
+      text: string
+      avatar_url: string
+    }
+    replies: {
+      id: string;
+      comment_id: string;
+      user_id: string;
+      text: string;
+      created_at: string;
+      updated_at: string;
+      user: User;
+      likes_count: number;
+      is_liked: boolean;
+    }[]
     created_at: string;
     usersData: {
       avatar_url: string;
@@ -60,6 +107,7 @@ export interface Post {
       updated_at: string;
       user_type: string;
     };
+  
   }[];
 }
 

@@ -38,7 +38,7 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { data } = await axios.get(
 
-        `https://godzilla-be.vercel.app/api/v1/posts/df2a3584-aeb4-42e8-8a9b-3b8eeffc51a9`
+        `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/df2a3584-aeb4-42e8-8a9b-3b8eeffc51a9`
 
       );
       setComments(data);
@@ -65,7 +65,7 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
     try {
       const body = { postId, comment, user_id };
       await axios.put(
-        "https://godzilla-be.vercel.app/api/v1/posts/update-comment",
+        "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/update-comment",
         body
       );
       toast.success("تم إضافة التعليق بنجاح 🎉");

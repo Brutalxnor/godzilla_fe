@@ -46,7 +46,7 @@ export const GetAllPrograms = async () => {
       console.error("User is not found");
     }
     const response = await axios.get(
-      `https://godzilla-be.vercel.app/api/v1/programs`
+      `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/programs`
     );
 
     return response.data?.data;
@@ -85,7 +85,7 @@ export const CreateProgram = async (data: CreateProgramType) => {
     }
 
     const response = await axios.post(
-      "https://godzilla-be.vercel.app/api/v1/programs/add-program",
+      "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/programs/add-program",
       data,
       {
         headers: {
@@ -126,7 +126,7 @@ export const GetProgramsByCoachId = async (
     }
 
     const response = await axios.get(
-      `https://godzilla-be.vercel.app/api/v1/programs/programCoach/${coachId}`,
+      `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/programs/programCoach/${coachId}`,
       accessToken
         ? {
             headers: {

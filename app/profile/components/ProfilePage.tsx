@@ -1514,7 +1514,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
+//     | undefined) ?? "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1";
 
 // type ProgramFromAPI = {
 //   id: string | number;
@@ -1881,7 +1881,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
+//     | undefined) ?? "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1";
 
 
 // // type ProgramFromAPI = {
@@ -3269,7 +3269,7 @@
 // const API_BASE =
 //   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
 //     | string
-//     | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
+//     | undefined) ?? "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1";
 
 // /* this stays just for the user lookup */
 // type UserFromAPI = {
@@ -4127,7 +4127,7 @@ function DashboardStatCard({
 const API_BASE =
   (process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") as
     | string
-    | undefined) ?? "https://godzilla-be.vercel.app/api/v1";
+    | undefined) ?? "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1";
 
 /* this stays just for the user lookup */
 type UserFromAPI = {
@@ -4146,7 +4146,7 @@ async function getUserById(
   id: string | number
 ): Promise<UserFromAPI | undefined> {
   const { data } = await axios.get<UserResp>(
-    `https://godzilla-be.vercel.app/api/v1/auth/getuserbyusername/${id}`
+    `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getuserbyusername/${id}`
   );
   return data?.data;
 }
@@ -4646,7 +4646,7 @@ export default function ProfilePage() {
       setHomeError("");
 
       const res = await fetch(
-        "https://godzilla-be.vercel.app/api/v1/auth/getusers"
+        "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers"
       );
       if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -4712,7 +4712,7 @@ export default function ProfilePage() {
     const fetchConversations = async () => {
       try {
         const res = await fetch(
-          "https://godzilla-be.vercel.app/api/v1/chat/conversations",
+          "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/chat/conversations",
           {
             headers: { Authorization: `Bearer ${userDB?.data.access_token}` },
           }
@@ -4803,7 +4803,7 @@ export default function ProfilePage() {
           setPrograms(mapped);
         } else {
           const response = await axios.get(
-            `https://godzilla-be.vercel.app/api/v1/subscripe/${userId}`
+            `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userId}`
           );
 
           type Row = {

@@ -20,7 +20,12 @@ export const GetAllPosts = async () => {
     }
 
     const response = await axios.get(
-      `https://godzilla-be.vercel.app/api/v1/posts/${user?.data?.user_id}`
+      `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/feed`,{
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.data?.access_token}`,
+        },
+      }
     );
     return response.data.data;
   } catch (error: unknown) {
@@ -34,10 +39,16 @@ export const GetAllPosts = async () => {
 };
 
 export const CreatePost = async (data: CreatePostType) => {
+   const user: User = await JSON.parse(localStorage.getItem("user")!);
   try {
     const response = await axios.post(
-      "https://godzilla-be.vercel.app/api/v1/posts/create-post",
-      data
+      "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/create-post",
+      data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.data?.access_token}`,
+        },
+      }
     );
 
     return response.data;

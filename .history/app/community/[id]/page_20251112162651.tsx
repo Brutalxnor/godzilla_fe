@@ -16,7 +16,7 @@
 //   useEffect(() => {
 //     const fetchGetPostById = async () => {
 //       const data = await axios.get(
-//         `https://godzilla-be.vercel.app/api/v1/posts/postbyid/${id}`
+//         `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/postbyid/${id}`
 //       );
 //       setPost(data.data.data);
 //     };
@@ -107,7 +107,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
       if (!userDB?.data?.user_id) return; // Skip if user_id is undefined
       try {
         const data = await axios.get(
-          `https://godzilla-be.vercel.app/api/v1/posts/postbyid/${id}/${userDB.data.user_id}`
+          `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/postbyid/${id}/${userDB.data.user_id}`
         );
         setPostData(data.data.data);
       } catch (error) {

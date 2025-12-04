@@ -912,7 +912,7 @@ export const SignupForm = () => {
         avatar_url: avatarUrl,
       };
 
-      const res = await fetch("http://localhost:4000/api/v1/auth/register", {
+      const res = await fetch("https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

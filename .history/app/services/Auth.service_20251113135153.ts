@@ -3,7 +3,7 @@ import axios from "axios";
 export const GetUserById = async (id: string) => {
   try {
     const res = await axios.get(
-      `https://godzilla-be.vercel.app/api/v1/auth/getusers/${id}`
+      `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers/${id}`
     );
 
     return res.data;
@@ -22,7 +22,7 @@ export const UpdateUser = async (data: {
 }) => {
   try {
     const res = await axios.put(
-      `https://godzilla-be.vercel.app/api/v1/auth/getusers/${id}`
+      `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/getusers/${id}`
     );
 
     return res.data;

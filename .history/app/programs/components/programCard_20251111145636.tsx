@@ -79,7 +79,7 @@
 //       try {
 //         setIsLoading(true);
 //         const { data } = await axios.get(
-//           `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
+//           `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
 //         );
 
 //         // افترض إن كل subscription فيه program_id
@@ -301,7 +301,7 @@
 //   //     try {
 //   //       setIsLoading(true);
 //   //       const { data } = await axios.get(
-//   //         `https://godzilla-be.vercel.app/api/v1/subscripe/${userDB?.data?.user_id}`
+//   //         `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/subscripe/${userDB?.data?.user_id}`
 //   //       );
 
 //   //       const programIds =

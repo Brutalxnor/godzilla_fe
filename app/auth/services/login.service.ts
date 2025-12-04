@@ -1,4 +1,5 @@
 // app/auth/services/login.service.ts
+import { supabase } from "@/lib/client";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
@@ -22,14 +23,20 @@ export const LoginService = async (
 ): Promise<LoginResponse | { error: string }> => {
   try {
     const response = await axios.post<LoginResponse>(
-      "https://godzilla-be.vercel.app/api/v1/auth/login",
+      "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/login",
       data
     );
 
-    // احفظ في localStorage (ده OK، بس ممكن تنقله للـ component لو عايز)
     localStorage.setItem("user", JSON.stringify(response.data));
 
-    return response.data; // رجّع الـ data بس
+    const { email, password } = data;
+
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<{
@@ -40,8 +47,9 @@ export const LoginService = async (
         axiosError.response?.data?.message ||
         axiosError.response?.data?.error ||
         axiosError.message;
-      return { error: msg || "Login failed" }; // رجّع error كـ object
+      return { error: msg || "Login failed" };
     }
+
     return { error: "An unexpected error occurred" };
   }
 };

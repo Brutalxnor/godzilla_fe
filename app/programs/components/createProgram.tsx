@@ -724,6 +724,25 @@ export default function CreateProgramModal({
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+    const [preview, setPreview] = useState<string | null>(null);
+    const fileRef = useRef<HTMLInputElement | null>(null);
+
+    function pickFile(e: React.ChangeEvent<HTMLInputElement>) {
+      const f = e.target.files?.[0] || null;
+      if (!f) return;
+
+      const url = URL.createObjectURL(f);
+      setPreview(url);
+      // onChange?.(f);
+    }
+
+    function remove() {
+      if (preview) URL.revokeObjectURL(preview);
+      setPreview(null);
+      if (fileRef.current) fileRef.current.value = "";
+      // onChange?.(null);
+    }
+
   const canSave =
     title.trim().length > 0 &&
     description.trim().length > 0 &&
@@ -1184,6 +1203,61 @@ export default function CreateProgramModal({
                     </div>
                   </div>
                 </section>
+
+                    <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center">
+      {preview ? (
+        <div className="space-y-4">
+          <div className="relative mx-auto w-full max-w-xl overflow-hidden rounded-xl border border-gray-200">
+            <video
+              src={preview}
+              controls
+              className="w-full h-64 object-cover"
+            />
+          </div>
+
+          <div className="flex items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm hover:bg-gray-50"
+            >
+              <FiUploadCloud />
+              Change
+            </button>
+
+            <button
+              type="button"
+              onClick={remove}
+              className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm hover:bg-gray-50"
+            >
+              <FiX />
+              Remove
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <FiUploadCloud className="mx-auto text-3xl text-gray-400" />
+          <p className="text-sm text-gray-600">Choose a video to upload</p>
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm hover:bg-gray-50"
+          >
+            <FiUploadCloud />
+            Upload
+          </button>
+        </div>
+      )}
+
+      <input
+        ref={fileRef}
+        hidden
+        type="file"
+        accept="video/*"
+        onChange={pickFile}
+      />
+    </div>
               </div>
 
               {/* RIGHT: preview */}
