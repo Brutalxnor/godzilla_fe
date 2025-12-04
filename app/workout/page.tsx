@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, Suspense, useEffect } from "react";
+import React, { useState, Suspense, useEffect, useRef } from "react";
 import axios from "axios";
 import {
   Heart,
@@ -333,6 +333,28 @@ const WorkoutGenerator = () => {
     return exercises;
   };
 
+
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        const dropdown = document.getElementById("equipment-dropdown");
+        if (dropdown && !dropdown.classList.contains("hidden")) {
+          dropdown.classList.add("hidden");
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const { theme } = useGetTheme();
 
   return (
@@ -340,16 +362,11 @@ const WorkoutGenerator = () => {
       className={`min-h-screen overflow-x-hidden ${
         theme === "dark" ? "bg-black" : "bg-[#f7f7f7]"
       }`}
-      style={
-        {
-          ["--sb-w"]: "0px",
-          ["--extra-left"]: "0px",
-        } as React.CSSProperties
-      }
+
     >
-      <div className="max-w-6xl mx-auto px-4 py-8 overflow-x-hidden">
+      <div className="max-w-6xl mx-auto px-4 overflow-x-hidden">
         {/* Header */}
-        <div className="text-center mb-8">
+        {/* <div className="text-center mb-8">
           <div className="w-16 h-16 mx-auto rounded-full bg-rose-500 flex items-center justify-center mb-4">
             <Dumbbell className="w-8 h-8 text-white" />
           </div>
@@ -367,7 +384,7 @@ const WorkoutGenerator = () => {
           >
             Get a personalized workout plan using AI
           </p>
-        </div>
+        </div> */}
 
         <div
           className={`rounded-2xl ${
@@ -426,7 +443,8 @@ const WorkoutGenerator = () => {
                   </div> */}
 
                   {/* Main Goal */}
-                  <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1/2">
                     <label
                       className={`flex items-center gap-2 text-sm font-medium ${
                         theme === "dark" ? "text-gray-200" : "text-gray-700"
@@ -456,7 +474,7 @@ const WorkoutGenerator = () => {
                   </div>
 
                   {/* Workout Level */}
-                  <div className="space-y-2">
+                  <div className="space-y-2 w-1/2">
                     <label
                       className={`flex items-center gap-2 text-sm font-medium ${
                         theme === "dark" ? "text-gray-200" : "text-gray-700"
@@ -484,9 +502,11 @@ const WorkoutGenerator = () => {
                       ))}
                     </select>
                   </div>
+                  </div>
 
                   {/* Days per Week */}
-                  <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="space-y-2 w-1/2">
                     <label
                       className={`flex items-center gap-2 text-sm font-medium ${
                         theme === "dark" ? "text-gray-200" : "text-gray-700"
@@ -516,7 +536,7 @@ const WorkoutGenerator = () => {
                   </div>
 
                   {/* Time per Workout */}
-                  <div className="space-y-2">
+                  <div className="space-y-2 w-1/2">
                     <label
                       className={`flex items-center gap-2 text-sm font-medium ${
                         theme === "dark" ? "text-gray-200" : "text-gray-700"
@@ -544,6 +564,7 @@ const WorkoutGenerator = () => {
                       ))}
                     </select>
                   </div>
+                  </div>
 
                   {/* Equipment */}
                   {/* Equipment - Enhanced Multi Select */}
@@ -561,6 +582,7 @@ const WorkoutGenerator = () => {
                     <div className="relative">
                       {/* Selected Items Display */}
                       <div
+                       ref={dropdownRef}
                         className={`w-full px-4 py-3 rounded-xl border cursor-pointer min-h-[52px] flex flex-wrap items-center gap-2 ${
                           theme === "dark"
                             ? "bg-[#18181b] border-[#27272a] text-gray-100"
@@ -787,7 +809,7 @@ const WorkoutDisplay = ({
   const exercises: exercises[] = formatExercises(workoutData.rag_program);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 flex items-center justify-center w-full">
       {/* Success Header */}
       <div
         className={`p-4 rounded-xl border text-center ${
@@ -953,12 +975,11 @@ const WorkoutPage = () => {
 
   const shellVars = {
     "--sb-w": "88px",
-    "--extra-left": "24px",
   } as React.CSSProperties;
 
   return (
     <div
-      className={`min-h-screen ${theme === "dark" ? "bg-black" : "bg-white"}`}
+      className={`min-h-screen flex items-center justify-center w-full ${theme === "dark" ? "bg-black" : "bg-white"}`}
     >
       <Suspense
         fallback={
@@ -973,8 +994,8 @@ const WorkoutPage = () => {
       <main
         style={shellVars}
         className="
-          w-full lg:w-[calc(100vw-var(--sb-w)-var(--extra-left))]
-          lg:ml-[calc(var(--sb-w)+var(--extra-left))]
+          w-full lg:w-[calc(100vw-var(--sb-w))]
+          lg:ml-[calc(var(--sb-w))]
           flex flex-col
           min-h-screen
           px-3 sm:px-4 md:px-6

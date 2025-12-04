@@ -20,7 +20,7 @@ export const GetAllPosts = async () => {
     }
 
     const response = await axios.get(
-      `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/feed`,{
+      `http://localhost:4000/api/v1/feed`,{
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.data?.access_token}`,

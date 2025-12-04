@@ -61,7 +61,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Post } from "@/app/types/type";
+import { Post, Comment } from "@/app/types/type";
 import Sidebar from "@/app/components/shared/sidebar";
 import { useComments } from "../context/CommentsContext";
 import useGetUser from "@/app/Hooks/useGetUser";
@@ -93,16 +93,21 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
   };
 
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  useEffect(() => {
+    if (postData?.comments) {
+      setComments(postData.comments);
+    }
+  }, [postData]);
+
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
 
     try {
       // Add your comment API call here
-      toast.success("تم إضافة التعليق ✅");
       setNewComment("");
-    } catch (error) {
-      toast.error("فشل في إضافة التعليق ❌");
-    }
+    } catch (error) {}
   };
 
   console.log(userDB?.data?.user_id);
@@ -122,7 +127,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
           {
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${userDB.data?.access_token}`,
+              Authorization: `Bearer ${userDB.data?.access_token}`,
             },
           }
         );
@@ -137,6 +142,8 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
 
     fetchGetPostById();
   }, [id, userDB?.data?.user_id]);
+
+  console.log(postData, "POSTDATA");
 
   const { addComment } = useComments();
 
@@ -399,15 +406,57 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
                   />
                   <div className="flex justify-end mt-2">
                     <button
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.preventDefault();
-                        CreateComment(
-                          postData?.id,
-                          userDB?.data?.user_id as string,
-                          newComment,
-                          userDB?.data?.access_token || "",
-                        );
-                        // window.location.reload();
+
+                        const newCom: Comment = {
+                          id: Math.random().toString(36).substr(2, 9), // Temporary ID
+                          user_id: userDB?.data?.user_id || "",
+                          text: newComment,
+                          created_at: new Date().toISOString(),
+                          user: {
+                            // Ensure required User fields exist with safe fallbacks
+                            id: userDB?.data?.user_id || "",
+                            avatar_url: userDB?.data?.user?.avatar_url || "",
+                            first_name: userDB?.data?.user?.first_name || "",
+                            second_name: userDB?.data?.user?.second_name || "",
+                            username: userDB?.data?.user?.username || "",
+                            bio: "",
+                            email: "mohamedOSFekry@gmail.com",
+                            phone: userDB?.data?.user?.phone || "",
+                            location: userDB?.data?.user?.location || "",
+                            is_active: true,
+                            user_type: "Athlete",
+                            // Added missing fields required by User type:
+                            date_of_birth: userDB?.data?.user?.date_of_birth || "",
+                            email_verified: false,
+                            experience_level: userDB?.data?.user?.experience_level || "",
+                            last_login:
+                              userDB?.data?.user?.last_login ||
+                              new Date().toISOString(),
+                            created_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString(),
+                          },
+                        };
+
+                        // 1) Optimistic Update
+                        setComments((prev) => [newCom, ...prev]);
+
+                        const prevComments = comments;
+
+                        setNewComment("");
+
+                        try {
+                          await CreateComment(
+                            postData?.id,
+                            userDB?.data?.user_id as string,
+                            newComment,
+                            userDB?.data?.access_token || ""
+                          );
+                        } catch (error) {
+                          // 2) Rollback on Failure
+                          setComments(prevComments);
+                        }
                       }}
                       disabled={!newComment.trim()}
                       className="bg-red-500 text-white px-6 py-2 rounded-full font-bold hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -420,9 +469,9 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
 
               {/* Comments List */}
               <div>
-                {postData?.comment_new && postData.comment_new.length > 0 ? (
-                  postData.comment_new
-                    .filter((comment) => comment.comment) // Filter only valid comments
+                {comments && comments.length > 0 ? (
+                  comments
+                    .filter((comment) => comment.text) // Filter only valid comments
                     .map((comment, index) => (
                       <div
                         key={index}
@@ -431,7 +480,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
                         {/* User Avatar */}
                         <img
                           src={
-                            comment?.usersData?.avatar_url ??
+                            comment?.user?.avatar_url ??
                             "https://via.placeholder.com/40"
                           }
                           alt={"User"}
@@ -442,9 +491,9 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
                           {/* User Info */}
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-bold hover:underline cursor-pointer">
-                              {comment?.usersData?.first_name +
+                              {comment?.user?.first_name +
                                 " " +
-                                comment?.usersData?.second_name || "User"}
+                                comment?.user?.second_name || "User"}
                             </span>
 
                             {/* Verified Badge */}
@@ -489,7 +538,7 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
 
                           {/* Comment Text */}
                           <p className="text-gray-800 mt-1 leading-relaxed">
-                            {comment.comment}
+                            {comment.text}
                           </p>
 
                           {/* Comment Actions */}
