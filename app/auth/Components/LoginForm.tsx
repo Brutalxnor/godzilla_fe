@@ -5,7 +5,7 @@ import { LoginService } from "@/app/auth/services/login.service";
 import { toast } from "react-toastify";
 import useGetTheme from "@/app/Hooks/useGetTheme";
 import { useRouter } from "next/navigation";
-
+import { supabase } from "@/lib/client";
 import {
   getAuth,
   getRedirectResult,
@@ -108,6 +108,22 @@ export default function LoginForm() {
       if (!res.ok) {
         throw new Error("Backend login failed");
       }
+
+      const resData = await res.json();
+      console.log("response from server", resData.body);
+
+      console.log(resData.body);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          data: JSON.stringify(resData.body),
+        }) as unknown as string
+      );
+
+      await supabase.auth.signInWithPassword({
+        email: user.email || "",
+        password: user.uid,
+      });
 
       toast.success("Login with Google successful");
       setTimeout(() => {
