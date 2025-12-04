@@ -4686,7 +4686,7 @@ export default function ProfilePage() {
     } catch (err) {
       console.error(err);
       setHomeError("Failed to load users");
-      toast.error("Failed to load users");
+      // toast.error("Failed to load users");
     } finally {
       setLoadingUsers(false);
     }

@@ -69,6 +69,7 @@ import Link from "next/link";
 import { FaFacebookF, FaTimes, FaWhatsapp } from "react-icons/fa";
 import ShareModal from "@/app/components/shared/ShareModal";
 import { useShareModal } from "../context/ShareModal.context";
+import { CreateComment } from "../Service/CreateComment";
 
 const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
   const [postData, setPostData] = useState<Post | null>(null);
@@ -117,7 +118,13 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
       setLoading(true); // Set loading true before fetching
       try {
         const response = await axios.get(
-          `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/postbyid/${id}/${userDB.data.user_id}`
+          `https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/postbyid/${id}/${userDB.data.user_id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${userDB.data?.access_token}`,
+            },
+          }
         );
         setPostData(response.data.data);
       } catch (error) {
@@ -392,13 +399,15 @@ const CommunityPost = ({ params }: { params: Promise<{ id: string }> }) => {
                   />
                   <div className="flex justify-end mt-2">
                     <button
-                      onClick={() => {
-                        addComment(
-                          postData.id,
-                          "sdaasdasd",
-                          userDB?.data?.user_id as string
+                      onClick={(e) => {
+                        e.preventDefault();
+                        CreateComment(
+                          postData?.id,
+                          userDB?.data?.user_id as string,
+                          newComment,
+                          userDB?.data?.access_token || "",
                         );
-                        window.location.reload();
+                        // window.location.reload();
                       }}
                       disabled={!newComment.trim()}
                       className="bg-red-500 text-white px-6 py-2 rounded-full font-bold hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"

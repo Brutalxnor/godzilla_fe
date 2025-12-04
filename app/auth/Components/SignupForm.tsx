@@ -1,4 +1,4 @@
-
+"use client"
 import { GetAllInterests } from "@/app/sign-up/Services/Interest.service";
 import { SignUoService } from "@/app/sign-up/Services/Signup.service";
 import { SignUpFormData } from "@/app/types/admin";

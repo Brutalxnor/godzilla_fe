@@ -14,6 +14,9 @@ import {
   signInWithRedirect,
 } from "firebase/auth";
 import { auth, googleProvider } from "./firebaseClient";
+import { initializeApp } from "firebase/app";
+import { BiRightArrow } from "react-icons/bi";
+import { ArrowRight } from "lucide-react";
 
 export default function LoginForm() {
   const [showPw, setShowPw] = useState(false);
@@ -74,7 +77,7 @@ export default function LoginForm() {
 
         toast.success("Login with Google successful");
         router.push("/community");
-      } catch (err: any) {
+      } catch (err) {
         console.error("getRedirectResult error:", err);
         toast.error("Google redirect sign-in failed.");
       }
@@ -129,7 +132,7 @@ export default function LoginForm() {
       setTimeout(() => {
         router.push("/community");
       }, 1500);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Google login error:", err);
       toast.error("Google sign-in failed. Please try again.");
     } finally {
@@ -251,8 +254,8 @@ export default function LoginForm() {
             type="submit"
             className="mt-2 w-full rounded-xl bg-rose-400 text-white font-medium py-3 hover:bg-rose-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
           >
-            <span>{loading ? "Signing in..." : "Sign In"}</span>
-            <span className="text-xl leading-none">Right Arrow</span>
+            <span className="text-xl font-bold">{loading ? "Signing in..." : "Sign In"}</span>
+            <span className="text-xl leading-none"><ArrowRight /></span>
           </button>
         </form>
 

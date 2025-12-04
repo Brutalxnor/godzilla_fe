@@ -3,15 +3,22 @@ import axios from "axios";
 export const CreateComment = async (
   postId: string,
   user_id: string,
-  comment: string
+  comment: string,
+  access_token: string
 ) => {
   try {
-    const response = await axios.put(
-      "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/posts/update-comment",
+    const response = await axios.post(
+      "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/comments",
       {
         postId,
         user_id,
         comment,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${access_token}`,
+        },
       }
     );
 

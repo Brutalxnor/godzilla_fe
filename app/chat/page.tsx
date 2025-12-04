@@ -207,7 +207,7 @@ const Chat = () => {
     } catch (err) {
       console.error(err);
       setError("Failed to load users");
-      toast.error("Failed to load users");
+      // toast.error("Failed to load users");
     } finally {
       setLoadingUsers(false);
     }

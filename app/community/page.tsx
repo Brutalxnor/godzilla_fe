@@ -1252,7 +1252,7 @@ export default function CommunityPage() {
     } catch (err) {
       console.error(err);
       setError("Failed to load users");
-      toast.error("Failed to load users");
+      // toast.error("Failed to load users");
     } finally {
       setLoadingUsers(false);
     }
@@ -1443,6 +1443,7 @@ export default function CommunityPage() {
         post_id,
         text,
         parent_comment_id: null, // This is for main comments
+        access_token: userDB?.data?.access_token || "",
       });
 
       // Refresh posts to show the new comment
@@ -1474,6 +1475,7 @@ export default function CommunityPage() {
         post_id, // Pass the post_id here
         text: replyText,
         parent_comment_id: commentId, // This makes it a reply
+        access_token: userDB?.data?.access_token || "",
       });
 
       await fetchGetPosts(); // Refresh to show the reply
