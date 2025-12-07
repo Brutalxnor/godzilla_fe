@@ -63,7 +63,7 @@ export default function LoginForm() {
 
         console.log("Redirect user:", user);
 
-        await fetch("http://localhost:4000/api/v1/auth/login-with-google", {
+        await fetch("https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/login-with-google", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -94,7 +94,7 @@ export default function LoginForm() {
       console.log("Popup user:", user);
 
       const res = await fetch(
-        "http://localhost:4000/api/v1/auth/login-with-google",
+        "https://tsfq2753gd.execute-api.eu-west-2.amazonaws.com/api/v1/auth/login-with-google",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
