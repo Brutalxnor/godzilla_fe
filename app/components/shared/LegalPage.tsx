@@ -1,5 +1,5 @@
 // Shared shell for the public, no-login pages the App Store listing links to
-// (/privacy and /support). Plain server component: no auth, no API calls.
+// (/privacy, /terms, /guidelines and /support). Plain server component: no auth, no API calls.
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -30,6 +30,10 @@ export function LegalPage({
         <div className="mt-8 space-y-6 leading-relaxed">{children}</div>
         <footer className="mt-16 border-t pt-6 text-sm" style={{ borderColor: "var(--border)", color: "var(--muted)" }}>
           <Link href="/privacy" className="underline">Privacy Policy</Link>
+          {" · "}
+          <Link href="/terms" className="underline">Terms of Use</Link>
+          {" · "}
+          <Link href="/guidelines" className="underline">Community Guidelines</Link>
           {" · "}
           <Link href="/support" className="underline">Support</Link>
         </footer>
